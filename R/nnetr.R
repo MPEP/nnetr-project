@@ -1,57 +1,91 @@
-euclid_norm <- function(x) {sqrt(sum(x^2))}
+euclidNorm <- function(x) {sqrt(sum(x^2))}
 
-unit_step <- function(data, weight) {
+
+unitStep <- function(data, weight) {
     distances <- vector(length = nrow(data))
-    distances <- apply(data, 1, distance_from_separator, weight)
-    ifelse(distances < 0, -1, 1)
+    distances <- apply(data, 1, distanceFromSeparator, weight)
+    classification <- ifelse(distances < 0, -1, 1)
+    unitStepOut <- structure(classification, name = "Unit Step")
+    unitStepOut
 }
 
-distance_from_separator <- function(data, weight) {
+
+
+distanceFromSeparator <- function(data, weight) {
     distance <- data %*% weight
     distance
 }
 
-new_perceptron <- function(formula, data, learning_rate = 1, activation = unit_step) {
+newPerceptronModel <- function(formula, data, learningRate = 1, activation = unitStep) {
     if(!is.data.frame(data)) stop("Input data must be dataframe")
     #if(!is.numeric()) stop("Input must be numeric")
+   
     mf <- model.frame(formula, data)
-    mm <- model.matrix(formula, mf)
-    y <- as.matrix(model.response(mf))
-    x <- mm
-    w <- vector(length = ncol(mm))
+    x <- model.matrix(formula, mf)
+    y <- model.response(mf)
+    w <- vector(length = ncol(x))
     c <- 0
-    weight_update <- TRUE    
-    R <- max(apply(x, 1, euclid_norm))
+    weightUpdate <- TRUE    
+    R <- max(apply(x, 1, euclidNorm))
     
-    while (weight_update) {
-        weight_update <- FALSE
-        y_classified <- activation(x, w)
+    while (weightUpdate) {
+        weightUpdate <- FALSE
+        yClassified <- activation(x, w)
         for (i in 1:nrow(x)) {
-            if (y[i] != y_classified[i]) {
-                w[-1] <- w[-1] + learning_rate * y[i] * x[i,-1]
-                w[1] <- w[1] + learning_rate * y[i] * R^2
+            if (y[i] != yClassified[i]) {
+                w[-1] <- w[-1] + learningRate * y[i] * x[i,-1]
+                w[1] <- w[1] + learningRate * y[i] * R^2
                 c <- c + 1
-                weight_update <- TRUE
+                weightUpdate <- TRUE
             }
         }
     }
-    s <- euclid_norm(w)
-    weights <- w[-1]/s
-    bias <- w[1]/s
-    updates <- c
+    
+    s <- euclidNorm(w)
+    coefficients <- w / s
+    names(coefficients) <- c("bias", attr(terms.formula(formula),"term.labels"))
 
-    attr(- w[1] / w[2], "intercept")
-    attr(- w[1] / w[2], "slope")
-    return(structure(list(weights, bias, updates),
-                     class = "perceptron",
-                     intercept = -w[1] / w[3],
-                     slope = -w[2] / w[3]
-                     )
-           )
+    perceptronOut <- list()
+    class(perceptronOut) <- "perceptron"
+
+    perceptronOut$coefficients <- coefficients
+    perceptronOut$updates <- c
+    perceptronOut$formula <- formula
+    perceptronOut$call <- match.call()
+    perceptronOut$x <- x
+    perceptronOut$y <- y
+    perceptronOut$lr <- learningRate
+    perceptronOut$activation <- attr(activation, "name")
+    
+    return(perceptronOut)
 }                
 
+print.perceptron <- function(model, digits = 2, ...) {
+    cat("\nCall:\n", deparse(model$call), "\n\n", sep = "")
+    if (length(coef(model))) {
+        cat("Weights:\n")
+        print(coef(model))
+        cat("\n")
+        cat("Epochs:\n")
+        cat(model$updates,"\n")
+    } else {
+        cat("No coefficients\n")
+        cat("\n")
+        invisible(model)
+    }
+}
 
 
-## print.perceptron
-## summary.perceptron
+summary.perceptron <- function(object, ...) {
+    perceptronSumOut <- list()
+    class(perceptronSumOut) <- "summary.perceptron"
+    perceptronSumOut$model <- object
+    perceptronSumOut$options <- list(learningRate = object$lr)
+}
+
 ## plot.perceptron
+## intercept <- -w[1] / w[3]
+## slope <- -w[2] / w[3]
+
+
+    
