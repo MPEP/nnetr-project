@@ -1,15 +1,10 @@
-euclidNorm <- function(x) {sqrt(sum(x^2))}
-
+euclidNorm <- function(x) {sqrt(sum(x ^ 2))}
 
 unitStep <- function(data, weight) {
     distances <- vector(length = nrow(data))
     distances <- apply(data, 1, distanceFromSeparator, weight)
-    classification <- ifelse(distances < 0, -1, 1)
-    unitStepOut <- structure(classification, name = "Unit Step")
-    unitStepOut
+    ifelse(distances < 0, -1, 1)
 }
-
-
 
 distanceFromSeparator <- function(data, weight) {
     distance <- data %*% weight
@@ -17,7 +12,7 @@ distanceFromSeparator <- function(data, weight) {
 }
 
 newPerceptronModel <- function(formula, data, learningRate = 1, activation = unitStep) {
-    if(!is.data.frame(data)) stop("Input data must be dataframe")
+    if(!is.data.frame(data)) stop("Input data must be of type dataframe")
     #if(!is.numeric()) stop("Input must be numeric")
    
     mf <- model.frame(formula, data)
@@ -31,6 +26,7 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = uni
     while (weightUpdate) {
         weightUpdate <- FALSE
         yClassified <- activation(x, w)
+        
         for (i in 1:nrow(x)) {
             if (y[i] != yClassified[i]) {
                 w[-1] <- w[-1] + learningRate * y[i] * x[i,-1]
@@ -54,36 +50,90 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = uni
     perceptronOut$call <- match.call()
     perceptronOut$x <- x
     perceptronOut$y <- y
-    perceptronOut$lr <- learningRate
-    perceptronOut$activation <- attr(activation, "name")
-    
+    perceptronOut$options <- list(learningRate, as.character(substitute(activation)))
+    names(perceptronOut$options) <- c("Learning rate", "Activation function")
     return(perceptronOut)
 }                
 
-print.perceptron <- function(model, digits = 2, ...) {
-    cat("\nCall:\n", deparse(model$call), "\n\n", sep = "")
-    if (length(coef(model))) {
+print.perceptron <- function(object, digits = 2, ...) {
+    cat("\nCall:\n", deparse(object$call), "\n\n", sep = "")
+    if (length(coef(object))) {
         cat("Weights:\n")
-        print(coef(model))
+        print(coef(object))
         cat("\n")
         cat("Epochs:\n")
-        cat(model$updates,"\n")
+        cat(object$updates,"\n")
     } else {
         cat("No coefficients\n")
         cat("\n")
-        invisible(model)
+        invisible(object)
     }
 }
-
 
 summary.perceptron <- function(object, ...) {
     perceptronSumOut <- list()
     class(perceptronSumOut) <- "summary.perceptron"
-    perceptronSumOut$model <- object
-    perceptronSumOut$options <- list(learningRate = object$lr)
+
+    neuronLabels <- vector(length = length(object$coefficients))
+    
+    for (i in 1:length(object$coefficients)) {
+        neuronLabel <- paste(attr(object$coefficients[i], "names"),
+                           "->",
+                           "o",
+                           sep = "")
+        neuronLabels[i] <- neuronLabel
+    }
+
+    perceptronSumOut$coefficients <- object$coefficients
+    names(perceptronSumOut$coefficients) <- neuronLabels
+    perceptronSumOut$options <- object$options
+    perceptronSumOut$input <- ncol(object$x)
+    perceptronSumOut$hidden <- 0
+    perceptronSumOut$output <- 1
+    return(perceptronSumOut)
 }
 
-## plot.perceptron
+print.summary.perceptron <- function(object, digits = 4, ...) {
+    networkDescription <- paste(object$input-1, object$hidden, object$output, sep = "-")
+    cat("\nResult:\n")
+    cat("A", networkDescription, "network with", object$input, "weights\n", sep = " ")
+    cat("\n")
+    print(coef(object))
+    
+    ## for (i in 1:length(object$coefficients)) {
+    ##     weightString <- paste(attr(object$coefficients[i], "names"),
+    ##                        "->",
+    ##                        "o",
+    ##                        sep = "")
+    ##     weightList[i] <- weightString
+    ## }
+    
+    cat("\n\n")
+        
+    optList <- vector(length = length(object$options))
+    for (i in 1:length(object$options)) {
+        optString <- paste(attr(object$options[i], "names"),
+                           ": ",
+                           as.character(object$options[i]),
+                           sep = "")
+        optList[i] <- optString
+    }
+    cat(optList, sep = ",  ")
+    cat("\n")
+}    
+
+
+plot.perceptron(object, ...) {
+    w <- object
+    intercept <- -w[1] / w[3]
+    slope <- -w[2] / w[3]
+    ggplot(df, aes(x = sepal, y = petal)) +
+        geom_point(aes(colour = species), size = 3) +
+        xlab("Sepal length") +
+        ylab("Petal length") +
+        ggtitle("Species vs Sepal and Petal lengths") +
+        geom_abline(aes(intercept = attr(p1, "intercept"), slope = attr(p1, "slope")), col = "green")
+    
 ## intercept <- -w[1] / w[3]
 ## slope <- -w[2] / w[3]
 
