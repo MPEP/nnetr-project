@@ -17,26 +17,36 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = uni
    
     mf <- model.frame(formula, data)
     x <- model.matrix(formula, mf)
-    y <- model.response(mf)
+    respondName <- as.character(attr(terms(mf), "variables"))[2]
+    if(nlevels(data[respondName] != 2)) stop("levels detected. Response variable must be binary!")
+    
+    y <- get(respondName, mf)
+    yLab <- as.character(y)
+    y <- factor(y)
+    y <- ifelse(y == levels(y)[1], -1, 1)
+    y <- cbind(y, yLab)
+    colnames(y) <- c("class", respondName)
+    y <- data.frame(y, stringsAsFactors = FALSE)
+    y$class <- as.numeric(y$class)
+ 
     w <- vector(length = ncol(x))
     c <- 0
     weightUpdate <- TRUE    
     R <- max(apply(x, 1, euclidNorm))
-    
     while (weightUpdate) {
         weightUpdate <- FALSE
         yClassified <- activation(x, w)
         
         for (i in 1:nrow(x)) {
-            if (y[i] != yClassified[i]) {
-                w[-1] <- w[-1] + learningRate * y[i] * x[i,-1]
-                w[1] <- w[1] + learningRate * y[i] * R^2
+            if (y[i,1] != yClassified[i]) {
+                w[-1] <- w[-1] + learningRate * y[i,1] * x[i,-1]
+                w[1] <- w[1] + learningRate * y[i,1] * R^2
                 c <- c + 1
                 weightUpdate <- TRUE
             }
         }
     }
-    
+
     s <- euclidNorm(w)
     coefficients <- w / s
     names(coefficients) <- c("bias", attr(terms.formula(formula),"term.labels"))
@@ -44,6 +54,7 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = uni
     perceptronOut <- list()
     class(perceptronOut) <- "perceptron"
 
+    perceptronOut$w <- w
     perceptronOut$coefficients <- coefficients
     perceptronOut$updates <- c
     perceptronOut$formula <- formula
@@ -99,17 +110,7 @@ print.summary.perceptron <- function(object, digits = 4, ...) {
     cat("A", networkDescription, "network with", object$input, "weights\n", sep = " ")
     cat("\n")
     print(coef(object))
-    
-    ## for (i in 1:length(object$coefficients)) {
-    ##     weightString <- paste(attr(object$coefficients[i], "names"),
-    ##                        "->",
-    ##                        "o",
-    ##                        sep = "")
-    ##     weightList[i] <- weightString
-    ## }
-    
-    cat("\n\n")
-        
+    cat("\n\n")    
     optList <- vector(length = length(object$options))
     for (i in 1:length(object$options)) {
         optString <- paste(attr(object$options[i], "names"),
@@ -123,19 +124,21 @@ print.summary.perceptron <- function(object, digits = 4, ...) {
 }    
 
 
-plot.perceptron(object, ...) {
-    w <- object
-    intercept <- -w[1] / w[3]
-    slope <- -w[2] / w[3]
-    ggplot(df, aes(x = sepal, y = petal)) +
-        geom_point(aes(colour = species), size = 3) +
-        xlab("Sepal length") +
-        ylab("Petal length") +
-        ggtitle("Species vs Sepal and Petal lengths") +
-        geom_abline(aes(intercept = attr(p1, "intercept"), slope = attr(p1, "slope")), col = "green")
+plot.perceptron <- function(object, title, ...) {
+    if(ncol(object$x) != 3) stop("Plot functionality is only available for 2d input data")
+    x <- data.frame(object$x)
+    y <- object$y
+    weights <- object$w
+    intercept <- -weights[1] / weights[3]
+    slope <- -weights[2] / weights[3]
     
-## intercept <- -w[1] / w[3]
-## slope <- -w[2] / w[3]
+    ggplot(x, aes(x = x[2], y = x[3])) +
+        geom_point(aes(color = y[,2]), size = 3) +
+        scale_color_discrete(name = colnames(y)[2]) +
+        xlab(attr(x[2], "names")) +
+        ylab(attr(x[3], "names")) +
+        ggtitle(title) +
+        geom_abline(aes(intercept = intercept, slope = slope), col = "green")
 
-
+}
     
