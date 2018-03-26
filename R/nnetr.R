@@ -1,17 +1,74 @@
+#' Calculate euclidean norm of a numerical vector.
+#' 
+#' @param x vector of numeric values.
+#' @return the square root of the sum of squared values in \code{x}.
+#' @examples
+#' euclidNorm(c(1, 3, 0, 4))
+#' euclidNorm(c(-1, 0, 5))
+#' @export
 euclidNorm <- function(x) {sqrt(sum(x ^ 2))}
 
-unitStep <- function(data, weight) {
+#' Determine sign of distance from linear separator
+#' 
+#' @param data matrix or data frame of numeric values.
+#' @param weight vector of numeric values.
+#' @return -1 if distance is negative else 1
+#' @examples
+#' vals <- data.frame(4, 3, -2, 9)
+#' weights <- c(1, 1, 1, 1)
+#' signum(vals, weights)
+#' @export
+signum <- function(data, weight) {
     distances <- vector(length = nrow(data))
     distances <- apply(data, 1, distanceFromSeparator, weight)
     ifelse(distances < 0, -1, 1)
 }
 
+#' Calculate signed distance of point from linear separator
+#' 
+#' @param data matrix or vector of numeric values
+#' @param weight vector of numeric values
+#' @return If both arguments are vectors of same length, it will return the inner product. If one argument is a vector, it will be promoted to either a row or column matrix.
+#' @examples
+#' vec1 <- c(1, 2, 3)
+#' vec2 <- c(4, 5, 6)
+#' distanceFromSeparator(vec1, vec2)
+#' @export
 distanceFromSeparator <- function(data, weight) {
-    distance <- data %*% weight
+    distance <- data %*% weight 
     distance
 }
 
-newPerceptronModel <- function(formula, data, learningRate = 1, activation = unitStep) {
+#' Generate perceptron model.
+#'
+#' @description Fit a single-layer perceptron model
+#' @param formula formula expression as for regression models, of the form response ~ predictors. 
+#' @param data data frame in which to interpret the variables occurring in formula
+#' @param learningRate integer value determining the magnitude of the weight updates (default 1)
+#' @param activation function to control neuron activation (default signum)
+#' @details This function 
+#' @return
+#' \describe{
+#' \item{w}{vector of weight values}
+#' \item{coefficients}{vector of weight values normalized by euclidean distance}
+#' \item{updates}{count of weight updates}
+#' \item{formula}{character representation of formula}
+#' \item{call}{character representation of the call command}
+#' \item{x}{model matrix}
+#' \item{y}{vector of response values}
+#' \item{options}{list of character representation of modelling options}
+#' }
+#' @examples
+#' data(iris)
+#' head(iris, n=20)
+#' iris_sub <- iris[1:100, c(1, 3, 5)]
+#' names(iris_sub) <- c("sepal", "petal", "species")
+#' head(iris_sub)
+#' formula <- formula(species ~ sepal + petal)
+#' p1 <- newPerceptronModel(formula, iris_sub)
+#' @import stats
+#' @export
+newPerceptronModel <- function(formula, data, learningRate = 1, activation = signum) {
     if(!is.data.frame(data)) stop("Input data must be of type dataframe")
     #if(!is.numeric()) stop("Input must be numeric")
    
@@ -66,21 +123,58 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = uni
     return(perceptronOut)
 }                
 
-print.perceptron <- function(object, digits = 2, ...) {
-    cat("\nCall:\n", deparse(object$call), "\n\n", sep = "")
-    if (length(coef(object))) {
+
+#' Print perceptron model.
+#'
+#' @param x an object of class \code{perceptron} as returned by perceptron. 
+#' @param ... arguments passed to or from other methods.
+#' @examples
+#' data(iris)
+#' head(iris, n=20)
+#' iris_sub <- iris[1:100, c(1, 3, 5)]
+#' names(iris_sub) <- c("sepal", "petal", "species")
+#' head(iris_sub)
+#' formula <- formula(species ~ sepal + petal)
+#' p1 <- newPerceptronModel(formula, iris_sub)
+#' print(p1)
+#' @export
+print.perceptron <- function(x, ...) {
+    cat("\nCall:\n", deparse(x$call), "\n\n", sep = "")
+    if (length(coef(x))) {
         cat("Weights:\n")
-        print(coef(object))
+        print(coef(x))
         cat("\n")
         cat("Epochs:\n")
-        cat(object$updates,"\n")
+        cat(x$updates,"\n")
     } else {
         cat("No coefficients\n")
         cat("\n")
-        invisible(object)
+        invisible(x)
     }
 }
 
+#' Assemble summary output of fitted perceptron model.
+#'
+#' @param object an object of class \code{perceptron} as returned by perceptron.
+#' @param ... arguments passed to or from other methods
+#' @return
+#' \describe{
+#' \item{coefficients}{vector of weight values normalized by euclidean distance}
+#' \item{options}{list of character representation of modelling options}
+#' \item{input}{number of input layer nodes}
+#' \item{hidden}{number of hidden layer nodes (fixed to 0)}
+#' \item{output}{number of output layer nodes (fixed to 1)}
+#' }
+#' @examples
+#' data(iris)
+#' head(iris, n=20)
+#' iris_sub <- iris[1:100, c(1, 3, 5)]
+#' names(iris_sub) <- c("sepal", "petal", "species")
+#' head(iris_sub)
+#' formula <- formula(species ~ sepal + petal)
+#' p1 <- newPerceptronModel(formula, iris_sub)
+#' summary(p1)
+#' @export
 summary.perceptron <- function(object, ...) {
     perceptronSumOut <- list()
     class(perceptronSumOut) <- "summary.perceptron"
@@ -104,18 +198,33 @@ summary.perceptron <- function(object, ...) {
     return(perceptronSumOut)
 }
 
-print.summary.perceptron <- function(object, digits = 4, ...) {
-    networkDescription <- paste(object$input-1, object$hidden, object$output, sep = "-")
+
+#' Print summary output of a fitted perceptron model.
+#'
+#' @param x an object of class \code{perceptron} as returned by perceptron. 
+#' @param ... arguments passed to or from other methods
+#' @examples
+#' data(iris)
+#' head(iris, n=20)
+#' iris_sub <- iris[1:100, c(1, 3, 5)]
+#' names(iris_sub) <- c("sepal", "petal", "species")
+#' head(iris_sub)
+#' formula <- formula(species ~ sepal + petal)
+#' p1 <- newPerceptronModel(formula, iris_sub)
+#' summary(p1)
+#' @export
+print.summary.perceptron <- function(x, ...) {
+    networkDescription <- paste(x$input-1, x$hidden, x$output, sep = "-")
     cat("\nResult:\n")
-    cat("A", networkDescription, "network with", object$input, "weights\n", sep = " ")
+    cat("A", networkDescription, "network with", x$input, "weights\n", sep = " ")
     cat("\n")
-    print(coef(object))
+    print(coef(x))
     cat("\n\n")    
-    optList <- vector(length = length(object$options))
-    for (i in 1:length(object$options)) {
-        optString <- paste(attr(object$options[i], "names"),
+    optList <- vector(length = length(x$options))
+    for (i in 1:length(x$options)) {
+        optString <- paste(attr(x$options[i], "names"),
                            ": ",
-                           as.character(object$options[i]),
+                           as.character(x$options[i]),
                            sep = "")
         optList[i] <- optString
     }
@@ -123,22 +232,34 @@ print.summary.perceptron <- function(object, digits = 4, ...) {
     cat("\n")
 }    
 
-
-plot.perceptron <- function(object, title, ...) {
-    if(ncol(object$x) != 3) stop("Plot functionality is only available for 2d input data")
-    x <- data.frame(object$x)
-    y <- object$y
-    weights <- object$w
+#' Plot of a fitted perceptron model.
+#'
+#' @param x an object of class \code{perceptron} as returned by perceptron. 
+#' @param ... arguments passed to or from other methods
+#' @examples
+#' data(iris)
+#' head(iris, n=20)
+#' iris_sub <- iris[1:100, c(1, 3, 5)]
+#' names(iris_sub) <- c("sepal", "petal", "species")
+#' head(iris_sub)
+#' formula <- formula(species ~ sepal + petal)
+#' p1 <- newPerceptronModel(formula, iris_sub)
+#' plot(p1, title = "Perceptron Classifier")
+#' @import ggplot2 
+#' @export
+plot.perceptron <- function(x, ...) {
+    if(ncol(x$x) != 3) stop("Plot functionality is only available for 2d input data")
+    y <- x$y
+    weights <- x$w
     intercept <- -weights[1] / weights[3]
     slope <- -weights[2] / weights[3]
-    
-    ggplot(x, aes(x = x[2], y = x[3])) +
+    df <- data.frame(x$x, stringsAsFactors = FALSE)
+
+    ggplot(df, aes(x = df[2], y = df[3])) +
         geom_point(aes(color = y[,2]), size = 3) +
         scale_color_discrete(name = colnames(y)[2]) +
-        xlab(attr(x[2], "names")) +
-        ylab(attr(x[3], "names")) +
-        ggtitle(title) +
+        xlab(attr(df[2], "names")) +
+        ylab(attr(df[3], "names")) +
         geom_abline(aes(intercept = intercept, slope = slope), col = "green")
-
 }
     

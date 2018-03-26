@@ -1,9 +1,20 @@
 Package: nnetr
-Title: What the Package Does (one line, title case)
+Title: The Perceptron Algorithm
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: person("Mario", "Peplinski", email = "m.peplinski@fu-berlin.de", role = c("aut", "cre"))
+Description: A basic implementation of the perceptron algorithm for educational
+	     purposes based on the perceptron model as described by Frank
+	     Rosenblatt (1958). The algorithm employs an error backpropagation
+	     mechanism to formulate  a linear predictor function by modifying the
+	     the coefficients of a given feature set accroding to a set of
+	     desired output values. Because of the binary nature of the output
+	     value, in its basic form, the algorithm is only applicable to
+	     linearly seperable dataset in the context of a binary classification
+	     task.
 Depends: R (>= 3.4.3)
-License: What license is it under?
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
+Imports: ggplot2,
+    stats
+RoxygenNote: 6.0.1
