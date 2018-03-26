@@ -42,3 +42,6 @@ head(iris_sub)
 formula <- formula(species ~ sepal + petal)
 p1 <- newPerceptronModel(formula, iris_sub)
 }
+\references{
+Cristianini, Nello und John Shawe-Taylor (2000): \emph{An Introduction to Support Vector Machines: And Other Kernel-Based Learning Methods}, Cambridge University Press: Cambridge, England.
+}

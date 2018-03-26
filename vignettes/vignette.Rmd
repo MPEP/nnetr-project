@@ -1,0 +1,34 @@
+---
+title: "Perzeptron Algorithmus"
+author: "Mario Peplinski"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: bibliography.bib
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+# Einführung
+Künstliche neuronale Netze bilden die modelltechnische Grundlage für einige der aktuell am stärksten wachsenden Forschungsfelder im Kontext der künstlichen Intelligenz allgemein und insbesondere auf dem Teilgebiet des maschinellen Lernens. Der seit 2006 zu beobachtende Popularitätszuwachs ist vorallem auf die Entdeckung effizienterer Trainingsstrategien zurückzuführen die seither unter dem Begriff Deep Learning eine eigene Klasse innerhalb der Disziplin des maschinellen Lernens bilden. Während das Ziel bei früheren Modellierungsansätzen noch darin bestand die biologische Funktionsweise des Gehirns nachzuempfinden, hat sich die moderne Interpretation des künstlichen neuronalen Netzwerks bereits stark von der neurowissenschaftlichen Perspektive zu Gunsten einer abstrakteren Sichtweise der beobachteten Zusammenhänge entfernt. (cite MIT/Deep Learning)
+
+Ein künstliches neuronales Netz wird demnach als ein Berechnungsmodell auf Grundlage einer Netzwerkstruktur interpretiert, wobei der minimale Anweisungssatz zur Implementierung primitiver Funktionen in den Knoten des Netzwerks enthalten ist und die Kompositionsregeln implizit aus den Verbindungsstruktur abgeleitet werden, die die Knoten untereinander besitzen. Jedes einzelne Netzwerkelement entspricht somit einer primitiven Funktion und die Gesamtheit aller Netzwerkelemente kann als Netzwerk primitiver Funktionen betrachtet werden. Konkrete Implementierung künstlicher neuronaler Netze unterscheiden sich in der Regel meist nur bezüglich der verwendeten primitiven Funktionen, der Struktur der Verbindungen zwischen den Netzwerkelementen oder dem Zeitpunkt der Informationsübertragung zwischen den Netzwerkknoten, weshalb das oben beschriebene Modell als Prototyp eines künstlichen neuronalen Netzes betrachtet werden kann. (cite FU/Rojas)
+
+Neuronale Netze werden aufgrund ihrer Funktionsweise der Klasse der sogenannten überwachten Lernverfahren zugerechnet. Kennzeichnend für Verfahren dieser Klasse ist einerseits, dass der Lernprozess unter dem Gesichtspunkt einer konkreten Zielsetzung vollzogen wird, welche im Vorfeld bereits bekannt ist und andererseits, dass der Trainingsdatensatz Informationen über die Zielvariable enthält. Wenn ein entsprechender Trainingsdatensatz verfügbar ist, lassen sich auf Grundlage der darin enthalteten Informationen eine Reihe von Hypothesen bezüglich der vorliegende Problemstellung aufstellen, wobei der Typus des funktionalen, linearen Zusammenhangs die einfachste und am weitesten erforschte Hypothesenform darstellt und daher im Weiteren als Grundannahme für die Vorstellung des implementierten Verfahrens dienen soll. (cite Cristianini)
+
+Mit dem nnetr Package soll die Implementierung eines linearen Klassifikationsverfahrens auf Grundlage eines einlagigen, neuralen Netzwerks in R demonstriert werden. Das einlagige, neuronale Netzwerk welches gemeinhin auch als einlagiges Perzeptron bezeichnet wird, besteht lediglich aus einer Reihe von Eingangsknoten und einem einzelnen Ausgangsknoten und stellt damit die einfachste Form eines neuronalen Netzes dar. Das Ziel des Klassifikationsverfahrens besteht darin, unter Verwendung eines vorgegebenen Trainigsdatensatzes und einer vordefinierten Entscheidungsregel, iterativ eine lineare Funktion zu bestimmen, die bei Eingabe eine Merkmalskombination die zugehörige Instanz einer von zwei bekannten Klassen zuordnet.
+
+# Perceptron Modell
+# Lineare Klassifikation mit Hilfe des Perzeptron Algorithmus
+
+
+# nnetr
+# Beispiel
+# Zusammenfassung

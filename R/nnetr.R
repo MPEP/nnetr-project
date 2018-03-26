@@ -58,6 +58,7 @@ distanceFromSeparator <- function(data, weight) {
 #' \item{y}{vector of response values}
 #' \item{options}{list of character representation of modelling options}
 #' }
+#' @references Cristianini, Nello und John Shawe-Taylor (2000): \emph{An Introduction to Support Vector Machines: And Other Kernel-Based Learning Methods}, Cambridge University Press: Cambridge, England.
 #' @examples
 #' data(iris)
 #' head(iris, n=20)
@@ -70,13 +71,14 @@ distanceFromSeparator <- function(data, weight) {
 #' @export
 newPerceptronModel <- function(formula, data, learningRate = 1, activation = signum) {
     if(!is.data.frame(data)) stop("Input data must be of type dataframe")
-    #if(!is.numeric()) stop("Input must be numeric")
-   
+
+    # model matrix
     mf <- model.frame(formula, data)
     x <- model.matrix(formula, mf)
     respondName <- as.character(attr(terms(mf), "variables"))[2]
     if(nlevels(data[respondName] != 2)) stop("levels detected. Response variable must be binary!")
-    
+
+    # response vector
     y <- get(respondName, mf)
     yLab <- as.character(y)
     y <- factor(y)
@@ -85,9 +87,9 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = sig
     colnames(y) <- c("class", respondName)
     y <- data.frame(y, stringsAsFactors = FALSE)
     y$class <- as.numeric(y$class)
- 
-    w <- vector(length = ncol(x))
-    c <- 0
+
+    w <- vector(length = ncol(x)) # coefficient vector
+    c <- 0 # weight update counter
     weightUpdate <- TRUE    
     R <- max(apply(x, 1, euclidNorm))
     while (weightUpdate) {
@@ -108,6 +110,7 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = sig
     coefficients <- w / s
     names(coefficients) <- c("bias", attr(terms.formula(formula),"term.labels"))
 
+    # assemble output object
     perceptronOut <- list()
     class(perceptronOut) <- "perceptron"
 
