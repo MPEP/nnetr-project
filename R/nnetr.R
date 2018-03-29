@@ -76,7 +76,7 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = sig
     mf <- model.frame(formula, data)
     x <- model.matrix(formula, mf)
     respondName <- as.character(attr(terms(mf), "variables"))[2]
-    if(nlevels(data[respondName] != 2)) stop("levels detected. Response variable must be binary!")
+    if(nlevels(data[respondName] != 2)) stop("Invalid number of levels detected. Response variable must be binary!")
 
     # response vector
     y <- get(respondName, mf)
@@ -92,6 +92,7 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = sig
     c <- 0 # weight update counter
     weightUpdate <- TRUE    
     R <- max(apply(x, 1, euclidNorm))
+
     while (weightUpdate) {
         weightUpdate <- FALSE
         yClassified <- activation(x, w)
