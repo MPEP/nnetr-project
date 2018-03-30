@@ -46,10 +46,11 @@ distanceFromSeparator <- function(data, weight) {
 #' @param data data frame in which to interpret the variables occurring in formula
 #' @param learningRate integer value determining the magnitude of the weight updates (default 1)
 #' @param activation function to control neuron activation (default signum)
-#' @details This function 
+#' @details This function implements a model for linear classification based on the perceptron model. The level of the response variable must be binary.
+#' @note The learning algorithm for the perceptron model is only guaranteed to converge for linearly separable input data!
 #' @return
 #' \describe{
-#' \item{w}{vector of weight values}
+#' \item{w}{vector of best weight values found}
 #' \item{coefficients}{vector of weight values normalized by euclidean distance}
 #' \item{updates}{count of weight updates}
 #' \item{formula}{character representation of formula}
@@ -70,13 +71,13 @@ distanceFromSeparator <- function(data, weight) {
 #' @import stats
 #' @export
 newPerceptronModel <- function(formula, data, learningRate = 1, activation = signum) {
-    if(!is.data.frame(data)) stop("Input data must be of type dataframe")
+    if(!is.data.frame(data)) stop("Input data must be of type dataframe.")
 
     # model matrix
     mf <- model.frame(formula, data)
     x <- model.matrix(formula, mf)
     respondName <- as.character(attr(terms(mf), "variables"))[2]
-    if(nlevels(data[respondName] != 2)) stop("Invalid number of levels detected. Response variable must be binary!")
+    if(nlevels(data[respondName] != 2)) stop("Invalid number of levels in response variable detected. Response variable must be binary!")
 
     # response vector
     y <- get(respondName, mf)

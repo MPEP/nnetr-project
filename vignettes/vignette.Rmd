@@ -82,11 +82,26 @@ w_1x_1 + w_2x_2 + w_3x_3 \eq 0
 
 erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also einer Kombination der Gewichtungelemente, deren Funktionswert nach Bildung des inneren Produktes mit den Elementen des Vektors $\vec{x_{ext}}$ und $\vec{w_{ext}}$ gleich null oder positiv ist. [Vgl. @1996rojas]
 
-# Lineare Klassifikation mit Hilfe des Perzeptron Algorithmus
- 
+# Lineare Klassifikation am Beispiel des Iris-Datensatzes
+In diesem Abschnitt wird die Anwendung des nnetr-Packages am Beispiel einer Klassifikation unter Verwendung des Iris-Datensatzes demonstriert. Der Iris-Datensatz enthält zu drei verschiedenen Gattungen der Schwertlilie jeweils 50 Beobachtungen, für die jeweils die Länge und Breite der Kelch- und der Kronenblätter und der Name der Spezies erfasst wurden. Der Datensatz besteht somit insgesamt aus 150 Beobachtungen mit jeweils fünf Attributen. Mit Hilfe des nnetr-Packages soll eine Klassifikationsfunktion generiert werden, die in der Lage ist, einer Beobachtung auf Grundlage der bekannten Attribute die korrekte Klasse der Spezies zuzuordnen.
+
+Das implementierte Modell ist nur für die Lösung binärer Klassifikationsprobleme konzipiert. Durch die Entnahme einer entsprechenden Teilmenge aus dem Gesamtdatensatz wird daher zunächst sichergestellt, dass die Zielvariable das korrekte Skalenniveau aufweist. Da zudem die Konvergenz des verwendeten Algorithmus nur für linear separierbare Daten garantiert werden kann, muss der Datensatz hinsichtlich linearer Separierbarkeit untersucht werden. Die Untersuchung erfolgt durch visuelle Auswertung des Plots der entnommenen Teilmenge [vgl. @2017ciaburro]:
+
+```{r}
+data(iris)
+iris_sub <- iris[1:100, c(1, 3, 5)]
+names(iris_sub) <- c("sepal", "petal", "Spezies")
+
+library(ggplot2)
+ggplot(iris_sub, aes(x = sepal, y = petal)) +
+    geom_point(aes(colour = Spezies, shape = Spezies), size = 3) +
+    xlab("Kelchblattlänge") +
+    ylab("Kronenblattlänge") +
+    ggtitle("Spezies vs. Kelchblatt- und Kronenblattlänge")
+```
+
+Anhand des Plot ist deutlich erkennbar, dass die Instanzen der entnommenen Teilmenge zwei Cluster bilden, die sich durch eine Gerade voneinander trennen lassen. Das Kriterium der linearen Separierbarkeit ist somit erfüllt.
 
 
-# nnetr
-# Beispiel
 # Zusammenfassung
 # Literaturverzeichnis
