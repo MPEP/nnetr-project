@@ -10,12 +10,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
+```{r setup,include = FALSE, message = FALSE}
+library(ggplot2)
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
+ ```
 # Einführung
 Künstliche neuronale Netze bilden die modelltechnische Grundlage für einige der aktuell am stärksten wachsenden Forschungsfelder im Kontext der künstlichen Intelligenz allgemein und insbesondere auf dem Teilgebiet des maschinellen Lernens. Der seit 2006 zu beobachtende Popularitätszuwachs ist vorallem auf die Entdeckung effizienterer Trainingsstrategien zurückzuführen die seither unter dem Begriff Deep Learning eine eigene Klasse innerhalb der Disziplin des maschinellen Lernens bilden. Während das Ziel bei früheren Modellierungsansätzen noch darin bestand die biologische Funktionsweise des Gehirns nachzuempfinden, hat sich die moderne Interpretation des künstlichen neuronalen Netzwerks bereits stark von der neurowissenschaftlichen Perspektive zu Gunsten einer abstrakteren Sichtweise der beobachteten Zusammenhänge entfernt. [Vgl. @2016goodfellow]
 
@@ -41,11 +42,14 @@ Der eigentliche Lernvorgang vollzieht sich im Verbindungsbereich, zwischen Assoz
 Nach dem Eintritt von $R_1$ wird mittels Rückpropagation sichergestellt, dass die Zellen der Assoziationsschicht, die an der Auslösung der Reaktion $R_1$ beteiligt waren, eine Leistungsverstärkung erfahren. Dies hat den Effekt, dass bei der nächsten Aktivierung der entsprechenden Zellen eine stärkeres Ausgangssignal erzeugt wird, was wiederum den erneuten eintritt von $R_1$ wahrscheinlicher und den Eintritt von $R_2$ unwahrscheinlicher macht. Ähnliche Signale auf der Projektionsoberfläche verursachen in der Folge ähnliche Aktivierungsmuster in der Assoziationsschicht und führen nach wiederholter Exposition des Netzwerks zu identischen Reaktionen. Das Netzwerk ist nun in der Lage auf Grundlage der erlernten Aktivierungsmuster selbstständig eine Klassifikation der Eingangssignale vorzunehmen. [Vgl. @1958rosenblatt]
 
 # Mathematische Interpretation
+## Modell
 Ausgehend von dem oben beschriebenen Modellentwurf nach @1958rosenblatt, kann die Wirkungsweise eines neuronalen Netzes mathematisch auch als Zuordnungsfunktion interpretiert werden, die einer bestimmten Anzahl $n$ reeller Werte $(x_1, x_2, ..., x_n)$, welche die Eingangssignale repräsentieren, eine bestimmte Anzahl $m$ reeller Werte (y_1, y_2, ..., y_m) zuordnet, welche die Ausgangssignale des Netzwerks darstellen. Die Aufgabe des künstliche neuronale Netz besteht dabei in der Modellierung einer Abbildungsfunktion $F: \mathbb{R}^n -> \mathbb{R}^m$, welche letztlich das Ergebnis des Lernprozesses darstellt. [Vgl. @1996rojas]
 
-Die Implementierung des Lernmechanismus erfolgt mittels der Einführung adaptiver, numerischer Gewichtungen der Eingangssignale, deren Summe, analog zu den Zellen der Assoziationsschicht im klassischen Perzeptron Modell, durch eine nachgelagerte Berechnungskomponente, welche das eigentliche Perzeptron repräsentiert, ermittelt und mit einem vordefinierten Schwellwert verglichen wird. Wenn die Summe der gewichteten Eingangssignale einen bestimmten Schwellwert übersteigt wird eine Signalübertragung an die nächste Berechnungseinheit ausgelöst. Dieser Zusammenhang entspricht einer Summenrelation gegeben durch [\z_i = \sum_{j=1}^m w_{ij}x_{ij}\] wobei $z_i$ dem Wert des Ausgangssignals des $i$-ten Perzeptrons entspricht, die Werte $x_{li}...x_{ni}$ die jeweiligen Eingangsignale darstellen und $w_{ij}...w_{in}$ die zugehörigen Gewichtungskoeffizienten repräsentiert. [Vgl. @2013graupe]
+Die Implementierung des Lernmechanismus erfolgt mittels der Einführung adaptiver, numerischer Gewichtungen der Eingangssignale, deren Summe, analog zu den Zellen der Assoziationsschicht im klassischen Perzeptron Modell, durch eine nachgelagerte Berechnungskomponente, welche das eigentliche Perzeptron repräsentiert, ermittelt und mit einem vordefinierten Schwellwert verglichen wird. Wenn die Summe der gewichteten Eingangssignale einen bestimmten Schwellwert übersteigt, wird eine Signalübertragung an die nächste Berechnungseinheit ausgelöst. Dieser Zusammenhang entspricht einer Summenrelation gegeben durch [\z_i = \sum_{j=1}^m w_{ij}x_{ij}\] wobei $z_i$ dem Wert des Ausgangssignals des $i$-ten Perzeptrons entspricht, die Werte $x_{li}...x_{ni}$ die jeweiligen Eingangsignale darstellen und $w_{ij}...w_{in}$ die zugehörigen Gewichtungskoeffizienten repräsentiert [vgl. @2013graupe]. 
 
-Diese Relation kann gleichfalls in Vektorform als \[z_i = w_{i}^Tx_i\] ausgedrückt werden, wobei \[w_i = [w_{i1} ... w_{in}]^T\] der Spaltenform des Vektors der Gewichtungskoeffizienten entspricht, welcher im Folgenden als Gewichtungsvektor bezeichnet wird, und \[x_i = [x_{i1} ... x{in}]^T\] die Spaltenform des Vektors der Eingabewerte darstellt, die nachfolgend als Eingabevektor bezeichnet wird. Für die Umsetzung der Schwellwertlogik wird schließlich eine Aktivierungsfunktion definiert, die auf Basis des zuvor bestimmten inneren Produktes der Vektoren $\vec{w}$ und $\vec{x}$ den Aktivierungszustand des Perzeptrons ermittelt und bei Überschreitung eines Schwellwertes $\theta$ ein Ausgangssignal generiert. 
+Diese Relation kann gleichfalls in Vektorform als \[z_i = w_{i}^Tx_i\] ausgedrückt werden, wobei \[w_i = [w_{i1} ... w_{in}]^T\] der Spaltenform des Vektors der Gewichtungskoeffizienten entspricht, welcher im Folgenden als Gewichtungsvektor bezeichnet wird, und \[x_i = [x_{i1} ... x{in}]^T\] die Spaltenform des Vektors der Eingabewerte darstellt, die nachfolgend als Eingabevektor bezeichnet wird. Für die Umsetzung der Schwellwertlogik wird schließlich eine Aktivierungsfunktion definiert, die auf Basis des zuvor bestimmten inneren Produktes der Vektoren $\vec{w}$ und $\vec{x}$ den Aktivierungszustand des Perzeptrons ermittelt und bei Überschreitung eines Schwellwertes $\theta$ ein Ausgangssignal generiert. Da sich die vorliegende Impletierung auf die Demonstration der Funktionsweise eines einzelnen Perzeptrons beschränkt wird im Folgenden auf die Angabe der Perzeptronindezes verzichtet.
+
+## Aktivierungsfunktion
 Die Aufgabe der Aktivierungsfunktion besteht im Wesentlichen darin, die Stärke des Ausgangssignals auf einen Wert innerhalb eines fest definierten Intervalls abzubilden. Geometrisch lässt sich dieser Sachverhalt auch als Teilung eines Vektorraumes in zwei Teilräume interpretieren, wobei jedes Eingangssignal, welches den Schwellwert überschreitet oder gleich dem Schwellwert ist, der einen Teilraumhälfte zugeordnet wird, und jedes Eingangssignal, das den Schwellwert unterschreitet, der anderen Teilraumhälfte. [Vgl. @2013graupe, @1996rojas]
 
 Als Aktivierungsfunktion kommen je nach Modellanforderungen verschiedene nicht-lineare Funktionen in Frage, wobei für die Verwendung im Zusammenhang mit modernen Interpretationen des neuronalen Netzes, die ReLU-Funktion laut [@2006goodfellow] als Standardempfehlung betrachtet werden kann. Ein Grund hierfür ist, dass die ReLU-Funktion einen Wertebereich von 0 bis $\infty$ besitzt und daher, anders als bei anderen Vertretern aus der Klasse der nicht-linearen Funktionen, wie der Sigmoid- oder der Hyperbelfunktion, nicht das Problem schwindender Gradienten auftritt, welches wiederum zu Konvergenzproblemen führen kann. 
@@ -62,37 +66,63 @@ sgn(x) =
 
 Die Integration des Schwellwertes in das Modell erfolgt durch die Ergänzung der Eingabewerte um eine künstliches Eingangssignal $x_i0$, dessen Wert konstant $1$ beträgt und einen zusätzlichen Gewichtungskoeffizienten $w_i0$ der mit dem Wert $0$ initialisiert wird. Aus dem $n$-Dimensionalen Eingangsvektor $\vec{x} mit den Eingangswerten $(x_1, x_2, ..., x_n)$ wird dadurch der $(n+1)$-Dimensionale erweiterte Eingabevektor $\vec{x_{ext}} = (x_1, x_2, ..., x_n,1)$. Analog hierzu entsteht durch das Hinzufügen eines Gewichtungskoeffizienten zum $n$-Dimensionalen Gewichtungsvektor $\vec{w}$ der erweiterte Gewichtungsvektor $\vec{w_{ext}} = (w_1, w_2,...,w_{n+1}$. [Vgl. @1996rojas]
 
+## Klassifikation und Trainingsprozess
 Im Anwendungskontext einer binären Klassifikation besteht die Aufgabe des Perzeptrons nun darin, für $n$ Eingabeinstanzen des Datensatzes $X$, $n+1$ freie Parameter zu finden, so dass die daraus resultierende lineare Funktion eine Hyperebene definiert, die eine vollständige räumliche Separation der in $X$ vertretenen Elemente nach ihrer jeweiligen Klasse bewirkt. Diese $n+1$ freien Parameter entsprechen dabei den Elementen des erweiterten Gewichtungsvektors $\vec{w_{ext}$. Geometrisch betrachtet bildet jede Kombination von drei Gewichtungselementen $w_1, w_2, w_3$ einen Punkt in einem dreidimensionalen Dualraum. Dieser Punkt ist mit einer Hyperebene im Ursprungsraum assoziert, welche durch die Ebenengleichung
 
 \[
-w_1x_1 + w_2x_2 + w_3x_3 = 0
+	w_1x_1 + w_2x_2 + w_3x_3 = 0
 \]
 
 definiert wird. Alle Punkte in der positiven Hälfte des durch die Hyperebene gebildeten Halbraumes erfüllen die Bedingung
 
 \[
-w_1x_1 + w_2x_2 + w_3x_3 \geq 0
+	w_1x_1 + w_2x_2 + w_3x_3 \geq 0
 \]
 
 während alle Punkte in der negativen Hälfte die Bedingung
 
 \[
-w_1x_1 + w_2x_2 + w_3x_3 \eq 0
+	w_1x_1 + w_2x_2 + w_3x_3 \eq 0
 \]
 
-erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also einer Kombination der Gewichtungelemente, deren Funktionswert nach Bildung des inneren Produktes mit den Elementen des Vektors $\vec{x_{ext}}$ und $\vec{w_{ext}}$ gleich null oder positiv ist. [Vgl. @1996rojas]
+erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also einer Kombination der Gewichtungselemente, deren Funktionswert nach Bildung des inneren Produktes mit den Elementen des Vektors $\vec{x_{ext}}$ und $\vec{w_{ext}}$ gleich null ist. [Vgl. @1996rojas]
+
+Für den Trainingsprozess wird der Rückgabewert der Aktivierungsfunktion iterativ für alle Eingabeinstanzen ermittelt und mit der tatsächlichen Wertausprägung der Zielvariablen $y_opt$ eines Trainingsdatensatzes $\vec{y_opt} abgeglichen. Falls ein Ausgangssignal $z_i$ nicht mit dem zugehörigen Wert des Trainingsdatensatzes übereinstimmt, wird der Gewichtungsvektor $\vec{c} der $c$-ten Iteration durch den angepassten Vektor $\vec{w_{c+1}} ersetzt. Der zugehörige Algorithmus ist wie folgt definiert:
+
+
+
+# nnetr
+## Installation
+Die **netr** Software ist ein Zusatzpaket für die Statistiksoftware R ($\leq$ 3.4.4) und kann aus dem beigefügten bundle mit der Dateiendung \texttt[.tar.gz} heraus installiert werden. Zusätzlich zu der Basisinstallation der R-Software wird das Paket *ggplot2* benötigt. Sobald das Paket installiert wurde, kann es mit Hilfe der folgenden Eingabe geladen werden:
+
+```{r}
+library(nnetr)
+```
+
+## Funktionen
+Die Hauptfunktion des Pakets **nnetr** besteht in der Anpassung eines linearer Modelle, wobei die Daten der abhängigen Variablen ein binäres Skalenniveau aufweisen müssen. Für die Verwendung der Plotfunktion muss zudem sichergestellt werden, dass das Modell über genau zwei unabhängige Variablen und eine abhängige Variable verfügt.
 
 # Lineare Klassifikation am Beispiel des Iris-Datensatzes
-In diesem Abschnitt wird die Anwendung des nnetr-Packages am Beispiel einer Klassifikation unter Verwendung des Iris-Datensatzes demonstriert. Der Iris-Datensatz enthält zu drei verschiedenen Gattungen der Schwertlilie jeweils 50 Beobachtungen, für die jeweils die Länge und Breite der Kelch- und der Kronenblätter und der Name der Spezies erfasst wurden. Der Datensatz besteht somit insgesamt aus 150 Beobachtungen mit jeweils fünf Attributen. Mit Hilfe des nnetr-Packages soll eine Klassifikationsfunktion generiert werden, die in der Lage ist, einer Beobachtung auf Grundlage der bekannten Attribute die korrekte Klasse der Spezies zuzuordnen.
+In diesem Abschnitt wird die Anwendung des nnetr-Packages am Beispiel einer Klassifikation unter Verwendung des Iris-Datensatzes demonstriert. Der Iris-Datensatz enthält zu drei verschiedenen Gattungen der Schwertlilie jeweils 50 Beobachtungen, für die jeweils die Länge und Breite der Kelch- und der Kronenblätter und der Name der Spezies erfasst wurden. Der Datensatz besteht somit aus insgesamt 150 Beobachtungen mit jeweils fünf Attributen. Mit Hilfe des nnetr-Packages soll eine Klassifikationsfunktion generiert werden, die in der Lage ist, einer Beobachtung auf Grundlage der bekannten Attribute die korrekte Klasse der Spezies zuzuordnen.
 
-Das implementierte Modell ist nur für die Lösung binärer Klassifikationsprobleme konzipiert. Durch die Entnahme einer entsprechenden Teilmenge aus dem Gesamtdatensatz wird daher zunächst sichergestellt, dass die Zielvariable das korrekte Skalenniveau aufweist. Da zudem die Konvergenz des verwendeten Algorithmus nur für linear separierbare Daten garantiert werden kann, muss der Datensatz hinsichtlich linearer Separierbarkeit untersucht werden. Die Untersuchung erfolgt durch visuelle Auswertung des Plots der entnommenen Teilmenge [vgl. @2017ciaburro]:
+Die Implementierung ist nur für Anpassung von Modellen für die Lösung binärer Klassifikationsprobleme konzipiert. Bevor eine Anpassung mit Hilfe der Implementierung durchgeführt werden kann, muss daher zunächst sichergestellt werden, dass der Datensatz für die Zielvariable das korrekte Skalennivau aufweist. Als Zielvariable dient in diesem Fall das Attribut \texttt{Species}:
 
 ```{r}
 data(iris)
-iris_sub <- iris[1:100, c(1, 3, 5)]
-names(iris_sub) <- c("sepal", "petal", "Spezies")
+str(iris)     
+```
 
-library(ggplot2)
+Wie die Zusammenfassung des Datensatzes zeigt, besitzt das Attribut \texttt{Species} die drei verschiedenen Ausprägungen *setosa*, *versicolor* und *verginica*. Um eine binäre Zielvariable zu erhalten, wird eine entsprechende Teilmenge entnommen. Des Weiteren wird die Anzahl der Attribute auf zwei reduziert, um die Visualisierung der Daten zu erleichtern:
+
+```{r}
+iris_sub <- iris[(1:100), c(1, 3, 5)]
+names(iris_sub) <- c("sepal", "petal", "Spezies")
+str(iris_sub)
+```
+
+Da zudem die Konvergenz des verwendeten Algorithmus nur für linear separierbare Daten garantiert werden kann, muss der Datensatz hinsichtlich linearer Separierbarkeit untersucht werden. Die Untersuchung erfolgt durch visuelle Auswertung des Plots der entnommenen Teilmenge [vgl. @2017ciaburro]:
+
+```{r}
 ggplot(iris_sub, aes(x = sepal, y = petal)) +
     geom_point(aes(colour = Spezies, shape = Spezies), size = 3) +
     xlab("Kelchblattlänge") +
@@ -100,8 +130,7 @@ ggplot(iris_sub, aes(x = sepal, y = petal)) +
     ggtitle("Spezies vs. Kelchblatt- und Kronenblattlänge")
 ```
 
-Anhand des Plot ist deutlich erkennbar, dass die Instanzen der entnommenen Teilmenge zwei Cluster bilden, die sich durch eine Gerade voneinander trennen lassen. Das Kriterium der linearen Separierbarkeit ist somit erfüllt.
-
+Anhand des Plots ist ersichtlich, dass die Instanzen der entnommenen Teilmenge zwei Cluster bilden, die sich durch eine Gerade voneinander trennen lassen. Das Kriterium der linearen Separierbarkeit ist somit erfüllt. Die Modellgenerierung erfolgt schließlich durch den Aufruf der Konstruktorfunktion 
 
 # Zusammenfassung
 # Literaturverzeichnis
