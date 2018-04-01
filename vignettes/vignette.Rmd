@@ -2,6 +2,9 @@
 title: "Perzeptron Algorithmus"
 author: "Mario Peplinski"
 date: "`r Sys.Date()`"
+header-includes:
+- \usepackage[]{algorithm}
+- \usepackage[]{algpseudocode}
 output: pdf_document
 bibliography: bibliography.bib
 vignette: >
@@ -43,31 +46,52 @@ Nach dem Eintritt von $R_1$ wird mittels Rückpropagation sichergestellt, dass d
 
 # Mathematische Interpretation
 ## Modell
-Ausgehend von dem oben beschriebenen Modellentwurf nach @1958rosenblatt, kann die Wirkungsweise eines neuronalen Netzes mathematisch auch als Zuordnungsfunktion interpretiert werden, die einer bestimmten Anzahl $n$ reeller Werte $(x_1, x_2, ..., x_n)$, welche die Eingangssignale repräsentieren, eine bestimmte Anzahl $m$ reeller Werte (y_1, y_2, ..., y_m) zuordnet, welche die Ausgangssignale des Netzwerks darstellen. Die Aufgabe des künstliche neuronale Netz besteht dabei in der Modellierung einer Abbildungsfunktion $F: \mathbb{R}^n -> \mathbb{R}^m$, welche letztlich das Ergebnis des Lernprozesses darstellt. [Vgl. @1996rojas]
+Ausgehend von dem oben beschriebenen Modellentwurf nach @1958rosenblatt, kann die Wirkungsweise eines neuronalen Netzes mathematisch auch als Zuordnungsfunktion interpretiert werden, die einer bestimmten Anzahl $n$ reeller Werte $(x_1, x_2, ..., x_n)$, welche die Eingangssignale repräsentieren, eine bestimmte Anzahl $m$ reeller Werte $(y_1, y_2, ..., y_m)$ zuordnet, welche die Ausgangssignale des Netzwerks darstellen. Die Aufgabe des künstliche neuronale Netz besteht dabei in der Modellierung einer Abbildungsfunktion $F: \mathbb{R}^n -> \mathbb{R}^m$, welche letztlich das Ergebnis des Lernprozesses darstellt. [Vgl. @1996rojas]
 
-Die Implementierung des Lernmechanismus erfolgt mittels der Einführung adaptiver, numerischer Gewichtungen der Eingangssignale, deren Summe, analog zu den Zellen der Assoziationsschicht im klassischen Perzeptron Modell, durch eine nachgelagerte Berechnungskomponente, welche das eigentliche Perzeptron repräsentiert, ermittelt und mit einem vordefinierten Schwellwert verglichen wird. Wenn die Summe der gewichteten Eingangssignale einen bestimmten Schwellwert übersteigt, wird eine Signalübertragung an die nächste Berechnungseinheit ausgelöst. Dieser Zusammenhang entspricht einer Summenrelation gegeben durch [\z_i = \sum_{j=1}^m w_{ij}x_{ij}\] wobei $z_i$ dem Wert des Ausgangssignals des $i$-ten Perzeptrons entspricht, die Werte $x_{li}...x_{ni}$ die jeweiligen Eingangsignale darstellen und $w_{ij}...w_{in}$ die zugehörigen Gewichtungskoeffizienten repräsentiert [vgl. @2013graupe]. 
+Die Implementierung des Lernmechanismus erfolgt mittels der Einführung adaptiver, numerischer Gewichtungen der Eingangssignale, deren Summe, analog zu den Zellen der Assoziationsschicht im klassischen Perzeptron Modell, durch eine nachgelagerte Berechnungskomponente, welche das eigentliche Perzeptron repräsentiert, ermittelt und mit einem vordefinierten Schwellwert verglichen wird. Wenn die Summe der gewichteten Eingangssignale einen bestimmten Schwellwert übersteigt, wird eine Signalübertragung an die nächste Berechnungseinheit ausgelöst. Dieser Zusammenhang entspricht einer Summenrelation gegeben durch
 
-Diese Relation kann gleichfalls in Vektorform als \[z_i = w_{i}^Tx_i\] ausgedrückt werden, wobei \[w_i = [w_{i1} ... w_{in}]^T\] der Spaltenform des Vektors der Gewichtungskoeffizienten entspricht, welcher im Folgenden als Gewichtungsvektor bezeichnet wird, und \[x_i = [x_{i1} ... x{in}]^T\] die Spaltenform des Vektors der Eingabewerte darstellt, die nachfolgend als Eingabevektor bezeichnet wird. Für die Umsetzung der Schwellwertlogik wird schließlich eine Aktivierungsfunktion definiert, die auf Basis des zuvor bestimmten inneren Produktes der Vektoren $\vec{w}$ und $\vec{x}$ den Aktivierungszustand des Perzeptrons ermittelt und bei Überschreitung eines Schwellwertes $\theta$ ein Ausgangssignal generiert. Da sich die vorliegende Impletierung auf die Demonstration der Funktionsweise eines einzelnen Perzeptrons beschränkt wird im Folgenden auf die Angabe der Perzeptronindezes verzichtet.
+\[z = \sum_{i=1}^m w_{i}x_{i}\] 
+
+wobei $z$ dem Wert des Ausgangssignals des betrachteten Perzeptrons entspricht, die Werte $x_{1}...x_{n}$ die jeweiligen Eingangsignale darstellen und $w_{1}...w_{n}$ die zugehörigen Gewichtungskoeffizienten repräsentiert [vgl. @2013graupe]. 
+
+Diese Relation kann gleichfalls in Vektorform als 
+
+\[
+z = w_{i}^Tx_i
+\] 
+
+ausgedrückt werden, wobei 
+\[
+w_i = [w_{1} ... w_{n}]^T
+\] 
+
+der Spaltenform des Vektors der Gewichtungskoeffizienten entspricht, welcher im Folgenden als Gewichtungsvektor bezeichnet wird, und 
+
+\[
+x_i = [x_{1} ... x{n}]^T
+\] 
+
+die Spaltenform des Vektors der Eingabewerte darstellt, die nachfolgend als Eingabevektor bezeichnet wird. Für die Umsetzung der Schwellwertlogik wird schließlich eine Aktivierungsfunktion definiert, die auf Basis des zuvor bestimmten inneren Produktes der Vektoren $\vec{w}$ und $\vec{x}$ den Aktivierungszustand des Perzeptrons ermittelt und bei Überschreitung eines Schwellwertes $\theta$ ein Ausgangssignal generiert.
 
 ## Aktivierungsfunktion
 Die Aufgabe der Aktivierungsfunktion besteht im Wesentlichen darin, die Stärke des Ausgangssignals auf einen Wert innerhalb eines fest definierten Intervalls abzubilden. Geometrisch lässt sich dieser Sachverhalt auch als Teilung eines Vektorraumes in zwei Teilräume interpretieren, wobei jedes Eingangssignal, welches den Schwellwert überschreitet oder gleich dem Schwellwert ist, der einen Teilraumhälfte zugeordnet wird, und jedes Eingangssignal, das den Schwellwert unterschreitet, der anderen Teilraumhälfte. [Vgl. @2013graupe, @1996rojas]
 
-Als Aktivierungsfunktion kommen je nach Modellanforderungen verschiedene nicht-lineare Funktionen in Frage, wobei für die Verwendung im Zusammenhang mit modernen Interpretationen des neuronalen Netzes, die ReLU-Funktion laut [@2006goodfellow] als Standardempfehlung betrachtet werden kann. Ein Grund hierfür ist, dass die ReLU-Funktion einen Wertebereich von 0 bis $\infty$ besitzt und daher, anders als bei anderen Vertretern aus der Klasse der nicht-linearen Funktionen, wie der Sigmoid- oder der Hyperbelfunktion, nicht das Problem schwindender Gradienten auftritt, welches wiederum zu Konvergenzproblemen führen kann. 
+Als Aktivierungsfunktion kommen je nach Modellanforderungen verschiedene nicht-lineare Funktionen in Frage, wobei für die Verwendung im Zusammenhang mit modernen Interpretationen des neuronalen Netzes, die ReLU-Funktion laut @2006goodfellow als Standardempfehlung betrachtet werden kann. Ein Grund hierfür ist, dass die ReLU-Funktion einen Wertebereich von 0 bis $\infty$ besitzt und daher, anders als bei anderen Vertretern aus der Klasse der nicht-linearen Funktionen, wie der Sigmoid- oder der Hyperbelfunktion, nicht das Problem schwindender Gradienten auftritt, welches wiederum zu Konvergenzproblemen führen kann. 
 
 Da die vorliegende Implementierung des Perzeptron-Modells der Demonstration eines Ansatzes zur Lösung binärer Klassifikationsprobleme bei linear separierbaren Datensätzen dient und die Konvergenz des verwendeten Algorithmus für linear separierbare Datensätze belegt ist, erfolgt die Umsetzung unter Verwendung einer einfachen Signumfunktion. Die Signumfunktion ist eine reelle Funktion die auf ihrem Wertebereich stückweise konstant und linear ist. Sie ordnet jedem Element $x$ dessen Wert kleiner als $0$ ist den Wert $-1$ und jedem $x$ dessen Wert größer oder gleich $0$ ist den Wert $+1$ zu:
 
 \[
 sgn(x) = 
      \begin{cases}
-       \text{+1} &\quad\text{falls x} \geq 0\\
-       \text{-1} &\quad\text{falls x} \lt 0\\
+       +1 &\quad\text{falls x} \geq 0\\
+       -1 &\quad\text{falls x} < 0\\
      \end{cases}
 \]
 
-Die Integration des Schwellwertes in das Modell erfolgt durch die Ergänzung der Eingabewerte um eine künstliches Eingangssignal $x_i0$, dessen Wert konstant $1$ beträgt und einen zusätzlichen Gewichtungskoeffizienten $w_i0$ der mit dem Wert $0$ initialisiert wird. Aus dem $n$-Dimensionalen Eingangsvektor $\vec{x} mit den Eingangswerten $(x_1, x_2, ..., x_n)$ wird dadurch der $(n+1)$-Dimensionale erweiterte Eingabevektor $\vec{x_{ext}} = (x_1, x_2, ..., x_n,1)$. Analog hierzu entsteht durch das Hinzufügen eines Gewichtungskoeffizienten zum $n$-Dimensionalen Gewichtungsvektor $\vec{w}$ der erweiterte Gewichtungsvektor $\vec{w_{ext}} = (w_1, w_2,...,w_{n+1}$. [Vgl. @1996rojas]
+Die Integration des Schwellwertes in das Modell erfolgt durch die Ergänzung der Eingabewerte um eine künstliches Eingangssignal $x_0$, dessen Wert konstant $1$ beträgt und einen zusätzlichen Gewichtungskoeffizienten $w_0$ der mit dem Wert $0$ initialisiert wird. Aus dem $n$-Dimensionalen Eingangsvektor $\vec{x}$ mit den Eingangswerten $(x_1, x_2, ..., x_n)$ wird dadurch der $(n+1)$-Dimensionale erweiterte Eingabevektor $\vec{x}_{ext} = (x_1, x_2, ..., x_n, 1)$. Analog hierzu entsteht durch das Hinzufügen eines Gewichtungskoeffizienten zum $n$-Dimensionalen Gewichtungsvektor $\vec{w}$ der erweiterte Gewichtungsvektor $\vec{w}_{ext} = (w_1, w_2,..., w_{n+1}$. [Vgl. @1996rojas]
 
 ## Klassifikation und Trainingsprozess
-Im Anwendungskontext einer binären Klassifikation besteht die Aufgabe des Perzeptrons nun darin, für $n$ Eingabeinstanzen des Datensatzes $X$, $n+1$ freie Parameter zu finden, so dass die daraus resultierende lineare Funktion eine Hyperebene definiert, die eine vollständige räumliche Separation der in $X$ vertretenen Elemente nach ihrer jeweiligen Klasse bewirkt. Diese $n+1$ freien Parameter entsprechen dabei den Elementen des erweiterten Gewichtungsvektors $\vec{w_{ext}$. Geometrisch betrachtet bildet jede Kombination von drei Gewichtungselementen $w_1, w_2, w_3$ einen Punkt in einem dreidimensionalen Dualraum. Dieser Punkt ist mit einer Hyperebene im Ursprungsraum assoziert, welche durch die Ebenengleichung
+Im Anwendungskontext einer binären Klassifikation besteht die Aufgabe des Perzeptrons nun darin, für $n$ Eingabeinstanzen des Datensatzes $X$, $n+1$ freie Parameter zu finden, so dass die daraus resultierende lineare Funktion eine Hyperebene definiert, die eine vollständige räumliche Separation der in $X$ vertretenen Elemente nach ihrer jeweiligen Klasse bewirkt. Diese $n+1$ freien Parameter entsprechen dabei den Elementen des erweiterten Gewichtungsvektors $\vec{w}_{ext}$. Geometrisch betrachtet bildet jede Kombination von drei Gewichtungselementen $w_1, w_2, w_3$ einen Punkt in einem dreidimensionalen Dualraum. Dieser Punkt ist mit einer Hyperebene im Ursprungsraum assoziert, welche durch die Ebenengleichung
 
 \[
 	w_1x_1 + w_2x_2 + w_3x_3 = 0
@@ -82,14 +106,33 @@ definiert wird. Alle Punkte in der positiven Hälfte des durch die Hyperebene ge
 während alle Punkte in der negativen Hälfte die Bedingung
 
 \[
-	w_1x_1 + w_2x_2 + w_3x_3 \eq 0
+	w_1x_1 + w_2x_2 + w_3x_3 = 0
 \]
 
-erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also einer Kombination der Gewichtungselemente, deren Funktionswert nach Bildung des inneren Produktes mit den Elementen des Vektors $\vec{x_{ext}}$ und $\vec{w_{ext}}$ gleich null ist. [Vgl. @1996rojas]
+erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also einer Kombination der Gewichtungselemente, deren Funktionswert nach Bildung des inneren Produktes mit den Elementen des Vektors $\vec{x}_{ext}$ und $\vec{w}_{ext}$ gleich null ist. [Vgl. @1996rojas]
 
-Für den Trainingsprozess wird der Rückgabewert der Aktivierungsfunktion iterativ für alle Eingabeinstanzen ermittelt und mit der tatsächlichen Wertausprägung der Zielvariablen $y_opt$ eines Trainingsdatensatzes $\vec{y_opt} abgeglichen. Falls ein Ausgangssignal $z_i$ nicht mit dem zugehörigen Wert des Trainingsdatensatzes übereinstimmt, wird der Gewichtungsvektor $\vec{c} der $c$-ten Iteration durch den angepassten Vektor $\vec{w_{c+1}} ersetzt. Der zugehörige Algorithmus ist wie folgt definiert:
+Für den Trainingsprozess wird der Rückgabewert der Aktivierungsfunktion iterativ für alle Eingabeinstanzen ermittelt und mit der tatsächlichen Wertausprägung der Zielvariablen $y_i$ eines Trainingsdatensatzes $\vec{y}_{opt}$ abgeglichen. Falls das Ausgangssignal $z$ nicht mit dem Wert des Trainingsdatensatzes übereinstimmt, wird der Gewichtungsvektor $\vec{c}$ der $c$-ten Iteration durch den angepassten Vektor $\vec{w_{c+1}}$ ersetzt. Der gesamte Algorithmus ist wie folgt definiert:
 
-
+\begin{algorithm}
+\caption{My algorithm}\label{euclid}
+\begin{algorithmic}[1]
+\Procedure{MyProcedure}{}
+\State $\textit{stringlen} \gets \text{length of }\textit{string}$
+\State $i \gets \textit{patlen}$
+\If {$i > \textit{stringlen}$} \Return false
+\EndIf
+\State $j \gets \textit{patlen}$
+\If {$\textit{string}(i) = \textit{path}(j)$}
+\State $j \gets j-1$.
+\State $i \gets i-1$.
+\State \textbf{goto} \emph{loop}.
+\State \textbf{close};
+\EndIf
+\State $i \gets i+\max(\textit{delta}_1(\textit{string}(i)),\textit{delta}_2(j))$.
+\State \textbf{goto} \emph{top}.
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
 
 # nnetr
 ## Installation
