@@ -68,15 +68,15 @@ w_i = [w_{1} ... w_{n}]^T
 der Spaltenform des Vektors der Gewichtungskoeffizienten entspricht, welcher im Folgenden als Gewichtungsvektor bezeichnet wird, und 
 
 \[
-x_i = [x_{1} ... x{n}]^T
+x_i = [x_{1} ... x_{n}]^T
 \] 
 
 die Spaltenform des Vektors der Eingabewerte darstellt, die nachfolgend als Eingabevektor bezeichnet wird. Für die Umsetzung der Schwellwertlogik wird schließlich eine Aktivierungsfunktion definiert, die auf Basis des zuvor bestimmten inneren Produktes der Vektoren $\vec{w}$ und $\vec{x}$ den Aktivierungszustand des Perzeptrons ermittelt und bei Überschreitung eines Schwellwertes $\theta$ ein Ausgangssignal generiert.
 
 ## Aktivierungsfunktion
-Die Aufgabe der Aktivierungsfunktion besteht im Wesentlichen darin, die Stärke des Ausgangssignals auf einen Wert innerhalb eines fest definierten Intervalls abzubilden. Geometrisch lässt sich dieser Sachverhalt auch als Teilung eines Vektorraumes in zwei Teilräume interpretieren, wobei jedes Eingangssignal, welches den Schwellwert überschreitet oder gleich dem Schwellwert ist, der einen Teilraumhälfte zugeordnet wird, und jedes Eingangssignal, das den Schwellwert unterschreitet, der anderen Teilraumhälfte. [Vgl. @2013graupe, @1996rojas]
+Die Aufgabe der Aktivierungsfunktion besteht im Wesentlichen darin, die Stärke des Ausgangssignals auf einen Wert innerhalb eines fest definierten Intervalls abzubilden. Geometrisch lässt sich dieser Sachverhalt auch als Teilung eines Vektorraumes in zwei Teilräume interpretieren, wobei jedes Eingangssignal, welches den Schwellwert überschreitet oder gleich dem Schwellwert ist, der einen Teilraumhälfte zugeordnet wird, und jedes Eingangssignal, das den Schwellwert unterschreitet, der anderen Teilraumhälfte. [Vgl. @2013graupe; @1996rojas]
 
-Als Aktivierungsfunktion kommen je nach Modellanforderungen verschiedene nicht-lineare Funktionen in Frage, wobei für die Verwendung im Zusammenhang mit modernen Interpretationen des neuronalen Netzes, die ReLU-Funktion laut @2006goodfellow als Standardempfehlung betrachtet werden kann. Ein Grund hierfür ist, dass die ReLU-Funktion einen Wertebereich von 0 bis $\infty$ besitzt und daher, anders als bei anderen Vertretern aus der Klasse der nicht-linearen Funktionen, wie der Sigmoid- oder der Hyperbelfunktion, nicht das Problem schwindender Gradienten auftritt, welches wiederum zu Konvergenzproblemen führen kann. 
+Als Aktivierungsfunktion kommen je nach Modellanforderungen verschiedene nicht-lineare Funktionen in Frage, wobei für die Verwendung im Zusammenhang mit modernen Interpretationen des neuronalen Netzes, die ReLU-Funktion laut @2016goodfellow als Standardempfehlung betrachtet werden kann. Ein Grund hierfür ist, dass die ReLU-Funktion einen Wertebereich von 0 bis $\infty$ besitzt und daher, anders als bei anderen Vertretern aus der Klasse der nicht-linearen Funktionen, wie der Sigmoid- oder der Hyperbelfunktion, nicht das Problem schwindender Gradienten auftritt, welches wiederum zu Konvergenzproblemen führen kann. 
 
 Da die vorliegende Implementierung des Perzeptron-Modells der Demonstration eines Ansatzes zur Lösung binärer Klassifikationsprobleme bei linear separierbaren Datensätzen dient und die Konvergenz des verwendeten Algorithmus für linear separierbare Datensätze belegt ist, erfolgt die Umsetzung unter Verwendung einer einfachen Signumfunktion. Die Signumfunktion ist eine reelle Funktion die auf ihrem Wertebereich stückweise konstant und linear ist. Sie ordnet jedem Element $x$ dessen Wert kleiner als $0$ ist den Wert $-1$ und jedem $x$ dessen Wert größer oder gleich $0$ ist den Wert $+1$ zu:
 
@@ -88,7 +88,7 @@ sgn(x) =
      \end{cases}
 \]
 
-Die Integration des Schwellwertes in das Modell erfolgt durch die Ergänzung der Eingabewerte um eine künstliches Eingangssignal $x_0$, dessen Wert konstant $1$ beträgt und einen zusätzlichen Gewichtungskoeffizienten $w_0$ der mit dem Wert $0$ initialisiert wird. Aus dem $n$-Dimensionalen Eingangsvektor $\vec{x}$ mit den Eingangswerten $(x_1, x_2, ..., x_n)$ wird dadurch der $(n+1)$-Dimensionale erweiterte Eingabevektor $\vec{x}_{ext} = (x_1, x_2, ..., x_n, 1)$. Analog hierzu entsteht durch das Hinzufügen eines Gewichtungskoeffizienten zum $n$-Dimensionalen Gewichtungsvektor $\vec{w}$ der erweiterte Gewichtungsvektor $\vec{w}_{ext} = (w_1, w_2,..., w_{n+1}$. [Vgl. @1996rojas]
+Die Integration des Schwellwertes in das Modell erfolgt durch die Ergänzung der Eingabewerte um eine künstliches Eingangssignal $x_0$, dessen Wert konstant $1$ beträgt und einen zusätzlichen Gewichtungskoeffizienten $w_0$ der mit dem Wert $0$ initialisiert wird. Aus dem $n$-Dimensionalen Eingangsvektor $\vec{x}$ mit den Eingangswerten $(x_1, x_2, ..., x_n)$ wird dadurch der $(n+1)$-Dimensionale erweiterte Eingabevektor $\vec{x}_{ext} = (x_1, x_2, ..., x_n, 1)$. Analog hierzu entsteht durch das Hinzufügen eines Gewichtungskoeffizienten zum $n$-Dimensionalen Gewichtungsvektor $\vec{w}$ der erweiterte Gewichtungsvektor $\vec{w}_{ext} = (w_1, w_2,..., w_{n+1})$. [Vgl. @1996rojas]
 
 ## Klassifikation und Trainingsprozess
 Im Anwendungskontext einer binären Klassifikation besteht die Aufgabe des Perzeptrons nun darin, für $n$ Eingabeinstanzen des Datensatzes $X$, $n+1$ freie Parameter zu finden, so dass die daraus resultierende lineare Funktion eine Hyperebene definiert, die eine vollständige räumliche Separation der in $X$ vertretenen Elemente nach ihrer jeweiligen Klasse bewirkt. Diese $n+1$ freien Parameter entsprechen dabei den Elementen des erweiterten Gewichtungsvektors $\vec{w}_{ext}$. Geometrisch betrachtet bildet jede Kombination von drei Gewichtungselementen $w_1, w_2, w_3$ einen Punkt in einem dreidimensionalen Dualraum. Dieser Punkt ist mit einer Hyperebene im Ursprungsraum assoziert, welche durch die Ebenengleichung
@@ -111,25 +111,29 @@ während alle Punkte in der negativen Hälfte die Bedingung
 
 erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also einer Kombination der Gewichtungselemente, deren Funktionswert nach Bildung des inneren Produktes mit den Elementen des Vektors $\vec{x}_{ext}$ und $\vec{w}_{ext}$ gleich null ist. [Vgl. @1996rojas]
 
-Für den Trainingsprozess wird der Rückgabewert der Aktivierungsfunktion iterativ für alle Eingabeinstanzen ermittelt und mit der tatsächlichen Wertausprägung der Zielvariablen $y_i$ eines Trainingsdatensatzes $\vec{y}_{opt}$ abgeglichen. Falls das Ausgangssignal $z$ nicht mit dem Wert des Trainingsdatensatzes übereinstimmt, wird der Gewichtungsvektor $\vec{c}$ der $c$-ten Iteration durch den angepassten Vektor $\vec{w_{c+1}}$ ersetzt. Der gesamte Algorithmus ist wie folgt definiert:
+Für den Trainingsprozess wird der Rückgabewert der Aktivierungsfunktion iterativ für alle Eingabeinstanzen ermittelt und mit der tatsächlichen Wertausprägung der Zielvariablen $y_i$ des Trainingsdatensatzes $y_{classified}abgeglichen. Falls das Ausgangssignal $y$ nicht mit dem Wert des Trainingsdatensatzes übereinstimmt, wird der Gewichtungsvektor $\vec{w}_c$ der $c$-ten Iteration durch den angepassten Vektor $\vec{w}_{c+1}$ ersetzt. Dieser Vorgang wird solange wiederholt, bis während der gesamten Epoche keine Anpassungen des Gewichtungsvektors mehr stattfinden. Die lineare Klassifikationsfunktion kann nun aus dem optimierten Gewichtungsvektor abgeleitet werden. Der gesamte Algorithmus ist wie folgt definiert:
 
 \begin{algorithm}
-\caption{My algorithm}\label{euclid}
+\caption{Perzeptron Algorithmus}\label{rosenblatt}
 \begin{algorithmic}[1]
-\Procedure{MyProcedure}{}
-\State $\textit{stringlen} \gets \text{length of }\textit{string}$
-\State $i \gets \textit{patlen}$
-\If {$i > \textit{stringlen}$} \Return false
+\Procedure{Perzeptron}{$x$}\Comment{$x$ entspricht}
+\State $w_0\gets 0$
+\State $b_0\gets 0$
+\State $c\gets 0$
+\State $\text{R}\gets \text{max}_{1 \leq i \leq l} \, \lVert \mathbf{x_i} \rVert$
+\State $\text{weightUpdate}\gets \text{TRUE}$
+\While{$\text{weightUpdate}$}
+\State $\text{weightUpdate}\gets \text{FALSE}$
+\State $y_\text{classified}\gets \text{Sign}(\langle \mathbf{w_i} \cdot x_i \rangle + b_c)$ 
+\For{$i = 1$ to $l$}
+\If{$y_i \leq 0$}
+\State $w_{c+1}\gets w_c + \eta y_i x_i$
+\State $b_{c+1}\gets b_c + \eta y_i \text{R}^2$
+\State $c\gets c+1$
 \EndIf
-\State $j \gets \textit{patlen}$
-\If {$\textit{string}(i) = \textit{path}(j)$}
-\State $j \gets j-1$.
-\State $i \gets i-1$.
-\State \textbf{goto} \emph{loop}.
-\State \textbf{close};
-\EndIf
-\State $i \gets i+\max(\textit{delta}_1(\textit{string}(i)),\textit{delta}_2(j))$.
-\State \textbf{goto} \emph{top}.
+\EndFor
+\EndWhile
+\State \textbf{return} $(w_c,b_c)$
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
