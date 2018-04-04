@@ -17,7 +17,7 @@ newPerceptronModel(formula, data, learningRate = 1, activation = signum)
 }
 \value{
 \describe{
-\item{w}{vector of weight values}
+\item{w}{vector of best weight values found}
 \item{coefficients}{vector of weight values normalized by euclidean distance}
 \item{updates}{count of weight updates}
 \item{formula}{character representation of formula}
@@ -31,7 +31,10 @@ newPerceptronModel(formula, data, learningRate = 1, activation = signum)
 Fit a single-layer perceptron model
 }
 \details{
-This function
+This function implements a model for linear classification based on the perceptron model. The level of the response variable must be binary.
+}
+\note{
+The learning algorithm for the perceptron model is only guaranteed to converge for linearly separable input data!
 }
 \examples{
 data(iris)

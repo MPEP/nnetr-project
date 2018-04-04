@@ -88,7 +88,7 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = sig
     colnames(y) <- c("class", respondName)
     y <- data.frame(y, stringsAsFactors = FALSE)
     y$class <- as.numeric(y$class)
-
+    
     w <- vector(length = ncol(x)) # coefficient vector
     c <- 0 # weight update counter
     weightUpdate <- TRUE    
@@ -116,13 +116,15 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = sig
     perceptronOut <- list()
     class(perceptronOut) <- "perceptron"
 
-    perceptronOut$w <- w
+    perceptronOut$weights <- w
+    perceptronOut$respondName <- respondName
     perceptronOut$coefficients <- coefficients
     perceptronOut$updates <- c
     perceptronOut$formula <- formula
     perceptronOut$call <- match.call()
     perceptronOut$x <- x
     perceptronOut$y <- y
+    perceptronOut$yMapping <- unique(y)
     perceptronOut$options <- list(learningRate, as.character(substitute(activation)))
     names(perceptronOut$options) <- c("Learning rate", "Activation function")
     return(perceptronOut)
@@ -255,9 +257,9 @@ print.summary.perceptron <- function(x, ...) {
 plot.perceptron <- function(x, ...) {
     if(ncol(x$x) != 3) stop("Plot functionality is only available for 2d input data")
     y <- x$y
-    weights <- x$w
-    intercept <- -weights[1] / weights[3]
-    slope <- -weights[2] / weights[3]
+    w <- x$weights
+    intercept <- -w[1] / w[3]
+    slope <- -w[2] / w[3]
     df <- data.frame(x$x, stringsAsFactors = FALSE)
 
     ggplot(df, aes(x = df[2], y = df[3])) +
@@ -268,3 +270,24 @@ plot.perceptron <- function(x, ...) {
         geom_abline(aes(intercept = intercept, slope = slope), col = "green")
 }
     
+#' Predict function for a fitted perceptron model
+#'
+#' @param object fitted \code{perceptron} model.
+#' @param newdata data frame from values for which to predict the class
+#' @param ... arguments passed to or from other methods
+#' @examples
+#' @export
+predict.perceptron <- function(object, newdata, ...) {
+    perceptronPredOut <- list()
+#    class(perceptronPredOut) <- "prediction.perceptron"
+    yMapping <- object$yMapping
+    w <- object$weights
+    input <- cbind(1, newdata)
+    rownames(input) <- c()
+    colnames(input)[1] <- "bias"
+    predictions <- signum(input, w)
+    predictions <- as.factor(ifelse(predictions == yMapping[1,1], yMapping[1,2], yMapping[2,2]))
+    outputFrame <- data.frame(input[,-1], prediction = predictions)
+    outputFrame
+}
+
