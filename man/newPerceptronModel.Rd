@@ -39,11 +39,11 @@ The learning algorithm for the perceptron model is only guaranteed to converge f
 \examples{
 data(iris)
 head(iris, n=20)
-iris_sub <- iris[1:100, c(1, 3, 5)]
-names(iris_sub) <- c("sepal", "petal", "species")
-head(iris_sub)
+irisSub <- iris[1:100, c(1, 3, 5)]
+names(irisSub) <- c("sepal", "petal", "species")
+head(irisSub)
 formula <- formula(species ~ sepal + petal)
-p1 <- newPerceptronModel(formula, iris_sub)
+p1 <- newPerceptronModel(formula, irisSub)
 }
 \references{
 Cristianini, Nello und John Shawe-Taylor (2000): \emph{An Introduction to Support Vector Machines: And Other Kernel-Based Learning Methods}, Cambridge University Press: Cambridge, England.

@@ -14,13 +14,16 @@
 \description{
 Print perceptron model.
 }
+\note{
+the weight values are normalized by the euclidean distance and represented as a unit vector
+}
 \examples{
 data(iris)
 head(iris, n=20)
-iris_sub <- iris[1:100, c(1, 3, 5)]
-names(iris_sub) <- c("sepal", "petal", "species")
-head(iris_sub)
+irisSub <- iris[1:100, c(1, 3, 5)]
+names(irisSub) <- c("sepal", "petal", "species")
+head(irisSub)
 formula <- formula(species ~ sepal + petal)
-p1 <- newPerceptronModel(formula, iris_sub)
+p1 <- newPerceptronModel(formula, irisSub)
 print(p1)
 }

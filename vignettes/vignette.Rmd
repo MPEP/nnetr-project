@@ -12,7 +12,7 @@ vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-abstract: "This is my abstract."
+abstract: "Mit dem Perzeptron-Modell schuf Rosenblatt 1958 das grundlegende Konzept eines adaptiven Assoziativspeichers der als Vorgänger der heutigen künstlichen neuronalen Netze betrachtet werden kann. Künstliche Neuronale Netze werden in unterschiedlichsten Kontexten für die Lösung komplexer Problemstellungen wie beispielsweise Handschrift-, Stimm- oder Bilderkennung eingesetzt. Diese Seminararbeit beschreibt die Implementierung eines einlagigen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach Rosenblatt @1958rosenblatt in R und demonstriert dessen Verwendung am Beispiel eines einfachen Klassifikationsproblems."
 ---
 
 ```{r setup,include = FALSE, message = FALSE}
@@ -145,9 +145,7 @@ Für den Trainingsprozess wird der Rückgabewert der Aktivierungsfunktion iterat
 ## Installation
 Die **netr** Software ist ein Zusatzpaket für die Statistiksoftware R ($\leq$ 3.4.4) und kann aus dem beigefügten bundle mit der Dateiendung \texttt[.tar.gz} heraus installiert werden. Zusätzlich zu der Basisinstallation der R-Software wird das Paket *ggplot2* benötigt. Sobald das Paket installiert wurde, kann es mit Hilfe der folgenden Eingabe geladen werden:
 
-```{r}
-library(nnetr)
-```
+\code{library(nnetr)}
 
 ## Funktionen
 Mit Hilfe des **nnetr** Softwarepakets lassen sich anhand von metrisch, beziehungsweise kategorial skalierten Merkmalsdaten einfache linearer Vorhersagemodelle estellen. Die Daten der unabhängigen Variablen müssen metrisch skaliert sein, wohingegen die Daten der abhängigen Variablen sowohl numerische als auch nichtnumerische Werte sein können aber in jedem Fall ein binäres Skalenniveau aufweisen müssen. Für die Verwendung der Plotfunktion muss zudem sichergestellt werden, dass das Modell über genau zwei unabhängige Variablen und eine abhängige Variable verfügt. Die Funktionen des Pakets werden im Folgenden kurz erläutert:
@@ -180,12 +178,11 @@ str(irisSub)
 Da zudem die Konvergenz des verwendeten Algorithmus nur für linear separierbare Daten garantiert werden kann, muss der Datensatz hinsichtlich linearer Separierbarkeit untersucht werden. Die Untersuchung erfolgt durch visuelle Auswertung des Plots der entnommenen Teilmenge [vgl. @2017ciaburro]:
 
 ```{r}
-library(ggplot2)
-ggplot(irisSub, aes(x = Kelchblattlänge, y = Kronenblattlänge)) +
-    geom_point(aes(colour = Spezies, shape = Spezies), size = 3) +
-    xlab("Kelchblattlänge") +
-    ylab("Kronenblattlänge") +
-    ggtitle("Spezies vs. Kelchblatt- und Kronenblattlänge")
+ggplot2::ggplot(irisSub, ggplot2::aes(x = Kelchblattlänge, y = Kronenblattlänge)) +
+    ggplot2::geom_point(ggplot2::aes(colour = Spezies, shape = Spezies), size = 3) +
+    ggplot2::xlab("Kelchblattlänge") +
+    ggplot2::ylab("Kronenblattlänge") +
+    ggplot2::ggtitle("Spezies vs. Kelchblatt- und Kronenblattlänge")
 ```
 
 Anhand des Plots ist ersichtlich, dass die Instanzen der entnommenen Teilmenge zwei Cluster bilden, die sich durch eine Gerade voneinander trennen lassen. Das Kriterium der linearen Separierbarkeit ist somit erfüllt.
@@ -223,16 +220,15 @@ Der Graph der Funktion verläuft zwischen den beiden Merkmalsclustern und trennt
 Für die Überprüfung der Klassifikationsleistung wird mit Hilfe der \texttt{predict()}-Funktion auf Grundlage des Klassifikationsmodells die Spezies zu jeder Instanz des Testdatensatzes inferiert und die Leistugn des Modells mittels einer Konfusionsmatrix zusammengefasst:
 
 ```{r}
-library(caret)
 holdOutX <- irisHoldout[, 1:2]
 holdOutY <- irisHoldout[, 3]
 holdOutY <- factor(holdOutY)
 prediction <- predict(p1, holdOutX)
-confusionMatrix(holdOutY, prediction[,3])
+caret::confusionMatrix(holdOutY, prediction[,3])
 ```
-Die Konfusionsmatrix zeigt, dass von 30 Klassifizierten Instanzen keine falsch-negativ oder falsch-positiv klassifiziert wurde. Die Genauigkeit des implementierten Klassifikationsverfahrens beträgt somit 100%.
+Die Konfusionsmatrix zeigt, dass von 30 Klassifizierten Instanzen keine falsch-negativ oder falsch-positiv klassifiziert wurde. Die Genauigkeit des implementierten Klassifikationsverfahrens beträgt somit 100%. Aufgrund des oben angegebenen $p$-Werts wird die Nullhypothese auf einem Signifikanzniveau von 5% verworfen. Das Ergebnis wird daher als statistisch signifikant betrachtet.
 
 # Zusammenfassung
-Mit dem **nnetr**-Package wurde die Implementierung eines einfachen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach Rosenblatt @1958rosenblatt in R demonstriert. Das implementierte Verfahren ist in der Lage numerische Merkmalsdaten mit einer binären Zielvariablen mit 100% Genauigkeit zu klassifizieren, sofern diese vollständig linear separierbar sind.
+Mit dem **nnetr**-Package wurde die Implementierung eines einfachen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach Rosenblatt @1958rosenblatt in R demonstriert. Das implementierte Verfahren ist in der Lage numerische Merkmalsdaten mit einer binären Zielvariablen zu klassifizieren, sofern diese vollständig linear separierbar sind. Mit Hilfe eines Anwendungsbeispiel wurde die Klassifikationsleistung anhand einer Teilmenge des Iris-Datensatzes untersucht. Hierbei wurde festgestellt, dass das implementierte Verfahren die Instanzen des Testdatensatzes mit einer Genauigkeit von 100% klassifiziert. Die Generalisierbarkeit des Modell wird jedoch durch das unerwünschte Konvergenzverhalten bei nicht-linear separierbaren Datensätzen eingeschränkt. Für derartige Szenarien sind daher robuste Klassifikationsverfahren wie der Pocket- oder der Maxover-Algorithmus dem hier vorgestellten Verfahren vorzuziehen.
 
 # Literaturverzeichnis

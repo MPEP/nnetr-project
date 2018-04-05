@@ -63,11 +63,11 @@ distanceFromSeparator <- function(data, weight) {
 #' @examples
 #' data(iris)
 #' head(iris, n=20)
-#' iris_sub <- iris[1:100, c(1, 3, 5)]
-#' names(iris_sub) <- c("sepal", "petal", "species")
-#' head(iris_sub)
+#' irisSub <- iris[1:100, c(1, 3, 5)]
+#' names(irisSub) <- c("sepal", "petal", "species")
+#' head(irisSub)
 #' formula <- formula(species ~ sepal + petal)
-#' p1 <- newPerceptronModel(formula, iris_sub)
+#' p1 <- newPerceptronModel(formula, irisSub)
 #' @import stats
 #' @export
 newPerceptronModel <- function(formula, data, learningRate = 1, activation = signum) {
@@ -139,11 +139,11 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = sig
 #' @examples
 #' data(iris)
 #' head(iris, n=20)
-#' iris_sub <- iris[1:100, c(1, 3, 5)]
-#' names(iris_sub) <- c("sepal", "petal", "species")
-#' head(iris_sub)
+#' irisSub <- iris[1:100, c(1, 3, 5)]
+#' names(irisSub) <- c("sepal", "petal", "species")
+#' head(irisSub)
 #' formula <- formula(species ~ sepal + petal)
-#' p1 <- newPerceptronModel(formula, iris_sub)
+#' p1 <- newPerceptronModel(formula, irisSub)
 #' print(p1)
 #' @export
 print.perceptron <- function(x, ...) {
@@ -176,11 +176,11 @@ print.perceptron <- function(x, ...) {
 #' @examples
 #' data(iris)
 #' head(iris, n=20)
-#' iris_sub <- iris[1:100, c(1, 3, 5)]
-#' names(iris_sub) <- c("sepal", "petal", "species")
-#' head(iris_sub)
+#' irisSub <- iris[1:100, c(1, 3, 5)]
+#' names(irisSub) <- c("sepal", "petal", "species")
+#' head(irisSub)
 #' formula <- formula(species ~ sepal + petal)
-#' p1 <- newPerceptronModel(formula, iris_sub)
+#' p1 <- newPerceptronModel(formula, irisSub)
 #' summary(p1)
 #' @export
 summary.perceptron <- function(object, ...) {
@@ -214,11 +214,11 @@ summary.perceptron <- function(object, ...) {
 #' @examples
 #' data(iris)
 #' head(iris, n=20)
-#' iris_sub <- iris[1:100, c(1, 3, 5)]
-#' names(iris_sub) <- c("sepal", "petal", "species")
-#' head(iris_sub)
+#' irisSub <- iris[1:100, c(1, 3, 5)]
+#' names(irisSub) <- c("sepal", "petal", "species")
+#' head(irisSub)
 #' formula <- formula(species ~ sepal + petal)
-#' p1 <- newPerceptronModel(formula, iris_sub)
+#' p1 <- newPerceptronModel(formula, irisSub)
 #' summary(p1)
 #' @export
 print.summary.perceptron <- function(x, ...) {
@@ -247,11 +247,11 @@ print.summary.perceptron <- function(x, ...) {
 #' @examples
 #' data(iris)
 #' head(iris, n=20)
-#' iris_sub <- iris[1:100, c(1, 3, 5)]
-#' names(iris_sub) <- c("sepal", "petal", "species")
-#' head(iris_sub)
+#' irisSub <- iris[1:100, c(1, 3, 5)]
+#' names(irisSub) <- c("sepal", "petal", "species")
+#' head(irisSub)
 #' formula <- formula(species ~ sepal + petal)
-#' p1 <- newPerceptronModel(formula, iris_sub)
+#' p1 <- newPerceptronModel(formula, irisSub)
 #' plot(p1, title = "Perceptron Classifier")
 #' @import ggplot2 
 #' @export
@@ -279,8 +279,9 @@ plot.perceptron <- function(x, ...) {
 #' @examples
 #' data(iris)
 #' irisSub <- iris[(1:100), c(1, 3, 5)]
-#' names(irisSub) <- c("sepal", "petal", "Spezies")
-#' str(irisSub)
+#' names(irisSub) <- c("sepal", "petal", "species")
+#' formula <- formula(species ~ sepal + petal)
+#' p1 <- newPerceptronModel(formula, irisSub)
 #' irisShuffled <- irisSub[sample(nrow(irisSub)),]
 #' irisTraining <- irisShuffled[1:70,]
 #' irisHoldout <- irisShuffled[70:100,]
