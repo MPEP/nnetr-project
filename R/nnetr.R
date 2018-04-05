@@ -135,6 +135,7 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = sig
 #'
 #' @param x an object of class \code{perceptron} as returned by perceptron. 
 #' @param ... arguments passed to or from other methods.
+#' @note the weight values are normalized by the euclidean distance and represented as a unit vector
 #' @examples
 #' data(iris)
 #' head(iris, n=20)
@@ -276,10 +277,20 @@ plot.perceptron <- function(x, ...) {
 #' @param newdata data frame from values for which to predict the class
 #' @param ... arguments passed to or from other methods
 #' @examples
+#' data(iris)
+#' irisSub <- iris[(1:100), c(1, 3, 5)]
+#' names(irisSub) <- c("sepal", "petal", "Spezies")
+#' str(irisSub)
+#' irisShuffled <- irisSub[sample(nrow(irisSub)),]
+#' irisTraining <- irisShuffled[1:70,]
+#' irisHoldout <- irisShuffled[70:100,]
+#' holdOutX <- irisHoldout[, 1:2]
+#' holdOutY <- irisHoldout[, 3]
+#' holdOutY <- factor(holdOutY)
+#' prediction <- predict(p1, holdOutX)
 #' @export
 predict.perceptron <- function(object, newdata, ...) {
     perceptronPredOut <- list()
-#    class(perceptronPredOut) <- "prediction.perceptron"
     yMapping <- object$yMapping
     w <- object$weights
     input <- cbind(1, newdata)
