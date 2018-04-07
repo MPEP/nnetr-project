@@ -6,19 +6,29 @@ date: "`r Sys.Date()`"
 header-includes:
 - \usepackage[]{algorithm}
 - \usepackage[]{algpseudocode}
-output: pdf_document
+- \usepackage[]{color}
+- \usepackage[]{graphicx}
+- \usepackage[]{float}
+- \usepackage{caption}
+- \usepackage{import}
+output:
+  pdf_document:
+    fig_caption: true
 bibliography: bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-abstract: "Mit dem Perzeptron-Modell schuf Rosenblatt 1958 das grundlegende Konzept eines adaptiven Assoziativspeichers der als Vorgänger der heutigen künstlichen neuronalen Netze betrachtet werden kann. Künstliche Neuronale Netze werden in unterschiedlichsten Kontexten für die Lösung komplexer Problemstellungen wie beispielsweise Handschrift-, Stimm- oder Bilderkennung eingesetzt. Diese Seminararbeit beschreibt die Implementierung eines einlagigen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach Rosenblatt @1958rosenblatt in R und demonstriert dessen Verwendung am Beispiel eines einfachen Klassifikationsproblems."
+abstract: "Mit dem Perzeptron-Modell schuf Rosenblatt 1958 das grundlegende Konzept eines adaptiven Assoziativspeichers das als Vorgänger der heutigen künstlichen neuronalen Netze betrachtet werden kann. Künstliche Neuronale Netze werden in unterschiedlichsten Kontexten für die Lösung komplexer Problemstellungen wie beispielsweise Handschrift-, Stimm- oder Bilderkennung eingesetzt. Diese Seminararbeit beschreibt die Implementierung eines einlagigen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach Rosenblatt @1958rosenblatt in R und demonstriert dessen Verwendung am Beispiel eines einfachen Klassifikationsproblems."
 ---
 
 ```{r setup,include = FALSE, message = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE
 )
  ```
 
@@ -35,7 +45,15 @@ Mit dem nnetr Package soll die Implementierung eines linearen Klassifikationsver
 # Das klassische Perzeptron Modell
 Das klassische Perzeptron Modell nach @1958rosenblatt beschreibt ein hypothetisches System zur Verbeitung sensorischer Reize. Das System besteht aus einer Menge hierachisch organisierter Zellen die in Schichten angeordnet sind und jeweils über eine oder mehrere eingehende und ausgehende Verbindung zu Zellen in vorhergehenden oder nachfolgenden Schichten verfügen. Die Intention hinter der Entwicklung dieses Modell bestand darin, die fundamentalen Eigenschaften intelligenter Systeme zu illustrieren, weshalb sich die Darstellung nach Rosenblatt strukturell stark am Aufbau des Nervensystems biologischer Lebewesen orientiert. [Vgl. @1958rosenblatt]
 
-Im Kontext des klassischen Perzeptron-Modells wird ein betrachtetes Zellnetzwerk in drei hintereinander angeordnete Wirkungsräume beziehungsweise Schichten unterteilt. Einen Projektionsoberfläche, welche in Anlehnung an das photosensorische System biologischer Organismen als Retina bezeichnet wird, eine Assoziationsschicht, die ihrerseits wiederum in einen Projektions- und einen Assoziationsbereich unterteilt wird, und eine Reaktionsschicht, in der sich die Wirkung des Eingangssignals manifestiert. 
+Im Kontext des klassischen Perzeptron-Modells wird ein betrachtetes Zellnetzwerk in drei hintereinander angeordnete Wirkungsräume beziehungsweise Schichten unterteilt. Einen Projektionsoberfläche, welche in Anlehnung an das photosensorische System biologischer Organismen als Retina bezeichnet wird, eine Assoziationsschicht, die ihrerseits wiederum in einen Projektions- und einen Assoziationsbereich unterteilt wird, und eine Reaktionsschicht, in der sich die Wirkung des Eingangssignals manifestiert.
+
+\graphicspath{{./figures/}}
+\def\svgwidth{\columnwidth}
+
+\begin{figure}[h]
+\subimport{./figures/}{perceptron.pdf_tex}
+\caption{Your figure}
+\end{figure}
 
 Von einer Projektionsoberfläche werden, als Reaktion auf die Präsenz eines externen Stimulus, binäre Werte an die Zellen der nachgelagerte Projektionsschicht gesendet. Die Information, die dabei von der Singalquelle an das Netzwerk übertragen wird, können, je nach Funktion der Netzwerkelemente, sowohl eine inhibitorische, als auch exzitatorische Wirkung entfalten. Die Zellen in der Projektionsschicht fungieren als deterministische, nicht-adaptive Rechnereinheiten, welche die eingehenden Signale interpretieren und in Abhängigkeit von der Intensität der eingehenden Signale ihrerseits wiederum einen Impuls an die Zellen der nachfolgenden Assoziationsschicht senden. [Vgl. @1958rosenblatt]
 
@@ -49,7 +67,7 @@ Nach dem Eintritt von $R_1$ wird mittels Rückpropagation sichergestellt, dass d
 
 # Mathematische Interpretation
 ## Modell
-Ausgehend von dem oben beschriebenen Modellentwurf nach @1958rosenblatt, kann die Wirkungsweise eines neuronalen Netzes mathematisch auch als Zuordnungsfunktion interpretiert werden, die einer bestimmten Anzahl $n$ reeller Werte $(x_1, x_2, ..., x_n)$, welche die Eingangssignale repräsentieren, eine bestimmte Anzahl $m$ reeller Werte $(y_1, y_2, ..., y_m)$ zuordnet, welche die Ausgangssignale des Netzwerks darstellen. Die Aufgabe des künstliche neuronale Netz besteht dabei in der Modellierung einer Abbildungsfunktion $F: \mathbb{R}^n -> \mathbb{R}^m$, welche letztlich das Ergebnis des Lernprozesses darstellt. [Vgl. @1996rojas]
+Ausgehend von dem oben beschriebenen Modellentwurf nach @1958rosenblatt, kann die Wirkungsweise eines neuronalen Netzes mathematisch auch als Zuordnungsfunktion interpretiert werden, die einer bestimmten Anzahl $n$ reeller Werte $(x_1, x_2, ..., x_n)$, welche die Eingangssignale repräsentieren, eine bestimmte Anzahl $m$ reeller Werte $(y_1, y_2, ..., y_m)$ zuordnet, welche die Ausgangssignale des Netzwerks darstellen. Die Aufgabe des künstliche neuronale Netz besteht dabei in der Modellierung einer Abbildungsfunktion $F: \mathbb{R}^n \rightarrow \mathbb{R}^m$, welche letztlich das Ergebnis des Lernprozesses darstellt. [Vgl. @1996rojas]
 
 Die Implementierung des Lernmechanismus erfolgt mittels der Einführung adaptiver, numerischer Gewichtungen der Eingangssignale, deren Summe, analog zu den Zellen der Assoziationsschicht im klassischen Perzeptron Modell, durch eine nachgelagerte Berechnungskomponente, welche das eigentliche Perzeptron repräsentiert, ermittelt und mit einem vordefinierten Schwellwert verglichen wird. Wenn die Summe der gewichteten Eingangssignale einen bestimmten Schwellwert übersteigt, wird eine Signalübertragung an die nächste Berechnungseinheit ausgelöst. Dieser Zusammenhang entspricht einer Summenrelation gegeben durch
 
@@ -114,7 +132,7 @@ während alle Punkte in der negativen Hälfte die Bedingung
 
 erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also einer Kombination der Gewichtungselemente, deren Funktionswert nach Bildung des inneren Produktes mit den Elementen des Vektors $\vec{x}_{ext}$ und $\vec{w}_{ext}$ gleich null ist. [Vgl. @1996rojas]
 
-Für den Trainingsprozess wird der Rückgabewert der Aktivierungsfunktion iterativ für alle Eingabeinstanzen ermittelt und mit der tatsächlichen Wertausprägung der Zielvariablen $y_i$ des Trainingsdatensatzes $y_{classified}abgeglichen. Falls das Ausgangssignal $y$ nicht mit dem Wert des Trainingsdatensatzes übereinstimmt, wird der Gewichtungsvektor $\vec{w}_c$ der $c$-ten Iteration durch den angepassten Vektor $\vec{w}_{c+1}$ ersetzt. Dieser Vorgang wird solange wiederholt, bis während der gesamten Epoche keine Anpassungen des Gewichtungsvektors mehr stattfinden. Die lineare Klassifikationsfunktion kann nun aus dem optimierten Gewichtungsvektor abgeleitet werden. Der gesamte Algorithmus ist wie folgt definiert:
+Für den Trainingsprozess wird der Rückgabewert der Aktivierungsfunktion iterativ für alle Eingabeinstanzen ermittelt und mit der tatsächlichen Wertausprägung der Zielvariablen $y_i$ des Trainingsdatensatzes $y_{\text{classified}}abgeglichen. Falls das Ausgangssignal $y$ nicht mit dem Wert des Trainingsdatensatzes übereinstimmt, wird der Gewichtungsvektor $\vec{w}_c$ der $c$-ten Iteration durch den angepassten Vektor $\vec{w}_{c+1}$ ersetzt. Dieser Vorgang wird solange wiederholt, bis während der gesamten Epoche keine Anpassungen des Gewichtungsvektors mehr stattfinden. Die lineare Klassifikationsfunktion kann nun aus dem optimierten Gewichtungsvektor abgeleitet werden. Der gesamte Algorithmus ist wie folgt definiert:
 
 \begin{algorithm}
 \caption{Perzeptron Algorithmus}\label{rosenblatt}
@@ -145,7 +163,9 @@ Für den Trainingsprozess wird der Rückgabewert der Aktivierungsfunktion iterat
 ## Installation
 Die **netr** Software ist ein Zusatzpaket für die Statistiksoftware R ($\leq$ 3.4.4) und kann aus dem beigefügten bundle mit der Dateiendung \texttt[.tar.gz} heraus installiert werden. Zusätzlich zu der Basisinstallation der R-Software wird das Paket *ggplot2* benötigt. Sobald das Paket installiert wurde, kann es mit Hilfe der folgenden Eingabe geladen werden:
 
-\code{library(nnetr)}
+```{r eval=FALSE}
+library(nnetr)
+```
 
 ## Funktionen
 Mit Hilfe des **nnetr** Softwarepakets lassen sich anhand von metrisch, beziehungsweise kategorial skalierten Merkmalsdaten einfache linearer Vorhersagemodelle estellen. Die Daten der unabhängigen Variablen müssen metrisch skaliert sein, wohingegen die Daten der abhängigen Variablen sowohl numerische als auch nichtnumerische Werte sein können aber in jedem Fall ein binäres Skalenniveau aufweisen müssen. Für die Verwendung der Plotfunktion muss zudem sichergestellt werden, dass das Modell über genau zwei unabhängige Variablen und eine abhängige Variable verfügt. Die Funktionen des Pakets werden im Folgenden kurz erläutert:
@@ -199,7 +219,7 @@ Durch den Aufruf der Konstruktorfunktion \texttt{newPerceptronModel()} wird auf 
 
 ```{r}
 formula <- formula(Spezies ~ Kelchblattlänge + Kronenblattlänge)
-p1 <- newPerceptronModel(formula, irisTraining)
+p1 <- nnetr::newPerceptronModel(formula, irisTraining)
 p1
 ```
 
