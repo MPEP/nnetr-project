@@ -1,4 +1,3 @@
-
 ---
 title: "Perzeptron Algorithmus"
 author: "Mario Peplinski"
@@ -11,6 +10,8 @@ header-includes:
 - \usepackage[]{float}
 - \usepackage{caption}
 - \usepackage{import}
+- \usepackage{cite}
+- \usepackage[ngerman]{babel}
 output:
   pdf_document:
     fig_caption: true
@@ -22,60 +23,57 @@ vignette: >
 abstract: "Mit dem Perzeptron-Modell schuf Rosenblatt 1958 das grundlegende Konzept eines adaptiven Assoziativspeichers das als Vorgänger der heutigen künstlichen neuronalen Netze betrachtet werden kann. Künstliche Neuronale Netze werden in unterschiedlichsten Kontexten für die Lösung komplexer Problemstellungen wie beispielsweise Handschrift-, Stimm- oder Bilderkennung eingesetzt. Diese Seminararbeit beschreibt die Implementierung eines einlagigen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach Rosenblatt @1958rosenblatt in R und demonstriert dessen Verwendung am Beispiel eines einfachen Klassifikationsproblems."
 ---
 
-```{r setup,include = FALSE, message = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  echo = FALSE,
   warning = FALSE,
-  message = FALSE
+  message = FALSE,
+  comment = "#>",
+  fig.pos = 'H'
 )
  ```
-
-
 # Einführung
-Künstliche neuronale Netze bilden die modelltechnische Grundlage für einige der aktuell am stärksten wachsenden Forschungsfelder im Kontext der künstlichen Intelligenz allgemein und insbesondere auf dem Teilgebiet des maschinellen Lernens. Der seit 2006 zu beobachtende Popularitätszuwachs ist vorallem auf die Entdeckung effizienterer Trainingsstrategien zurückzuführen die seither unter dem Begriff Deep Learning eine eigene Klasse innerhalb der Disziplin des maschinellen Lernens bilden. Während das Ziel bei früheren Modellierungsansätzen noch darin bestand die biologische Funktionsweise des Gehirns nachzuempfinden, hat sich die moderne Interpretation des künstlichen neuronalen Netzes bereits stark von der neurowissenschaftlichen Perspektive zu Gunsten einer abstrakteren Sichtweise der beobachteten Zusammenhänge entfernt. [Vgl. @2016goodfellow]
+Künstliche neuronale Netze bilden die modelltechnische Grundlage für einige der aktuell am stärksten wachsenden Forschungsfelder im Kontext der künstlichen Intelligenz allgemein und insbesondere auf dem Teilgebiet des maschinellen Lernens. Der seit 2006 zu beobachtende Popularitätszuwachs ist vorallem auf die Entdeckung effizienterer Trainingsstrategien zurückzuführen die seither unter dem Begriff Deep Learning eine eigene Klasse innerhalb der Disziplin des maschinellen Lernens bilden. Während das Ziel bei früheren Modellierungsansätzen noch darin bestand die biologische Funktionsweise des Gehirns nachzuempfinden, hat sich die moderne Interpretation des künstlichen neuronalen Netzes bereits stark von der neurowissenschaftlichen Perspektive zu Gunsten einer abstrakteren Sichtweise der beobachteten Zusammenhänge entfernt [vgl. @2016goodfellow].
 
 Ein künstliches neuronales Netz wird demnach als ein Berechnungsmodell auf Grundlage einer Netzwerkstruktur interpretiert, wobei der minimale Anweisungssatz zur Implementierung primitiver Funktionen in den Knoten des Netzwerks enthalten ist und die Kompositionsregeln implizit aus den Verbindungsstruktur abgeleitet werden, die die Knoten untereinander besitzen. Jedes einzelne Netzwerkelement entspricht somit einer primitiven Funktion und die Gesamtheit aller Netzwerkelemente kann als Netzwerk primitiver Funktionen betrachtet werden. Konkrete Implementierung künstlicher neuronaler Netze unterscheiden sich in der Regel meist nur bezüglich der verwendeten primitiven Funktionen, der Struktur der Verbindungen zwischen den Netzwerkelementen oder dem Zeitpunkt der Informationsübertragung zwischen den Netzwerkknoten, weshalb das oben beschriebene Modell als Prototyp eines künstlichen neuronalen Netzes betrachtet werden kann. [Vgl. @1996rojas]
 
-Neuronale Netze werden aufgrund ihrer Funktionsweise der Klasse der sogenannten überwachten Lernverfahren zugerechnet. Kennzeichnend für Verfahren dieser Klasse ist einerseits, dass der Lernprozess unter dem Gesichtspunkt einer konkreten Zielsetzung vollzogen wird, welche im Vorfeld bereits bekannt ist und andererseits, dass der Trainingsdatensatz Informationen über die Zielvariable enthält. Wenn ein entsprechender Trainingsdatensatz verfügbar ist, lassen sich auf Grundlage der darin enthalteten Informationen eine Reihe von Hypothesen bezüglich der vorliegende Problemstellung aufstellen, wobei der Typus des funktionalen, linearen Zusammenhangs die einfachste und am weitesten erforschte Hypothesenform darstellt. [Vgl. @2000christianini]
+Neuronale Netze werden aufgrund ihrer Funktionsweise der Klasse der sogenannten überwachten Lernverfahren zugerechnet. Kennzeichnend für Verfahren dieser Klasse ist einerseits, dass der Lernprozess unter dem Gesichtspunkt einer konkreten Zielsetzung vollzogen wird, welche im Vorfeld bereits bekannt ist und andererseits, dass der Trainingsdatensatz Informationen über die Zielvariable enthält. Wenn ein entsprechender Trainingsdatensatz verfügbar ist, lassen sich auf Grundlage der darin enthalteten Informationen eine Reihe von Hypothesen bezüglich der vorliegende Problemstellung aufstellen, wobei der Typus des funktionalen, linearen Zusammenhangs die einfachste und am weitesten erforschte Hypothesenform darstellt [vgl. @2000christianini].
 
 Mit dem nnetr Package soll die Implementierung eines linearen Klassifikationsverfahrens auf Grundlage eines einlagigen, neuralen Netzes in R demonstriert werden. Das einlagige, neuronale Netz welches auch als einlagiges Perzeptron bezeichnet wird, besteht lediglich aus einer Reihe von Eingangsknoten und einem einzelnen Ausgangsknoten und stellt damit die einfachste Ausprägung eines neuronalen Netzes dar. Das Ziel des Klassifikationsverfahrens besteht darin, unter Verwendung eines vorgegebenen Trainigsdatensatzes iterativ eine lineare Funktion zu erlernen, die bei Eingabe eine Merkmalskombination die zugehörige Instanz einer von zwei bereits bekannten Klassen zuordnet.
 
 # Das klassische Perzeptron Modell
-Das klassische Perzeptron Modell nach @1958rosenblatt beschreibt ein hypothetisches System zur Verbeitung sensorischer Reize. Das System besteht aus einer Menge hierachisch organisierter Zellen die in Schichten angeordnet sind und jeweils über eine oder mehrere eingehende und ausgehende Verbindung zu Zellen in vorhergehenden oder nachfolgenden Schichten verfügen. Die Intention hinter der Entwicklung dieses Modell bestand darin, die fundamentalen Eigenschaften intelligenter Systeme zu illustrieren, weshalb sich die Darstellung nach Rosenblatt strukturell stark am Aufbau des Nervensystems biologischer Lebewesen orientiert. [Vgl. @1958rosenblatt]
+Das klassische Perzeptron Modell nach @1958rosenblatt beschreibt ein hypothetisches System zur Verbeitung sensorischer Reize. Das System besteht aus einer Menge hierachisch organisierter Zellen die in Schichten angeordnet sind und jeweils über eine oder mehrere eingehende und ausgehende Verbindung zu Zellen in vorhergehenden oder nachfolgenden Schichten verfügen. Die Intention hinter der Entwicklung dieses Modell bestand darin, die fundamentalen Eigenschaften intelligenter Systeme zu illustrieren, weshalb sich die Darstellung nach Rosenblatt strukturell stark am Aufbau des Nervensystems biologischer Lebewesen orientiert.
 
-Im Kontext des klassischen Perzeptron-Modells wird ein betrachtetes Zellnetzwerk in drei hintereinander angeordnete Wirkungsräume beziehungsweise Schichten unterteilt. Einen Projektionsoberfläche, welche in Anlehnung an das photosensorische System biologischer Organismen als Retina bezeichnet wird, eine Assoziationsschicht, die ihrerseits wiederum in einen Projektions- und einen Assoziationsbereich unterteilt wird, und eine Reaktionsschicht, in der sich die Wirkung des Eingangssignals manifestiert.
+Im Kontext des klassischen Perzeptron-Modells wird ein betrachtetes Zellnetzwerk in drei hintereinander angeordnete Wirkungsräume beziehungsweise Schichten unterteilt. Einen Projektionsoberfläche, welche in Anlehnung an das photosensorische System biologischer Organismen als Retina bezeichnet wird, eine Assoziationsschicht, die ihrerseits wiederum in einen Projektions- und einen Assoziationsbereich unterteilt wird, und eine Reaktionsschicht, in der sich die Wirkung des Eingangssignals manifestiert [vgl. @1958rosenblatt].
 
-\def\svgwidth{\columnwidth}
 \begin{figure}[h]
-\subimport{./figures/}{perceptron.pdf_tex}
-\caption{Your figure}
+\centering
+\scalebox{.7}{
+	\subimport{./figures/}{perceptron.pdf_tex}
+}
+\caption{Klassisches Perzeptron-Modell (eigene Darstellung in Anlehnung an Rojas (1996))}
 \end{figure}
 
-
-Von einer Projektionsoberfläche werden, als Reaktion auf die Präsenz eines externen Stimulus, binäre Werte an die Zellen der nachgelagerte Projektionsschicht gesendet. Die Information, die dabei von der Singalquelle an das Netzwerk übertragen wird, können, je nach Funktion der Netzwerkelemente, sowohl eine inhibitorische, als auch exzitatorische Wirkung entfalten. Die Zellen in der Projektionsschicht fungieren als deterministische, nicht-adaptive Rechnereinheiten, welche die eingehenden Signale interpretieren und in Abhängigkeit von der Intensität der eingehenden Signale ihrerseits wiederum einen Impuls an die Zellen der nachfolgenden Assoziationsschicht senden. [Vgl. @1958rosenblatt]
+Von einer Projektionsoberfläche werden, als Reaktion auf die Präsenz eines externen Stimulus, binäre Werte an die Zellen der nachgelagerte Projektionsschicht gesendet. Die Information, die dabei von der Singalquelle an das Netzwerk übertragen wird, können, je nach Funktion der Netzwerkelemente, sowohl eine inhibitorische, als auch exzitatorische Wirkung entfalten. Die Zellen in der Projektionsschicht fungieren als deterministische, nicht-adaptive Rechnereinheiten, welche die eingehenden Signale interpretieren und in Abhängigkeit von der Intensität der eingehenden Signale ihrerseits wiederum einen Impuls an die Zellen der nachfolgenden Assoziationsschicht senden [vgl. @1958rosenblatt].
 
 Die Auslösung der Signalübertragung von den Zellen in der Projektionsschicht an die Zellen in der Assoziationsschich wird mittels einer zellindividuellen Reizschwelle gesteuert. Wenn die Summe aller eingehendenen inhibitorischen und exzitatorischen Signale gleich oder höher als die jeweilige Reizschwelle der betreffenden Zelle ist, wird eine Signalübertragung ausgelöst. Andernfalls bleibt die Signalübertragung aus und der Initialreiz entfaltet keine Wirkung in der Reaktionsschicht.
 
-Der Informationsfluss innerhalb des Netzwerks verläuft zwischen der Projektionsfläche und der Assoziationsschicht unidirektional in Richtung der Assoziationsschicht. Zwischen Assoziations- und Reaktionsschicht besteht hingegen eine bidirektionale Verbindung, wodurch eine Rückmeldung der Zellen in der Reaktionsschicht an die Zellen der vorgelagerten Assoziationsschicht ermöglicht wird. Die Wirkung der Rückmeldung kann dabei prinzipiell entweder exzitatorisch auf die signalgebenden Zellen in der Assoziationsschicht wirken oder eine inhibitorische Wirkung auf alle Zellen in der vorgeschalteten Schicht entfalten, wobei [1958rosenblatt] letzterem Wirkungsmechanismus aus pragmatischen Gründen den Vorzug gab. Dieser Rückwirkungsmechanismus, der auch als Rückpropagierung bezeichnet wird, bildet die Voraussetzung für die Lernfähigkeit des Netzwerks. [Vgl. @1958rosenblatt]
+Der Informationsfluss innerhalb des Netzwerks verläuft zwischen der Projektionsfläche und der Assoziationsschicht unidirektional in Richtung der Assoziationsschicht. Zwischen Assoziations- und Reaktionsschicht besteht hingegen eine bidirektionale Verbindung, wodurch eine Rückmeldung der Zellen in der Reaktionsschicht an die Zellen der vorgelagerten Assoziationsschicht ermöglicht wird. Die Wirkung der Rückmeldung kann dabei prinzipiell entweder exzitatorisch auf die signalgebenden Zellen in der Assoziationsschicht wirken oder eine inhibitorische Wirkung auf alle Zellen in der vorgeschalteten Schicht entfalten, wobei [1958rosenblatt] letzterem Wirkungsmechanismus aus pragmatischen Gründen den Vorzug gab. Dieser Rückwirkungsmechanismus, der auch als Rückpropagierung bezeichnet wird, bildet die Voraussetzung für die Lernfähigkeit des Netzwerks.
 
-Der eigentliche Lernvorgang vollzieht sich im Verbindungsbereich, zwischen Assoziations- und Reaktionsschicht. Da sich die Zustände der Zellen in der Reaktionsschicht gegenseitig ausschließen, kann die Reaktion des oben beschriebenen Systems nur durch eine der verfügbaren Zellen in der Reaktionsschicht abgebildet werden. Tritt in einem System mit zwei Reaktionszellen $R_1$ und $R_2$ die Reaktion $R_1$ ein, wird durch dieses Ereignis das Eintreten der Reaktion $R_2$ inhibitiert und umgekehrt. Gesteuert wird dieses Verhalten durch die vorgelagerten Zellen in der Assoziationsschicht. Wenn die Summe aller Impulse, die in der Reaktionszelle $R_1$ eingehen, größer ist als die Summe der Impulse die bei Zelle $R_2$ eingehen, wird $R_1$ das gesamte verfügbare Aktionspotential absorbieren und dadurch das Eintreten von $R_2$ hemmen.
+Der eigentliche Lernvorgang vollzieht sich im Verbindungsbereich, zwischen Assoziations- und Reaktionsschicht. Da sich die Zustände der Zellen in der Reaktionsschicht gegenseitig ausschließen, kann die Reaktion des oben beschriebenen Systems nur durch eine der verfügbaren Zellen in der Reaktionsschicht abgebildet werden. Tritt in einem System mit zwei Reaktionszellen $R_1$ und $R_2$ die Reaktion $R_1$ ein, wird durch dieses Ereignis das Eintreten der Reaktion $R_2$ inhibitiert und umgekehrt. Gesteuert wird dieses Verhalten durch die vorgelagerten Zellen in der Assoziationsschicht [vgl. @1958rosenblatt]. Wenn die Summe aller Impulse, die in der Reaktionszelle $R_1$ eingehen, größer ist als die Summe der Impulse die bei Zelle $R_2$ eingehen, wird $R_1$ das gesamte verfügbare Aktionspotential absorbieren und dadurch das Eintreten von $R_2$ hemmen.
 
-Nach dem Eintritt von $R_1$ wird mittels Rückpropagation sichergestellt, dass die Zellen der Assoziationsschicht, die an der Auslösung der Reaktion $R_1$ beteiligt waren, eine Leistungsverstärkung erfahren. Dies hat den Effekt, dass bei der nächsten Aktivierung der entsprechenden Zellen eine stärkeres Ausgangssignal erzeugt wird, was wiederum den erneuten Eintritt von $R_1$ wahrscheinlicher und den Eintritt von $R_2$ unwahrscheinlicher macht. Ähnliche Signale auf der Projektionsoberfläche verursachen in der Folge ähnliche Aktivierungsmuster in der Assoziationsschicht und führen nach wiederholter Exposition des Netzwerks zu identischen Reaktionen. Das Netzwerk ist nun in der Lage auf Grundlage der erlernten Aktivierungsmuster selbstständig eine Klassifikation der Eingangssignale vorzunehmen. [Vgl. @1958rosenblatt]
+Nach dem Eintritt von $R_1$ wird mittels Rückpropagation sichergestellt, dass die Zellen der Assoziationsschicht, die an der Auslösung der Reaktion $R_1$ beteiligt waren, eine Leistungsverstärkung erfahren. Dies hat den Effekt, dass bei der nächsten Aktivierung der entsprechenden Zellen eine stärkeres Ausgangssignal erzeugt wird, was wiederum den erneuten Eintritt von $R_1$ wahrscheinlicher und den Eintritt von $R_2$ unwahrscheinlicher macht [vgl. @1958rosenblatt]. Ähnliche Signale auf der Projektionsoberfläche verursachen in der Folge ähnliche Aktivierungsmuster in der Assoziationsschicht und führen nach wiederholter Exposition des Netzwerks zu identischen Reaktionen. Das Netzwerk ist nun in der Lage auf Grundlage der erlernten Aktivierungsmuster selbstständig eine Klassifikation der Eingangssignale vorzunehmen.
 
 # Mathematische Interpretation
 ## Modell
-Ausgehend von dem oben beschriebenen Modellentwurf nach @1958rosenblatt, kann die Wirkungsweise eines neuronalen Netzes mathematisch auch als Zuordnungsfunktion interpretiert werden, die einer bestimmten Anzahl $n$ reeller Werte $(x_1, x_2, ..., x_n)$, welche die Eingangssignale repräsentieren, eine bestimmte Anzahl $m$ reeller Werte $(y_1, y_2, ..., y_m)$ zuordnet, welche die Ausgangssignale des Netzwerks darstellen. Die Aufgabe des künstliche neuronale Netz besteht dabei in der Modellierung einer Abbildungsfunktion $F: \mathbb{R}^n \rightarrow \mathbb{R}^m$, welche letztlich das Ergebnis des Lernprozesses darstellt. [Vgl. @1996rojas]
-
+Ausgehend von dem oben beschriebenen Modellentwurf nach @1958rosenblatt, kann die Wirkungsweise eines neuronalen Netzes mathematisch auch als Zuordnungsfunktion interpretiert werden, die einer bestimmten Anzahl $n$ reeller Werte $(x_1, x_2, ..., x_n)$, welche die Eingangssignale repräsentieren, eine bestimmte Anzahl $m$ reeller Werte $(y_1, y_2, ..., y_m)$ zuordnet, welche die Ausgangssignale des Netzwerks darstellen. Die Aufgabe des künstliche neuronale Netz besteht dabei in der Modellierung einer Abbildungsfunktion $F: \mathbb{R}^n \rightarrow \mathbb{R}^m$, welche letztlich das Ergebnis des Lernprozesses darstellt [vgl. @1996rojas].
 
 \graphicspath{{./figures/}}
 \begin{figure}[h]
 \centering
 \subimport{./figures/}{comp.pdf_tex}
-\caption{Your figure}
+\caption{Interpretation eines neuronalen Netzes als Zuordnungsfunktion für $n$ Argumente (eigene Darstellung in Anlehnung an Rojas (1996))}
 \end{figure}
-
 
 Die Implementierung des Lernmechanismus erfolgt mittels der Einführung adaptiver, numerischer Gewichtungen der Eingangssignale, deren Summe, analog zu den Zellen der Assoziationsschicht im klassischen Perzeptron Modell, durch eine nachgelagerte Berechnungskomponente, welche das eigentliche Perzeptron repräsentiert, ermittelt und mit einem vordefinierten Schwellwert verglichen wird. Wenn die Summe der gewichteten Eingangssignale einen bestimmten Schwellwert übersteigt, wird eine Signalübertragung an die nächste Berechnungseinheit ausgelöst. Dieser Zusammenhang entspricht einer Summenrelation gegeben durch
 
@@ -103,9 +101,9 @@ x_i = [x_{1} ... x_{n}]^T
 die Spaltenform des Vektors der Eingabewerte darstellt, die nachfolgend als Eingabevektor bezeichnet wird. Für die Umsetzung der Schwellwertlogik wird schließlich eine Aktivierungsfunktion definiert, die auf Basis des zuvor bestimmten inneren Produktes der Vektoren $\vec{w}$ und $\vec{x}$ den Aktivierungszustand des Perzeptrons ermittelt und bei Überschreitung eines Schwellwertes $\theta$ ein Ausgangssignal generiert.
 
 ## Aktivierungsfunktion
-Die Aufgabe der Aktivierungsfunktion besteht im Wesentlichen darin, die Stärke des Ausgangssignals auf einen Wert innerhalb eines fest definierten Intervalls abzubilden. Geometrisch lässt sich dieser Sachverhalt auch als Teilung eines Vektorraumes in zwei Teilräume interpretieren, wobei jedes Eingangssignal, welches den Schwellwert überschreitet oder gleich dem Schwellwert ist, der einen Teilraumhälfte zugeordnet wird, und jedes Eingangssignal, das den Schwellwert unterschreitet, der anderen Teilraumhälfte. [Vgl. @2013graupe; @1996rojas]
+Die Aufgabe der Aktivierungsfunktion besteht im Wesentlichen darin, die Stärke des Ausgangssignals auf einen Wert innerhalb eines fest definierten Intervalls abzubilden. Geometrisch lässt sich dieser Sachverhalt auch als Teilung eines Vektorraumes in zwei Teilräume interpretieren, wobei jedes Eingangssignal, welches den Schwellwert überschreitet oder gleich dem Schwellwert ist, der einen Teilraumhälfte zugeordnet wird, und jedes Eingangssignal, das den Schwellwert unterschreitet, der anderen Teilraumhälfte [vgl. @2013graupe; @1996rojas].
 
-Als Aktivierungsfunktion kommen je nach Modellanforderungen verschiedene nicht-lineare Funktionen in Frage, wobei für die Verwendung im Zusammenhang mit modernen Interpretationen des neuronalen Netzes, die ReLU-Funktion laut @2016goodfellow als Standardempfehlung betrachtet werden kann. Ein Grund hierfür ist, dass die ReLU-Funktion einen Wertebereich von 0 bis $\infty$ besitzt und daher, anders als bei anderen Vertretern aus der Klasse der nicht-linearen Funktionen, wie der Sigmoid- oder der Hyperbelfunktion, nicht das Problem schwindender Gradienten auftritt, welches wiederum zu Konvergenzproblemen führen kann. 
+<!-- Als Aktivierungsfunktion kommen je nach Modellanforderungen verschiedene nicht-lineare Funktionen in Frage, wobei für die Verwendung im Zusammenhang mit modernen Interpretationen des neuronalen Netzes, die ReLU-Funktion laut @2016goodfellow als Standardempfehlung betrachtet werden kann. Ein Grund hierfür ist, dass die ReLU-Funktion einen Wertebereich von 0 bis $\infty$ besitzt und daher, anders als bei anderen Vertretern aus der Klasse der nicht-linearen Funktionen, wie der Sigmoid- oder der Hyperbelfunktion, nicht das Problem schwindender Gradienten auftritt, welches wiederum zu Konvergenzproblemen führen kann.  -->
 
 Da die vorliegende Implementierung des Perzeptron-Modells der Demonstration eines Ansatzes zur Lösung binärer Klassifikationsprobleme bei linear separierbaren Datensätzen dient und die Konvergenz des verwendeten Algorithmus für linear separierbare Datensätze belegt ist, erfolgt die Umsetzung unter Verwendung einer einfachen Signumfunktion. Die Signumfunktion ist eine reelle Funktion die auf ihrem Wertebereich stückweise konstant und linear ist. Sie ordnet jedem Element $x$ dessen Wert kleiner als $0$ ist den Wert $-1$ und jedem $x$ dessen Wert größer oder gleich $0$ ist den Wert $+1$ zu:
 
@@ -117,10 +115,16 @@ sgn(x) =
      \end{cases}
 \]
 
-Die Integration des Schwellwertes in das Modell erfolgt durch die Ergänzung der Eingabewerte um eine künstliches Eingangssignal $x_0$, dessen Wert konstant $1$ beträgt und einen zusätzlichen Gewichtungskoeffizienten $w_0$ der mit dem Wert $0$ initialisiert wird. Aus dem $n$-Dimensionalen Eingangsvektor $\vec{x}$ mit den Eingangswerten $(x_1, x_2, ..., x_n)$ wird dadurch der $(n+1)$-Dimensionale erweiterte Eingabevektor $\vec{x}_{ext} = (x_1, x_2, ..., x_n, 1)$. Analog hierzu entsteht durch das Hinzufügen eines Gewichtungskoeffizienten zum $n$-Dimensionalen Gewichtungsvektor $\vec{w}$ der erweiterte Gewichtungsvektor $\vec{w}_{ext} = (w_1, w_2,..., w_{n+1})$. [Vgl. @1996rojas]
+Die Integration des Schwellwertes in das Modell erfolgt durch die Ergänzung der Eingabewerte um eine künstliches Eingangssignal $x_0$, dessen Wert konstant $1$ beträgt und einen zusätzlichen Gewichtungskoeffizienten $w_0$ der mit dem Wert $0$ initialisiert wird [vgl. @1996rojas]. Aus dem $n$-Dimensionalen Eingangsvektor $\vec{x}$ mit den Eingangswerten $(x_1, x_2, ..., x_n)$ wird dadurch der $(n+1)$-Dimensionale erweiterte Eingabevektor $\vec{x}_{ext} = (x_1, x_2, ..., x_n, 1)$. Analog hierzu entsteht durch das Hinzufügen eines Gewichtungskoeffizienten zum $n$-Dimensionalen Gewichtungsvektor $\vec{w}$ der erweiterte Gewichtungsvektor $\vec{w}_{ext} = (w_1, w_2,..., w_{n+1})$.
+
+\begin{figure}[h]
+\centering
+\subimport{./figures/}{weightedPerceptron.pdf_tex}
+\caption{Integration der Schwellwertlogik durch das Hinzufügen eines künstlichen Eingangssignals $x_0$ (eigene Darstellung in Anlehnung an Rojas (1996))}
+\end{figure}
 
 ## Klassifikation und Trainingsprozess
-Im Anwendungskontext einer binären Klassifikation besteht die Aufgabe des Perzeptrons nun darin, für $n$ Eingabeinstanzen des Datensatzes $X$, $n+1$ freie Parameter zu finden, so dass die daraus resultierende lineare Funktion eine Hyperebene definiert, die eine vollständige räumliche Separation der in $X$ vertretenen Elemente nach ihrer jeweiligen Klasse bewirkt. Diese $n+1$ freien Parameter entsprechen dabei den Elementen des erweiterten Gewichtungsvektors $\vec{w}_{ext}$. Geometrisch betrachtet bildet jede Kombination von drei Gewichtungselementen $w_1, w_2, w_3$ einen Punkt in einem dreidimensionalen Dualraum. Dieser Punkt ist mit einer Hyperebene im Ursprungsraum assoziert, welche durch die Ebenengleichung
+Im Anwendungskontext einer binären Klassifikation besteht die Aufgabe des Perzeptrons darin, für $n$ Eingabeinstanzen des Datensatzes $X$ $n+1$ freie Parameter zu finden, so dass die daraus resultierende lineare Funktion eine Hyperebene definiert, die eine vollständige räumliche Separation der in $X$ vertretenen Elemente nach ihrer jeweiligen Klasse bewirkt. Diese $n+1$ freien Parameter entsprechen dabei den Elementen des erweiterten Gewichtungsvektors $\vec{w}_{ext}$. Geometrisch betrachtet bildet jede Kombination von drei Gewichtungselementen $w_1, w_2, w_3$ einen Punkt in einem dreidimensionalen Dualraum. Dieser Punkt ist mit einer Hyperebenen im Ursprungsraum assoziert, welche durch die Ebenengleichung
 
 \[
 	w_1x_1 + w_2x_2 + w_3x_3 = 0
@@ -138,15 +142,16 @@ während alle Punkte in der negativen Hälfte die Bedingung
 	w_1x_1 + w_2x_2 + w_3x_3 = 0
 \]
 
-erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also einer Kombination der Gewichtungselemente, deren Funktionswert nach Bildung des inneren Produktes mit den Elementen des Vektors $\vec{x}_{ext}$ und $\vec{w}_{ext}$ gleich null ist. [Vgl. @1996rojas]
+erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also einer Kombination der Gewichtungselemente, deren Funktionswert nach Bildung des inneren Produktes mit den Elementen des Vektors $\vec{x}_{ext}$ und $\vec{w}_{ext}$ gleich null ist [vgl. @1996rojas].
 
 \def\svgwidth{\columnwidth}
 \begin{figure}[h]
+\centering
 \subimport{./figures/}{coord.pdf_tex}
-\caption{Your figure}
+\caption{Dualer Zusammenhang zwischen Merkmals- und Gewichtungsvektor (eigene Darstellung in Anlehnung an Rojas (1996))}
 \end{figure}
 
-Für den Trainingsprozess wird der Rückgabewert der Aktivierungsfunktion iterativ für alle Eingabeinstanzen ermittelt und mit der tatsächlichen Wertausprägung der Zielvariablen $y_i$ des Trainingsdatensatzes $y_{\text{classified}}abgeglichen. Falls das Ausgangssignal $y$ nicht mit dem Wert des Trainingsdatensatzes übereinstimmt, wird der Gewichtungsvektor $\vec{w}_c$ der $c$-ten Iteration durch den angepassten Vektor $\vec{w}_{c+1}$ ersetzt. Dieser Vorgang wird solange wiederholt, bis während der gesamten Epoche keine Anpassungen des Gewichtungsvektors mehr stattfinden. Die lineare Klassifikationsfunktion kann nun aus dem optimierten Gewichtungsvektor abgeleitet werden. Der gesamte Algorithmus ist wie folgt definiert:
+Für den Trainingsprozess wird der Rückgabewert der Aktivierungsfunktion iterativ für alle Eingabeinstanzen ermittelt und mit der tatsächlichen Wertausprägung der Zielvariablen $y_i$ des Trainingsdatensatzes $y_{classified}$ abgeglichen. Falls das Ausgangssignal $y$ nicht mit dem Wert des Trainingsdatensatzes übereinstimmt, wird der Gewichtungsvektor $\vec{w}_c$ der $c$-ten Iteration durch den angepassten Vektor $\vec{w}_{c+1}$ ersetzt. Dieser Vorgang wird solange wiederholt, bis während der gesamten Epoche keine Anpassungen des Gewichtungsvektors mehr stattfinden. Die lineare Klassifikationsfunktion kann nun aus dem optimierten Gewichtungsvektor abgeleitet werden. Der gesamte Algorithmus ist wie folgt definiert:
 
 \begin{algorithm}
 \caption{Perzeptron Algorithmus}\label{rosenblatt}
@@ -211,12 +216,12 @@ str(irisSub)
 ```
 Da zudem die Konvergenz des verwendeten Algorithmus nur für linear separierbare Daten garantiert werden kann, muss der Datensatz hinsichtlich linearer Separierbarkeit untersucht werden. Die Untersuchung erfolgt durch visuelle Auswertung des Plots der entnommenen Teilmenge [vgl. @2017ciaburro]:
 
-```{r}
+```{r, fig.align='center', out.width = "70%", fig.cap="Plot der Kelch- gegen die Kronenblattlänge in cm. Clusterschema deutet auf lineare Sparierbarkeit der Stichprobe hin."}
 ggplot2::ggplot(irisSub, ggplot2::aes(x = Kelchblattlänge, y = Kronenblattlänge)) +
     ggplot2::geom_point(ggplot2::aes(colour = Spezies, shape = Spezies), size = 3) +
     ggplot2::xlab("Kelchblattlänge") +
     ggplot2::ylab("Kronenblattlänge") +
-    ggplot2::ggtitle("Spezies vs. Kelchblatt- und Kronenblattlänge")
+    ggplot2::ggtitle("Kelch- vs. Kronenblattlänge in cm")
 ```
 
 Anhand des Plots ist ersichtlich, dass die Instanzen der entnommenen Teilmenge zwei Cluster bilden, die sich durch eine Gerade voneinander trennen lassen. Das Kriterium der linearen Separierbarkeit ist somit erfüllt.
@@ -246,8 +251,8 @@ Die Zusammenfassung zeigt, dass ein Netzwerk mit zwei Knoten im input-layer, nul
 
 Zur visuellen Überprüfung der Validität des Modellierungsergebnisses wird das lineare Modell der Klassifikationsfunktion mit Hilfe der \texttt{plot()}-Funktion geplottet:
 
-```{r}
-plot(p1)
+```{r, fig.align='center', out.width = "70%", fig.cap="Graph der linearen Funktion (grün) trennt die Instanzen der Stichprobe vollständig bezüglich des Merkmals \\textit{Spezies}"}
+plot(p1, title = "Kelch- vs. Kronenblattlänge in cm")
 ```
 Der Graph der Funktion verläuft zwischen den beiden Merkmalsclustern und trennt diese vollständig voneinander, woraus geschlossen wird, dass das Modell valide ist. 
 

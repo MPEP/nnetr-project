@@ -38,7 +38,7 @@
   \newcommand*\fsize{\dimexpr\f@size pt\relax}%
   \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{295.07946184bp}%
+    \setlength{\unitlength}{304.09124297bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -50,15 +50,15 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.38688762)%
+  \begin{picture}(1,0.37542216)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
-    \put(0.81022725,0.18278968){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$f(x_1,x_2,...,x_n)$\end{tabular}}}}%
+    \put(0.62840746,0.17737269){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}$f(x_1,x_2,...,x_n)$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{comp.pdf}}%
-    \put(0.05766455,0.35599023){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$x_1$\end{tabular}}}}%
-    \put(0.05766455,0.18278965){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$x_2$\end{tabular}}}}%
-    \put(0.05766455,0.0095909){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$x_n$\end{tabular}}}}%
+    \put(0.11518695,0.34544041){\color[rgb]{0,0,0}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}$x_1$\end{tabular}}}}%
+    \put(0.11518695,0.17737265){\color[rgb]{0,0,0}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}$x_2$\end{tabular}}}}%
+    \put(0.1151484,0.00930667){\color[rgb]{0,0,0}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}$x_n$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{comp.pdf}}%
-    \put(0.38645593,0.18098273){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$f$\end{tabular}}}}%
+    \put(0.38983994,0.17561929){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$f$\end{tabular}}}}%
   \end{picture}%
 \endgroup%
