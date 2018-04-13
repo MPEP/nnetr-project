@@ -3,11 +3,11 @@ title: "Perzeptron Algorithmus"
 author: "Mario Peplinski"
 date: "`r Sys.Date()`"
 header-includes:
-- \usepackage[]{algorithm}
-- \usepackage[]{algpseudocode}
-- \usepackage[]{color}
-- \usepackage[]{graphicx}
-- \usepackage[]{float}
+- \usepackage{algorithm}
+- \usepackage{algpseudocode}
+- \usepackage{color}
+- \usepackage{graphicx}
+- \usepackage{float}
 - \usepackage{caption}
 - \usepackage{import}
 - \usepackage{cite}
@@ -41,10 +41,14 @@ Neuronale Netze werden aufgrund ihrer Funktionsweise der Klasse der sogenannten 
 
 Mit dem \texttt{nnetr}-Package soll die Implementierung eines linearen Klassifikationsverfahrens auf Grundlage eines einlagigen, neuralen Netzes in R demonstriert werden. Das einlagige, neuronale Netz welches auch als einlagiges Perzeptron bezeichnet wird, besteht lediglich aus einer Reihe von Eingangsknoten und einem einzelnen Ausgangsknoten und stellt damit die einfachste Ausprägung eines neuronalen Netzes dar. Das Ziel des Klassifikationsverfahrens besteht darin, unter Verwendung eines vorgegebenen Trainigsdatensatzes iterativ eine lineare Funktion zu erlernen, die bei Eingabe eine Merkmalskombination die zugehörige Instanz einer von zwei bereits bekannten Klassen zuordnet.
 
-# Das klassische Perzeptron Modell
-Das klassische Perzeptron Modell nach @1958rosenblatt beschreibt ein hypothetisches System zur Verbeitung sensorischer Reize. Das System besteht aus einer Menge hierachisch organisierter Zellen die in Schichten angeordnet sind und jeweils über eine oder mehrere eingehende und ausgehende Verbindung zu Zellen in vorhergehenden oder nachfolgenden Schichten verfügen. Die Intention hinter der Entwicklung dieses Modell bestand darin, die fundamentalen Eigenschaften intelligenter Systeme zu illustrieren, weshalb sich die Darstellung nach Rosenblatt strukturell stark am Aufbau des Nervensystems biologischer Lebewesen orientiert.
+# Das klassische Perzeptron-Modell
+Das klassische Perzeptron-Modell nach @1958rosenblatt beschreibt ein hypothetisches System zur Verarbeitung sensorischer Reize. Das System besteht aus einer Menge hierarchisch organisierter Zellen, die in Schichten angeordnet sind und jeweils über eine oder mehrere eingehende und ausgehende Verbindung zu Zellen in vor- oder nachgelagerten Schichten verfügen. Die Intention hinter der Entwicklung dieses Modell bestand darin, die fundamentalen Eigenschaften intelligenter Systeme zu illustrieren, weshalb sich die Darstellung strukturell stark am Aufbau des Nervensystems biologischer Lebewesen orientiert.
 
-Im Kontext des klassischen Perzeptron-Modells wird ein betrachtetes Zellnetzwerk in drei hintereinander angeordnete Wirkungsräume beziehungsweise Schichten unterteilt. Einen Projektionsoberfläche, welche in Anlehnung an das photosensorische System biologischer Organismen als Retina bezeichnet wird, eine Assoziationsschicht, die ihrerseits wiederum in einen Projektions- und einen Assoziationsbereich unterteilt wird, und eine Reaktionsschicht, in der sich die Wirkung des Eingangssignals manifestiert [vgl. @1958rosenblatt].
+Im Kontext des klassischen Perzeptron-Modells wird ein betrachtetes Zellnetzwerk in drei hintereinander angeordnete Wirkungsräume beziehungsweise Schichten unterteilt [vgl. @1958rosenblatt]:
+
+1. eine Projektionsoberfläche, welche in Anlehnung an das photosensorische System biologischer Organismen als Retina bezeichnet wird
+2. eine Assoziationsschicht, die ihrerseits wiederum in einen Projektions- und einen Assoziationsbereich unterteilt wird
+3. eine Reaktionsschicht, in der sich die Wirkung des Eingangssignals manifestiert
 
 \begin{figure}[h]
 \centering
@@ -54,15 +58,15 @@ Im Kontext des klassischen Perzeptron-Modells wird ein betrachtetes Zellnetzwerk
 \caption{Klassisches Perzeptron-Modell (eigene Darstellung in Anlehnung an Rojas (1996))}
 \end{figure}
 
-Von einer Projektionsoberfläche werden, als Reaktion auf die Präsenz eines externen Stimulus, binäre Werte an die Zellen der nachgelagerte Projektionsschicht gesendet. Die Information, die dabei von der Singalquelle an das Netzwerk übertragen wird, können, je nach Funktion der Netzwerkelemente, sowohl eine inhibitorische, als auch exzitatorische Wirkung entfalten. Die Zellen in der Projektionsschicht fungieren als deterministische, nicht-adaptive Rechnereinheiten, welche die eingehenden Signale interpretieren und in Abhängigkeit von der Intensität der eingehenden Signale ihrerseits wiederum einen Impuls an die Zellen der nachfolgenden Assoziationsschicht senden [vgl. @1958rosenblatt].
+Von einer Projektionsoberfläche werden, als Reaktion auf die Präsenz eines externen Stimulus, binäre Signale an die Zellen der nachgelagerte Projektionsschicht gesendet. Die Informationen, die dabei von der Singalquelle an das Netzwerk übertragen werden, können, je nach Funktion der Netzwerkelemente, sowohl eine inhibitorische als auch eine exzitatorische Wirkung entfalten. Die Zellen in der Projektionsschicht fungieren als deterministische, nicht-adaptive Rechnereinheiten, welche die eingehenden Signale interpretieren und, in Abhängigkeit von der Intensität der eingehenden Signale, ihrerseits wiederum einen Impuls an die Zellen der nachgelagerten Assoziationsschicht senden [vgl. @1958rosenblatt].
 
-Die Auslösung der Signalübertragung von den Zellen in der Projektionsschicht an die Zellen in der Assoziationsschich wird mittels einer zellindividuellen Reizschwelle gesteuert. Wenn die Summe aller eingehendenen inhibitorischen und exzitatorischen Signale gleich oder höher als die jeweilige Reizschwelle der betreffenden Zelle ist, wird eine Signalübertragung ausgelöst. Andernfalls bleibt die Signalübertragung aus und der Initialreiz entfaltet keine Wirkung in der Reaktionsschicht.
+Die Auslösung der Signalübertragung von den Zellen in der Projektionsschicht an die Zellen in der Assoziationsschicht wird mittels einer zellindividuellen Reizschwelle gesteuert. Wenn die Summe aller eingehendenen inhibitorischen und exzitatorischen Signale gleich oder höher als die jeweilige Reizschwelle der betreffenden Zelle ist, wird eine Signalübertragung ausgelöst. Andernfalls bleibt die Signalübertragung aus und der Initialreiz entfaltet keine Wirkung in der Reaktionsschicht.
 
-Der Informationsfluss innerhalb des Netzwerks verläuft zwischen der Projektionsfläche und der Assoziationsschicht unidirektional in Richtung der Assoziationsschicht. Zwischen Assoziations- und Reaktionsschicht besteht hingegen eine bidirektionale Verbindung, wodurch eine Rückmeldung der Zellen in der Reaktionsschicht an die Zellen der vorgelagerten Assoziationsschicht ermöglicht wird. Die Wirkung der Rückmeldung kann dabei prinzipiell entweder exzitatorisch auf die signalgebenden Zellen in der Assoziationsschicht wirken oder eine inhibitorische Wirkung auf alle Zellen in der vorgeschalteten Schicht entfalten, wobei [1958rosenblatt] letzterem Wirkungsmechanismus aus pragmatischen Gründen den Vorzug gab. Dieser Rückwirkungsmechanismus, der auch als Rückpropagierung bezeichnet wird, bildet die Voraussetzung für die Lernfähigkeit des Netzwerks.
+Der Informationsfluss innerhalb des Netzwerks verläuft zwischen der Projektionsoberfläche und der Assoziationsschicht unidirektional in Richtung der Assoziationsschicht. Zwischen Assoziations- und Reaktionsschicht besteht hingegen eine bidirektionale Verbindung, wodurch eine Rückmeldung der Zellen in der Reaktionsschicht an die Zellen der vorgelagerten Assoziationsschicht ermöglicht wird. Die Wirkung der Rückmeldung kann dabei prinzipiell entweder exzitatorisch auf die signalgebenden Zellen in der Assoziationsschicht wirken oder eine inhibitorische Wirkung auf alle Zellen in der vorgeschalteten Schicht entfalten, wobei [1958rosenblatt] letzterem Wirkungsmechanismus in seinem Modell aus pragmatischen Gründen den Vorzug gab. Dieser Rückwirkungsmechanismus, der auch als Rückpropagierung bezeichnet wird, bildet die Voraussetzung für die Lernfähigkeit des Netzwerks.
 
-Der eigentliche Lernvorgang vollzieht sich im Verbindungsbereich, zwischen Assoziations- und Reaktionsschicht. Da sich die Zustände der Zellen in der Reaktionsschicht gegenseitig ausschließen, kann die Reaktion des oben beschriebenen Systems nur durch eine der verfügbaren Zellen in der Reaktionsschicht abgebildet werden. Tritt in einem System mit zwei Reaktionszellen $R_1$ und $R_2$ die Reaktion $R_1$ ein, wird durch dieses Ereignis das Eintreten der Reaktion $R_2$ inhibitiert und umgekehrt. Gesteuert wird dieses Verhalten durch die vorgelagerten Zellen in der Assoziationsschicht [vgl. @1958rosenblatt]. Wenn die Summe aller Impulse, die in der Reaktionszelle $R_1$ eingehen, größer ist als die Summe der Impulse die bei Zelle $R_2$ eingehen, wird $R_1$ das gesamte verfügbare Aktionspotential absorbieren und dadurch das Eintreten von $R_2$ hemmen.
+Der eigentliche Lernvorgang vollzieht sich im Verbindungsbereich zwischen Assoziations- und Reaktionsschicht. Da sich die Zustände der Zellen in der Reaktionsschicht gegenseitig ausschließen, kann eine Reaktion im oben beschriebenen Zellsystem nur durch eine der verfügbaren Zellen in der Reaktionsschicht abgebildet werden. Tritt in einem System mit zwei Reaktionszellen $R_1$ und $R_2$ die Reaktion $R_1$ ein, wird durch dieses Ereignis das Eintreten der Reaktion $R_2$ inhibitiert und umgekehrt [vgl. @1958rosenblatt]. Wenn die Summe aller Impulse die in der Reaktionszelle $R_1$ eingehen größer ist als die Summe der Impulse die bei Zelle $R_2$ eingehen, wird $R_1$ das gesamte verfügbare Aktionspotential absorbieren und dadurch die Aktivierung von $R_2$ hemmen.
 
-Nach dem Eintritt von $R_1$ wird mittels Rückpropagation sichergestellt, dass die Zellen der Assoziationsschicht, die an der Auslösung der Reaktion $R_1$ beteiligt waren, eine Leistungsverstärkung erfahren. Dies hat den Effekt, dass bei der nächsten Aktivierung der entsprechenden Zellen eine stärkeres Ausgangssignal erzeugt wird, was wiederum den erneuten Eintritt von $R_1$ wahrscheinlicher und den Eintritt von $R_2$ unwahrscheinlicher macht [vgl. @1958rosenblatt]. Ähnliche Signale auf der Projektionsoberfläche verursachen in der Folge ähnliche Aktivierungsmuster in der Assoziationsschicht und führen nach wiederholter Exposition des Netzwerks zu identischen Reaktionen. Das Netzwerk ist nun in der Lage auf Grundlage der erlernten Aktivierungsmuster selbstständig eine Klassifikation der Eingangssignale vorzunehmen.
+Nach dem Eintritt von $R_1$ wird anschließend mittels Rückpropagation sichergestellt, dass die Zellen der Assoziationsschicht, die an der Auslösung der Reaktion $R_1$ beteiligt waren, eine Leistungsverstärkung erfahren. Dies hat den Effekt, dass bei der nächsten Aktivierung der entsprechenden Zellen ein stärkeres Ausgangssignal erzeugt wird, was wiederum den erneuten Eintritt von $R_1$ wahrscheinlicher und den Eintritt von $R_2$ unwahrscheinlicher macht [vgl. @1958rosenblatt]. Ähnliche Signale auf der Projektionsoberfläche verursachen in der Folge ähnliche Aktivierungsmuster in der Assoziationsschicht und führen nach wiederholter Exposition des Netzwerks gegenüber wiederkehrenden, externen Reizen zu identischen Reaktionen. Das Netzwerk ist nun in der Lage auf Grundlage der erlernten Aktivierungsmuster selbstständig eine Klassifikation der Eingangssignale vorzunehmen.
 
 # Mathematische Interpretation
 ## Modell
@@ -195,7 +199,7 @@ Mit Hilfe des **nnetr** Softwarepakets lassen sich anhand von metrisch, beziehun
 4. \texttt{newPerceptronModel()} - erstellt anhand einer Merkmalsmatrix ein lineares Klassifikationsmodell auf auf Grundlage des Perzeptron-Modells nach [@1958rosenblatt]
 5. \texttt{predict()} - berechnet anhand eines Klassifikationsmodells und einer Merkmalsmatrix die Klasse eine gegebenen Merkmalskombination
  
-Für das Perzeptron-Modell wurden, nach dem Vorbild der Funktionen zur Erstellung von Regressionsmodellen, die gängigsten generischen Funktionen implementiert. Hierzu zählen die Funktionen \texttt{print.perceptron()}, \texttt{summary.perceptron()} und \texttt{plot.perceptron()} zu denen nähere Informationen den jeweiligen Hilfseiten entnommen werden kommen.
+Für das Perzeptron-Modell wurden, nach dem Vorbild der Funktionen zur Erstellung von Regressionsmodellen, die gängigsten generischen Funktionen implementiert. Hierzu zählen die Funktionen \texttt{print.perceptron()}, \texttt{summary.perceptron()} und \texttt{plot.perceptron()} zu denen nähere Informationen den jeweiligen Hilfseiten entnommen werden können.
 
 # Lineare Klassifikation am Beispiel des Iris-Datensatzes
 In diesem Abschnitt wird die Anwendung des nnetr-Packages am Beispiel einer Klassifikation unter Verwendung des Iris-Datensatzes demonstriert. Der Iris-Datensatz enthält zu drei verschiedenen Gattungen der Schwertlilie jeweils 50 Beobachtungen, für die jeweils die Länge und Breite der Kelch- und der Kronenblätter und der Name der Spezies erfasst wurden. Der Datensatz besteht somit aus insgesamt 150 Beobachtungen mit jeweils fünf Attributen. Mit Hilfe des nnetr-Packages soll ein lineares Klassifikationsmodell erstellt werden. Hierzu wird die Hypothese aufgestellt, dass ein Zusammenhang zwischen der Länge der Kelch- und Kronenblattlänge und der Spezies besteht. Die Kelch- und Kronenblattlänge einer bestimmten Beobachtung werden als unabhängige Variablen deklariert. Die Spezies stellt die abhängige Variable dar.
@@ -252,7 +256,10 @@ Die Zusammenfassung zeigt, dass ein Netzwerk mit zwei Knoten im input-layer, nul
 Zur visuellen Überprüfung der Validität des Modellierungsergebnisses wird das lineare Modell der Klassifikationsfunktion mit Hilfe der \texttt{plot()}-Funktion geplottet:
 
 ```{r, fig.align='center', out.width = "70%", fig.cap="Graph der linearen Funktion (grün) trennt die Instanzen der Stichprobe vollständig bezüglich des Merkmals \\textit{Spezies}"}
-plot(p1, title = "Kelch- vs. Kronenblattlänge in cm")
+plot(p1) +
+    ggplot2::xlab("Kelchblattlänge in cm") +
+    ggplot2::ylab("Kronenblattlänge in cm") +
+    ggplot2::ggtitle("Kelch- vs. Kronenblattlänge")
 ```
 Der Graph der Funktion verläuft zwischen den beiden Merkmalsclustern und trennt diese vollständig voneinander, woraus geschlossen wird, dass das Modell valide ist. 
 

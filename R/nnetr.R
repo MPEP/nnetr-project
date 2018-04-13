@@ -257,17 +257,17 @@ print.summary.perceptron <- function(x, ...) {
 #' @export
 plot.perceptron <- function(x, ...) {
     if(ncol(x$x) != 3) stop("Plot functionality is only available for 2d input data")
-    y <- x$y
     w <- x$weights
+    respond <- data.frame(x$y[,2], stringsAsFactors = FALSE)
+    respond <- respond[,1,drop = FALSE]
+    names(respond) <- x$respondName
+    respondName <- x$respondName
     intercept <- -w[1] / w[3]
     slope <- -w[2] / w[3]
-    df <- data.frame(x$x, stringsAsFactors = FALSE)
+    df <- data.frame(x = x$x[,2], y = x$x[,3], respond = respond, stringsAsFactors = FALSE)
 
-    ggplot(df, aes(x = df[2], y = df[3])) +
-        geom_point(aes(color = y[,2]), size = 3) +
-        scale_color_discrete(name = colnames(y)[2]) +
-        xlab(attr(df[2], "names")) +
-        ylab(attr(df[3], "names")) +
+    ggplot(df, aes(x = df$x, y = df$y)) +
+        geom_point(aes_(color = as.name(respondName), shape = as.name(respondName)), size = 3) +
         geom_abline(aes(intercept = intercept, slope = slope), col = "green")
 }
     
