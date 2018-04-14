@@ -3,7 +3,7 @@ title: "Perzeptron Algorithmus"
 author: "Mario Peplinski"
 date: "`r Sys.Date()`"
 header-includes:
-- \usepackage{algorithm}
+- \usepackage[Algorithmus]{algorithm}
 - \usepackage{algpseudocode}
 - \usepackage{color}
 - \usepackage{graphicx}
@@ -12,6 +12,7 @@ header-includes:
 - \usepackage{import}
 - \usepackage{cite}
 - \usepackage[ngerman]{babel}
+- \usepackage{hyperref}
 output:
   pdf_document:
     fig_caption: true
@@ -70,7 +71,7 @@ Nach dem Eintritt von $R_1$ wird anschließend mittels Rückpropagation sicherge
 
 # Mathematische Interpretation
 ## Modell
-Ausgehend von dem oben beschriebenen Modellentwurf nach @1958rosenblatt, kann die Wirkungsweise eines neuronalen Netzes mathematisch auch als Zuordnungsfunktion interpretiert werden, die einer bestimmten Anzahl $n$ reeller Werte $(x_1, x_2, ..., x_n)$, welche die Eingangssignale repräsentieren, eine bestimmte Anzahl $m$ reeller Werte $(y_1, y_2, ..., y_m)$ zuordnet, welche die Ausgangssignale des Netzwerks darstellen. Die Aufgabe des künstliche neuronale Netz besteht dabei in der Modellierung einer Abbildungsfunktion $F: \mathbb{R}^n \rightarrow \mathbb{R}^m$, welche letztlich das Ergebnis des Lernprozesses darstellt [vgl. @1996rojas].
+Ausgehend von dem oben beschriebenen Modellentwurf nach @1958rosenblatt, kann die Wirkungsweise eines neuronalen Netzes mathematisch auch als Zuordnungsfunktion interpretiert werden, die einer bestimmten Anzahl $n$ reeller Werte $(x_1, x_2, ..., x_n)$, welche die Eingangssignale repräsentieren, eine bestimmte Anzahl $m$ reeller Werte $(y_1, y_2, ..., y_m)$ zuordnet, welche die Ausgangssignale des Netzes darstellen. Die Aufgabe des künstlichen neuronalen Netzes besteht dabei in der Modellierung einer Abbildungsfunktion $F: \mathbb{R}^n \rightarrow \mathbb{R}^m$, welche letztlich das Ergebnis des Lernprozesses darstellt [vgl. @1996rojas].
 
 \graphicspath{{./figures/}}
 \begin{figure}[h]
@@ -79,7 +80,7 @@ Ausgehend von dem oben beschriebenen Modellentwurf nach @1958rosenblatt, kann di
 \caption{Interpretation eines neuronalen Netzes als Zuordnungsfunktion für $n$ Argumente (eigene Darstellung in Anlehnung an Rojas (1996))}
 \end{figure}
 
-Die Implementierung des Lernmechanismus erfolgt mittels der Einführung adaptiver, numerischer Gewichtungen der Eingangssignale, deren Summe, analog zu den Zellen der Assoziationsschicht im klassischen Perzeptron Modell, durch eine nachgelagerte Berechnungskomponente, welche das eigentliche Perzeptron repräsentiert, ermittelt und mit einem vordefinierten Schwellwert verglichen wird. Wenn die Summe der gewichteten Eingangssignale einen bestimmten Schwellwert übersteigt, wird eine Signalübertragung an die nächste Berechnungseinheit ausgelöst. Dieser Zusammenhang entspricht einer Summenrelation gegeben durch
+Die Implementierung des Lernmechanismus erfolgt mittels der Einführung adaptiver, numerischer Gewichtungen der Eingangssignale, deren Summe, analog zu den Zellen der Assoziationsschicht im klassischen Perzeptron Modell, durch eine nachgelagerte Berechnungskomponente ermittelt und mit einem vordefinierten Schwellwert verglichen wird. Wenn die Summe der gewichteten Eingangssignale einen bestimmten Schwellwert übersteigt, wird eine Signalübertragung an die nächste Berechnungseinheit ausgelöst. Dieser Zusammenhang entspricht einer Summenrelation gegeben durch
 
 \[z = \sum_{i=1}^m w_{i}x_{i}\] 
 
@@ -105,11 +106,11 @@ x_i = [x_{1} ... x_{n}]^T
 die Spaltenform des Vektors der Eingabewerte darstellt, die nachfolgend als Eingabevektor bezeichnet wird. Für die Umsetzung der Schwellwertlogik wird schließlich eine Aktivierungsfunktion definiert, die auf Basis des zuvor bestimmten inneren Produktes der Vektoren $\vec{w}$ und $\vec{x}$ den Aktivierungszustand des Perzeptrons ermittelt und bei Überschreitung eines Schwellwertes $\theta$ ein Ausgangssignal generiert.
 
 ## Aktivierungsfunktion
-Die Aufgabe der Aktivierungsfunktion besteht im Wesentlichen darin, die Stärke des Ausgangssignals auf einen Wert innerhalb eines fest definierten Intervalls abzubilden. Geometrisch lässt sich dieser Sachverhalt auch als Teilung eines Vektorraumes in zwei Teilräume interpretieren, wobei jedes Eingangssignal, welches den Schwellwert überschreitet oder gleich dem Schwellwert ist, der einen Teilraumhälfte zugeordnet wird, und jedes Eingangssignal, das den Schwellwert unterschreitet, der anderen Teilraumhälfte [vgl. @2013graupe; @1996rojas].
+Die Aufgabe der Aktivierungsfunktion besteht darin, die Stärke des Ausgangssignals auf einen Wert innerhalb eines fest definierten Intervalls abzubilden. Geometrisch lässt sich dieser Sachverhalt auch als Teilung eines Vektorraumes in zwei Teilräume interpretieren, wobei jedes Eingangssignal, welches den Schwellwert überschreitet oder gleich dem Schwellwert ist, der einen Teilraumhälfte zugeordnet wird und jedes Eingangssignal, das den Schwellwert unterschreitet, der anderen Teilraumhälfte [vgl. @2013graupe; @1996rojas].
 
 <!-- Als Aktivierungsfunktion kommen je nach Modellanforderungen verschiedene nicht-lineare Funktionen in Frage, wobei für die Verwendung im Zusammenhang mit modernen Interpretationen des neuronalen Netzes, die ReLU-Funktion laut @2016goodfellow als Standardempfehlung betrachtet werden kann. Ein Grund hierfür ist, dass die ReLU-Funktion einen Wertebereich von 0 bis $\infty$ besitzt und daher, anders als bei anderen Vertretern aus der Klasse der nicht-linearen Funktionen, wie der Sigmoid- oder der Hyperbelfunktion, nicht das Problem schwindender Gradienten auftritt, welches wiederum zu Konvergenzproblemen führen kann.  -->
 
-Da die vorliegende Implementierung des Perzeptron-Modells der Demonstration eines Ansatzes zur Lösung binärer Klassifikationsprobleme bei linear separierbaren Datensätzen dient und die Konvergenz des verwendeten Algorithmus für linear separierbare Datensätze belegt ist, erfolgt die Umsetzung unter Verwendung einer einfachen Signumfunktion. Die Signumfunktion ist eine reelle Funktion die auf ihrem Wertebereich stückweise konstant und linear ist. Sie ordnet jedem Element $x$ dessen Wert kleiner als $0$ ist den Wert $-1$ und jedem $x$ dessen Wert größer oder gleich $0$ ist den Wert $+1$ zu:
+Da die vorliegende Implementierung des Perzeptron-Modells der Demonstration eines Ansatzes zur Lösung binärer Klassifikationsprobleme bei linear separierbaren Datensätzen dient und die Konvergenz des verwendeten Algorithmus für linear separierbare Datensätze belegt ist, erfolgt die Umsetzung unter Verwendung einer einfachen Signumfunktion. Die Signumfunktion ist eine reelle Funktion die auf ihrem Wertebereich stückweise konstant und linear ist. Sie ordnet jedem Element $x$, dessen Wert kleiner als $0$ ist, den Wert $-1$ und jedem $x$, dessen Wert größer oder gleich $0$ ist, den Wert $+1$ zu:
 
 \[
 sgn(x) = 
@@ -119,7 +120,7 @@ sgn(x) =
      \end{cases}
 \]
 
-Die Integration des Schwellwertes in das Modell erfolgt durch die Ergänzung der Eingabewerte um eine künstliches Eingangssignal $x_0$, dessen Wert konstant $1$ beträgt und einen zusätzlichen Gewichtungskoeffizienten $w_0$ der mit dem Wert $0$ initialisiert wird [vgl. @1996rojas]. Aus dem $n$-Dimensionalen Eingangsvektor $\vec{x}$ mit den Eingangswerten $(x_1, x_2, ..., x_n)$ wird dadurch der $(n+1)$-Dimensionale erweiterte Eingabevektor $\vec{x}_{ext} = (x_1, x_2, ..., x_n, 1)$. Analog hierzu entsteht durch das Hinzufügen eines Gewichtungskoeffizienten zum $n$-Dimensionalen Gewichtungsvektor $\vec{w}$ der erweiterte Gewichtungsvektor $\vec{w}_{ext} = (w_1, w_2,..., w_{n+1})$.
+Die Integration des Schwellwertes in das Modell erfolgt durch die Ergänzung der Eingabewerte um ein künstliches Eingangssignal $x_0$, dessen Wert konstant $1$ beträgt und einen zusätzlichen Gewichtungskoeffizienten $w_0$, der mit dem Wert $0$ initialisiert wird [vgl. @1996rojas]. Aus dem $n$-Dimensionalen Eingangsvektor $\vec{x}$ mit den Eingangswerten $(x_1, x_2, ..., x_n)$ wird dadurch der $(n+1)$-Dimensionale erweiterte Eingabevektor $\vec{x}_{ext} = (x_1, x_2, ..., x_n, 1)$. Analog hierzu, entsteht durch das Hinzufügen eines Gewichtungskoeffizienten zum $n$-Dimensionalen Gewichtungsvektor $\vec{w}$, der erweiterte Gewichtungsvektor $\vec{w}_{ext} = (w_1, w_2,..., w_{n+1})$.
 
 \begin{figure}[h]
 \centering
@@ -134,7 +135,7 @@ Im Anwendungskontext einer binären Klassifikation besteht die Aufgabe des Perze
 	w_1x_1 + w_2x_2 + w_3x_3 = 0
 \]
 
-definiert wird. Alle Punkte in der positiven Hälfte des durch die Hyperebene gebildeten Halbraumes erfüllen die Bedingung
+definiert wird. Alle Punkte in der positiven Hälfte des durch die Hyperebene gebildeten Halbraumes, erfüllen die Bedingung
 
 \[
 	w_1x_1 + w_2x_2 + w_3x_3 \geq 0
@@ -155,10 +156,11 @@ erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also einer Kombin
 \caption{Dualer Zusammenhang zwischen Merkmals- und Gewichtungsvektor (eigene Darstellung in Anlehnung an Rojas (1996))}
 \end{figure}
 
-Für den Trainingsprozess wird der Rückgabewert der Aktivierungsfunktion iterativ für alle Eingabeinstanzen ermittelt und mit der tatsächlichen Wertausprägung der Zielvariablen $y_i$ des Trainingsdatensatzes $y_{classified}$ abgeglichen. Falls das Ausgangssignal $y$ nicht mit dem Wert des Trainingsdatensatzes übereinstimmt, wird der Gewichtungsvektor $\vec{w}_c$ der $c$-ten Iteration durch den angepassten Vektor $\vec{w}_{c+1}$ ersetzt. Dieser Vorgang wird solange wiederholt, bis während der gesamten Epoche keine Anpassungen des Gewichtungsvektors mehr stattfinden. Die lineare Klassifikationsfunktion kann nun aus dem optimierten Gewichtungsvektor abgeleitet werden. Der gesamte Algorithmus ist wie folgt definiert:
+Während des Trainingsprozesses wird der Rückgabewert der Aktivierungsfunktion iterativ für alle Eingabeinstanzen ermittelt und mit der tatsächlichen Wertausprägung der Zielvariablen $y_i$ des Trainingsdatensatzes $y_{classified}$ abgeglichen. Falls das Ausgangssignal $y$ nicht mit dem Wert des Trainingsdatensatzes übereinstimmt, wird der Gewichtungsvektor $\vec{w}_c$ der $c$-ten Iteration durch den angepassten Vektor $\vec{w}_{c+1}$ ersetzt. Dieser Vorgang wird solange wiederholt, bis während der gesamten Epoche keine Anpassungen des Gewichtungsvektors mehr stattfinden. Die lineare Klassifikationsfunktion kann nun aus dem optimierten Gewichtungsvektor abgeleitet werden. Die konkrete Funktionsweise des Algorithmus ist im Einzelnen der Darstellung Algorithmus&nbsp;\ref{alg:perceptron} auf Seite&nbsp;\pageref{alg:perceptron} zu entnehmen.
 
 \begin{algorithm}
-\caption{Perzeptron Algorithmus}\label{rosenblatt}
+\caption{Perzeptron Algorithmus}
+\label{alg:perceptron}
 \begin{algorithmic}[1]
 \Procedure{Perzeptron}{$x, \eta$} \Comment{$\eta$ bestimmt den Wirkungsgrad der Anpassung von $w$}
 \State $w_0\gets 0$
@@ -274,7 +276,7 @@ caret::confusionMatrix(holdOutY, prediction[,3])
 ```
 Die Konfusionsmatrix zeigt, dass von 30 Klassifizierten Instanzen keine falsch-negativ oder falsch-positiv klassifiziert wurde. Die Genauigkeit des implementierten Klassifikationsverfahrens beträgt somit 100%. Aufgrund des oben angegebenen $p$-Werts wird die Nullhypothese auf einem Signifikanzniveau von 5% verworfen. Das Ergebnis wird daher als statistisch signifikant betrachtet.
 
-# Zusammenfassung
+# Konklusion
 Mit dem **nnetr**-Package wurde die Implementierung eines einfachen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach @1958rosenblatt in R demonstriert. Das implementierte Verfahren ist in der Lage numerische Merkmalsdaten mit einer binären Zielvariablen zu klassifizieren, sofern diese vollständig linear separierbar sind. Mit Hilfe eines Anwendungsbeispiel wurde die Klassifikationsleistung anhand einer Teilmenge des Iris-Datensatzes untersucht. Hierbei wurde festgestellt, dass das implementierte Verfahren die Instanzen des Testdatensatzes mit einer Genauigkeit von 100% klassifiziert. Die Generalisierbarkeit des Modell wird jedoch durch das unerwünschte Konvergenzverhalten bei nicht-linear separierbaren Datensätzen eingeschränkt. Für derartige Szenarien sind daher robuste Klassifikationsverfahren wie der Pocket- oder der Maxover-Algorithmus dem hier vorgestellten Verfahren vorzuziehen.
 
 # Literaturverzeichnis
