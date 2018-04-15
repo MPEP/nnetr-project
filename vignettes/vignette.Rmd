@@ -186,34 +186,34 @@ Während des Trainingsprozesses wird der Rückgabewert der Aktivierungsfunktion 
 
 # nnetr
 ## Installation
-Die **netr** Software ist ein Zusatzpaket für die Statistiksoftware R ($\leq$ 3.4.4) und kann aus dem beigefügten bundle mit der Dateiendung \texttt[.tar.gz} heraus installiert werden. Zusätzlich zu der Basisinstallation der R-Software wird das Paket *ggplot2* benötigt. Sobald das Paket installiert wurde, kann es mit Hilfe der folgenden Eingabe geladen werden:
+Die **netr** Software ist ein Zusatzpaket für die Statistiksoftware R ($\leq$ 3.4.4) und kann aus dem beigefügten bundle mit der Dateiendung \texttt[.tar.gz} heraus installiert werden. Zusätzlich zu der Basisinstallation der R-Software werden die Pakete *ggplot2* und *caret* benötigt. Sobald das **netr**-Paket installiert wurde, kann es mit Hilfe der folgenden Eingabe geladen werden:
 
 ```{r eval=FALSE}
 library(nnetr)
 ```
 
 ## Funktionen
-Mit Hilfe des **nnetr** Softwarepakets lassen sich anhand von metrisch, beziehungsweise kategorial skalierten Merkmalsdaten einfache linearer Vorhersagemodelle estellen. Die Daten der unabhängigen Variablen müssen metrisch skaliert sein, wohingegen die Daten der abhängigen Variablen sowohl numerische als auch nichtnumerische Werte sein können aber in jedem Fall ein binäres Skalenniveau aufweisen müssen. Für die Verwendung der Plotfunktion muss zudem sichergestellt werden, dass das Modell über genau zwei unabhängige Variablen und eine abhängige Variable verfügt. Die Funktionen des Pakets werden im Folgenden kurz erläutert:
+Mit Hilfe des **nnetr** Softwarepakets lassen sich anhand von metrisch, beziehungsweise kategorial skalierten Merkmalsdaten einfache linearer Vorhersagemodelle estellen. Die Daten der unabhängigen Variablen müssen metrisch skaliert sein, wohingegen die Daten der abhängigen Variablen sowohl numerische als auch nichtnumerische Werte annehmen können aber in jedem Fall ein binäres Skalenniveau aufweisen müssen. Für die Verwendung der Plotfunktion muss zudem sichergestellt werden, dass das Modell über genau zwei unabhängige Variablen und eine abhängige Variable verfügt. Die Funktionen des Pakets werden im Folgenden kurz erläutert:
 
 1. \texttt{euclidNorm()} - berechnet die euklidische Norm eines numerischen Vektors
-2. \texttt{signum()} - berechnet anhand einer Matrix mit numerischen Merkmalswerten und eines numerischen Gewichtungsvektors das Vorzeichen des inneren Produktes, welches der Orientierung des jeweiligen Merkmalsvektors entspricht
+2. \texttt{signum()} - berechnet anhand einer Matrix mit numerischen Merkmalswerten und eines numerischen Gewichtungsvektors das Vorzeichen des inneren Produktes, woraus sich die Ausrichtung des untersuchten Merkmalsvektors im euklidischen Raum ableiten lässt
 3. \texttt{distanceFromSeparator()} - berechnet anhand einer Matrix mit numerischen Merkmalswerten und eines numerischen Gewichtungsvektors den Betrag des jeweiligen Merkmalsvektors
-4. \texttt{newPerceptronModel()} - erstellt anhand einer Merkmalsmatrix ein lineares Klassifikationsmodell auf auf Grundlage des Perzeptron-Modells nach [@1958rosenblatt]
-5. \texttt{predict()} - berechnet anhand eines Klassifikationsmodells und einer Merkmalsmatrix die Klasse eine gegebenen Merkmalskombination
+4. \texttt{newPerceptronModel()} - erstellt anhand einer Merkmalsmatrix ein lineares Klassifikationsmodell auf der Grundlage des Perzeptron-Modells nach [@1958rosenblatt]
+5. \texttt{predict()} - berechnet anhand eines Klassifikationsmodells und einer Merkmalsmatrix die Klasse einer gegebenen Merkmalskombination
  
-Für das Perzeptron-Modell wurden, nach dem Vorbild der Funktionen zur Erstellung von Regressionsmodellen, die gängigsten generischen Funktionen implementiert. Hierzu zählen die Funktionen \texttt{print.perceptron()}, \texttt{summary.perceptron()} und \texttt{plot.perceptron()} zu denen nähere Informationen den jeweiligen Hilfseiten entnommen werden können.
+Für das Perzeptron-Modell wurden, nach dem Vorbild der Funktionen zur Erstellung von Regressionsmodellen, die gängigsten generischen Funktionen implementiert. Hierzu zählen die Funktionen \texttt{print.perceptron()}, \texttt{summary.perceptron()} und \texttt{plot.perceptron()}. Details können den jeweiligen Hilfsseiten der Funktionen entnommen werden.
 
 # Lineare Klassifikation am Beispiel des Iris-Datensatzes
-In diesem Abschnitt wird die Anwendung des nnetr-Packages am Beispiel einer Klassifikation unter Verwendung des Iris-Datensatzes demonstriert. Der Iris-Datensatz enthält zu drei verschiedenen Gattungen der Schwertlilie jeweils 50 Beobachtungen, für die jeweils die Länge und Breite der Kelch- und der Kronenblätter und der Name der Spezies erfasst wurden. Der Datensatz besteht somit aus insgesamt 150 Beobachtungen mit jeweils fünf Attributen. Mit Hilfe des nnetr-Packages soll ein lineares Klassifikationsmodell erstellt werden. Hierzu wird die Hypothese aufgestellt, dass ein Zusammenhang zwischen der Länge der Kelch- und Kronenblattlänge und der Spezies besteht. Die Kelch- und Kronenblattlänge einer bestimmten Beobachtung werden als unabhängige Variablen deklariert. Die Spezies stellt die abhängige Variable dar.
+In diesem Abschnitt wird die Anwendung des nnetr-Packages am Beispiel einer Klassifikation unter Verwendung des Iris-Datensatzes demonstriert. Der Iris-Datensatz enthält zu drei verschiedenen Gattungen der Schwertlilie jeweils 50 Beobachtungen, für die wiederum jeweils die Länge und Breite der Kelch- und der Kronenblätter sowie der Name der Spezies erfasst wurden. Der Datensatz besteht somit aus insgesamt 150 Beobachtungen mit jeweils fünf Attributen. Mit Hilfe des nnetr-Packages soll ein lineares Klassifikationsmodell erstellt werden. Hierzu wird die Hypothese aufgestellt, dass ein Zusammenhang zwischen der Länge der Kelch- und Kronenblattlänge und der Spezies besteht. Die Kelch- und Kronenblattlänge einer bestimmten Beobachtung werden als unabhängige Variablen deklariert. Die Spezies stellt die abhängige Variable dar.
 
-Die Implementierung ist nur für Anpassungen von Modellen für die Lösung binärer Klassifikationsprobleme konzipiert. Bevor eine Anpassung mit Hilfe der Implementierung durchgeführt werden kann, muss daher zunächst sichergestellt werden, dass der Datensatz für die Zielvariable das korrekte Skalennivau aufweist. Als Zielvariable dient in diesem Fall das Attribut \texttt{Species}:
+Die Implementierung ist nur für die Lösung binärer Klassifikationsprobleme konzipiert. Bevor ein Modell mit Hilfe der Implementierung erstellt werden kann, muss daher zunächst sichergestellt werden, dass der Datensatz für die Zielvariable das korrekte Skalennivau aufweist. Als Zielvariable dient in diesem Beispiel das Attribut **Species**:
 
 ```{r}
 data(iris)
 str(iris)     
 ```
 
-Wie die Zusammenfassung des Datensatzes zeigt, besitzt das Attribut **species** die drei verschiedenen Ausprägungen *setosa*, *versicolor* und *verginica*. Um eine binäre Zielvariable zu erhalten, wird eine entsprechende Teilmenge entnommen. Des Weiteren wird die Anzahl der Attribute auf zwei reduziert, um die Visualisierung der Daten zu erleichtern:
+Wie die Zusammenfassung des Datensatzes zeigt, besitzt das Attribut **Species** die drei verschiedenen Ausprägungen *setosa*, *versicolor* und *virginica*. Um eine binäre Zielvariable zu erhalten, wird eine entsprechende Teilmenge entnommen. Um die Visualisierung der Daten zu erleichtern, wird die Anzahl der Attribute auf zwei reduziert:
 
 ```{r}
 irisSub <- iris[(1:100), c(1, 3, 5)]
@@ -222,7 +222,7 @@ str(irisSub)
 ```
 Da zudem die Konvergenz des verwendeten Algorithmus nur für linear separierbare Daten garantiert werden kann, muss der Datensatz hinsichtlich linearer Separierbarkeit untersucht werden. Die Untersuchung erfolgt durch visuelle Auswertung des Plots der entnommenen Teilmenge [vgl. @2017ciaburro]:
 
-```{r, fig.align='center', out.width = "70%", fig.cap="Plot der Kelch- gegen die Kronenblattlänge in cm. Clusterschema deutet auf lineare Sparierbarkeit der Stichprobe hin."}
+```{r, fig.align='center', out.width = "70%", fig.cap="Clusterschema des Plots der Kelch- gegen die Kronenblattlänge deutet auf lineare Sparierbarkeit der Stichprobe hin"}
 ggplot2::ggplot(irisSub, ggplot2::aes(x = Kelchblattlänge, y = Kronenblattlänge)) +
     ggplot2::geom_point(ggplot2::aes(colour = Spezies, shape = Spezies), size = 3) +
     ggplot2::xlab("Kelchblattlänge in cm") +
@@ -232,7 +232,7 @@ ggplot2::ggplot(irisSub, ggplot2::aes(x = Kelchblattlänge, y = Kronenblattläng
 
 Anhand des Plots ist ersichtlich, dass die Instanzen der entnommenen Teilmenge zwei Cluster bilden, die sich durch eine Gerade voneinander trennen lassen. Das Kriterium der linearen Separierbarkeit ist somit erfüllt.
 
-Für die spätere Untersuchung der Klassifikationsleistung des Modells werdeb die Instanzen innerhalb des Datensatzes zunächst in eine zufällige Reihenfolge gebracht und anschließend in eine Trainings- und einen Testmenge unterteilt:
+Für die spätere Untersuchung der Klassifikationsleistung des Modells werden die Instanzen innerhalb des Datensatzes zunächst in einer zufällig gewählten Reihenfolge angeordnet und anschließend in eine Trainings- und eine Testmenge unterteilt:
 
 ```{r}
 irisShuffled <- irisSub[sample(nrow(irisSub)),]
@@ -253,9 +253,9 @@ Ausführlichere Informationen zu dem Modellierungsergebnis können der Ausgabe d
 ```{r}
 summary(p1)
 ```
-Die Zusammenfassung zeigt, dass ein Netzwerk mit zwei Knoten im input-layer, null Knoten im hidden-layer und einem Knoten im output-layer erstellt wurde. Die piktografische Darstellung darunter repräsentiert eine Beschreibung der Netzwerkstruktur, wobei die numerischen Werte den Kantengewichten der gerichteten Graphen entsprechen und das Symbol *o* dem Ausgangsknoten kennzeichnet.
+Die Zusammenfassung zeigt, dass ein Netzwerk mit zwei Knoten im input-layer, null Knoten im hidden-layer und einem Knoten im output-layer erstellt wurde. Die piktografische Darstellung im unteren Teil der Konsolenausgabe beschreibt die Struktur des Netzes, wobei die numerischen Werte den Kantengewichten der gerichteten Graphen entsprechen und das Symbol *o* den Ausgangsknoten kennzeichnet.
 
-Zur visuellen Überprüfung der Validität des Modellierungsergebnisses wird das lineare Modell der Klassifikationsfunktion mit Hilfe der \texttt{plot()}-Funktion geplottet:
+Zur visuellen Überprüfung der Validität des Modellierungsergebnisses wird der Graph der linearen Klassifikationsfunktion mit Hilfe der \texttt{plot()}-Funktion geplottet:
 
 ```{r, fig.align='center', out.width = "70%", fig.cap="Graph der linearen Funktion (grün) trennt die Instanzen der Stichprobe vollständig bezüglich des Merkmals \\textit{Spezies}"}
 plot(p1) +
@@ -263,9 +263,9 @@ plot(p1) +
     ggplot2::ylab("Kronenblattlänge in cm") +
     ggplot2::ggtitle("Kelch- vs. Kronenblattlänge")
 ```
-Der Graph der Funktion verläuft zwischen den beiden Merkmalsclustern und trennt diese vollständig voneinander, woraus geschlossen wird, dass das Modell valide ist. 
+Der Graph der Funktion verläuft zwischen den beiden Merkmalsclustern und trennt diese vollständig voneinander. Daraus wird geschlossen, dass das Modell valide ist. 
 
-Für die Überprüfung der Klassifikationsleistung wird mit Hilfe der \texttt{predict()}-Funktion auf Grundlage des Klassifikationsmodells die Spezies zu jeder Instanz des Testdatensatzes inferiert und die Leistugn des Modells mittels einer Konfusionsmatrix zusammengefasst:
+Für die Überprüfung der Klassifikationsleistung wird mit Hilfe der \texttt{predict()}-Funktion, auf Grundlage des Klassifikationsmodells, die Spezies zu jeder Instanz des Testdatensatzes inferiert. Anschließend wird die Klassifikationsleistung des Modells durch eine Konfusionsmatrix ermittelt:
 
 ```{r}
 holdOutX <- irisHoldout[, 1:2]
@@ -274,7 +274,7 @@ holdOutY <- factor(holdOutY)
 prediction <- predict(p1, holdOutX)
 caret::confusionMatrix(holdOutY, prediction[,3])
 ```
-Die Konfusionsmatrix zeigt, dass von 30 Klassifizierten Instanzen keine falsch-negativ oder falsch-positiv klassifiziert wurde. Die Genauigkeit des implementierten Klassifikationsverfahrens beträgt somit 100%. Aufgrund des oben angegebenen $p$-Werts wird die Nullhypothese auf einem Signifikanzniveau von 5% verworfen. Das Ergebnis wird daher als statistisch signifikant betrachtet.
+Die Konfusionsmatrix zeigt, dass von 30 klassifizierten Instanzen keine falsch-negativ oder falsch-positiv klassifiziert wurde. Die Genauigkeit des implementierten Klassifikationsverfahrens beträgt somit 100%. Aufgrund des oben angegebenen $p$-Werts wird die Nullhypothese auf einem Signifikanzniveau von 5% verworfen. Das Ergebnis wird daher als statistisch signifikant bewertet.
 
 # Konklusion
 Mit dem **nnetr**-Package wurde die Implementierung eines einfachen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach @1958rosenblatt in R demonstriert. Das implementierte Verfahren ist in der Lage numerische Merkmalsdaten mit einer binären Zielvariablen zu klassifizieren, sofern diese vollständig linear separierbar sind. Mit Hilfe eines Anwendungsbeispiel wurde die Klassifikationsleistung anhand einer Teilmenge des Iris-Datensatzes untersucht. Hierbei wurde festgestellt, dass das implementierte Verfahren die Instanzen des Testdatensatzes mit einer Genauigkeit von 100% klassifiziert. Die Generalisierbarkeit des Modell wird jedoch durch das unerwünschte Konvergenzverhalten bei nicht-linear separierbaren Datensätzen eingeschränkt. Für derartige Szenarien sind daher robuste Klassifikationsverfahren wie der Pocket- oder der Maxover-Algorithmus dem hier vorgestellten Verfahren vorzuziehen.
