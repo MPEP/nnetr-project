@@ -15,7 +15,8 @@
 Print perceptron model.
 }
 \note{
-the weight values are normalized by the euclidean distance and represented as a unit vector
+the weight values are normalized by the euclidean distance and
+represented as a unit vector
 }
 \examples{
 data(iris)

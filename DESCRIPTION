@@ -1,5 +1,5 @@
 Package: nnetr
-Title: The Perceptron Algorithm
+Title: An R Package to build linear classification models 
 Version: 0.0.0.9000
 Authors@R: person("Mario", "Peplinski", email = "m.peplinski@fu-berlin.de", role = c("aut", "cre"))
 Description: A basic implementation of the perceptron algorithm for educational
@@ -15,10 +15,7 @@ Depends: R (>= 3.4.3)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports: ggplot2,
-    stats,
-    caret
+Imports: ggplot2, stats
 RoxygenNote: 6.0.1
-Suggests: knitr,
-    rmarkdown
+Suggests: knitr, rmarkdown, caret
 VignetteBuilder: knitr

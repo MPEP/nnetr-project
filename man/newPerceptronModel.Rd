@@ -7,11 +7,14 @@
 newPerceptronModel(formula, data, learningRate = 1, activation = signum)
 }
 \arguments{
-\item{formula}{formula expression as for regression models, of the form response ~ predictors.}
+\item{formula}{formula expression as for regression models, of the form
+response ~ predictors.}
 
-\item{data}{data frame in which to interpret the variables occurring in formula}
+\item{data}{data frame in which to interpret the variables occurring in
+formula}
 
-\item{learningRate}{integer value determining the magnitude of the weight updates (default 1)}
+\item{learningRate}{integer value determining the magnitude of the weight
+updates (default 1)}
 
 \item{activation}{function to control neuron activation (default signum)}
 }
@@ -31,10 +34,12 @@ newPerceptronModel(formula, data, learningRate = 1, activation = signum)
 Fit a single-layer perceptron model
 }
 \details{
-This function implements a model for linear classification based on the perceptron model. The level of the response variable must be binary.
+This function implements a model for linear classification based on
+the perceptron model. The level of the response variable must be binary.
 }
 \note{
-The learning algorithm for the perceptron model is only guaranteed to converge for linearly separable input data!
+The learning algorithm for the perceptron model is only guaranteed to
+converge for linearly separable input data!
 }
 \examples{
 data(iris)
@@ -46,5 +51,7 @@ formula <- formula(species ~ sepal + petal)
 p1 <- newPerceptronModel(formula, irisSub)
 }
 \references{
-Cristianini, Nello und John Shawe-Taylor (2000): \emph{An Introduction to Support Vector Machines: And Other Kernel-Based Learning Methods}, Cambridge University Press: Cambridge, England.
+Cristianini, Nello und John Shawe-Taylor (2000): \emph{An
+Introduction to Support Vector Machines: And Other Kernel-Based Learning
+Methods}, Cambridge University Press: Cambridge, England.
 }

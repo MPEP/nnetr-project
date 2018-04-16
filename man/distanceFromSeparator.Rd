@@ -12,7 +12,9 @@ distanceFromSeparator(data, weight)
 \item{weight}{vector of numeric values}
 }
 \value{
-If both arguments are vectors of same length, it will return the inner product. If one argument is a vector, it will be promoted to either a row or column matrix.
+If both arguments are vectors of same length, it will return the
+inner product. If one argument is a vector, it will be promoted to either a
+row or column matrix.
 }
 \description{
 Calculate signed distance of point from linear separator

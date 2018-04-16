@@ -1,7 +1,9 @@
 ---
-title: "Perzeptron Algorithmus"
+title: "Nnetr: Ein R Package für die Erstellung linearer Klassifikationsmodelle"
 author: "Mario Peplinski"
-date: "`r Sys.Date()`"
+date: '`r format(Sys.Date(), "%d\\. %B %Y")`'
+documentclass: article
+lang: de-DE
 header-includes:
 - \usepackage[Algorithmus]{algorithm}
 - \usepackage{algpseudocode}
@@ -10,20 +12,20 @@ header-includes:
 - \usepackage{float}
 - \usepackage{caption}
 - \usepackage{import}
-- \usepackage{cite}
-- \usepackage[ngerman]{babel}
 - \usepackage{hyperref}
+- \addto\captionsngerman{\renewcommand{\abstractname}{Abstract}}
+bibliography: bibliography.bib
+csl: harvard-institut-fur-praxisforschung-de.csl
 output:
   pdf_document:
     fig_caption: true
-bibliography: bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-abstract: "Mit dem Perzeptron-Modell schuf Rosenblatt 1958 das grundlegende Konzept eines adaptiven Assoziativspeichers, das als Vorgänger der heutigen künstlichen neuronalen Netze betrachtet werden kann. Künstliche neuronale Netze werden in unterschiedlichsten Kontexten für die Lösung komplexer Problemstellungen wie beispielsweise Handschrift-, Stimm- oder Bilderkennung eingesetzt. Diese Seminararbeit beschreibt die Implementierung eines einlagigen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach @1958rosenblatt in R und demonstriert dessen Anwendung am Beispiel eines einfachen Klassifikationsproblems."
+abstract: >
+  Mit seinem Entwurf des Perzeptron-Modells beschrieb @1958rosenblatt das grundlegende Konzept eines adaptiven Assoziativspeichers, das als Vorläufer der heutigen künstlichen neuronalen Netze betrachtet werden kann. Künstliche neuronale Netze werden in unterschiedlichsten Kontexten für die Lösung komplexer Problemstellungen wie beispielsweise Handschrift-, Stimm- oder Bilderkennung eingesetzt. Diese Seminararbeit beschreibt die Implementierung eines einlagigen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach @1958rosenblatt in R und demonstriert dessen Anwendung am Beispiel eines einfachen Klassifikationsproblems.
 ---
-
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -33,8 +35,9 @@ knitr::opts_chunk$set(
   fig.pos = 'H'
 )
  ```
+
 # Einführung
-Künstliche neuronale Netze bilden die modelltechnische Grundlage für einige der aktuell am stärksten wachsenden Forschungsfelder im Kontext der künstlichen Intelligenz allgemein und insbesondere auf dem Teilgebiet des maschinellen Lernens. Der seit 2006 zu beobachtende Popularitätszuwachs ist vorallem auf die Entdeckung effizienterer Trainingsstrategien zurückzuführen, die seither unter dem Begriff Deep Learning eine eigene Klasse innerhalb der Disziplin des maschinellen Lernens bilden. Während das Ziel bei früheren Modellierungsansätzen noch darin bestand die biologische Funktionsweise des Gehirns möglichst naturgetreu nachzuempfinden, hat sich die moderne Interpretation des künstlichen neuronalen Netzes bereits stark von der neurowissenschaftlichen Perspektive zu Gunsten einer abstrakteren Sichtweise der vermuteten Zusammenhänge entfernt [vgl. @2016goodfellow].
+Künstliche neuronale Netze bilden die modelltechnische Grundlage für einige der aktuell am stärksten wachsenden Forschungsfelder im Kontext der künstlichen Intelligenz allgemein und insbesondere auf dem Teilgebiet des maschinellen Lernens. Der seit 2006 zu beobachtende Popularitätszuwachs ist unteranderem auf die Entdeckung effizienterer Trainingsstrategien zurückzuführen, die seither unter dem Begriff Deep Learning eine eigene Klasse innerhalb der Disziplin des maschinellen Lernens bilden [vgl. @2016goodfellow]. Während das Ziel bei früheren Modellierungsansätzen noch darin bestand die biologische Funktionsweise des Gehirns möglichst naturgetreu nachzuempfinden, hat sich die moderne Interpretation des künstlichen neuronalen Netzes bereits stark von der neurowissenschaftlichen Perspektive zu Gunsten einer abstrakteren Sichtweise der vermuteten Zusammenhänge entfernt [vgl. @2016goodfellow].
 
 @1996rojas hebt bei seiner Beschreibung des Modells insbesondere die funktionalen Aspekte hervor, indem er ein künstliches neuronales Netz als Berechnungsmodell interpretieren, dessen minimaler Anweisungssatz zur Implementierung primitiver Funktionen in den Knoten des Netzwerks enthalten ist und dessen Kompositionsregeln implizit aus den Verbindungsstrukturen abgeleitet werden, die die Knoten untereinander besitzen. Jedes einzelne Netzwerkelement entspricht somit einer primitiven Funktion und die Gesamtheit aller Netzwerkelemente kann als Netzwerk primitiver Funktionen betrachtet werden. Konkrete Implementierungen künstlicher neuronaler Netze unterscheiden sich in dieser Modellinterpretation in der Regel nur bezüglich der verwendeten primitiven Funktionen, der Struktur der Verbindungen zwischen den Netzwerkelementen oder dem Zeitpunkt der Informationsübertragung zwischen den Netzwerkknoten [vgl. @1996rojas].
 
@@ -186,7 +189,7 @@ Während des Trainingsprozesses wird der Rückgabewert der Aktivierungsfunktion 
 
 # nnetr
 ## Installation
-Die **netr** Software ist ein Zusatzpaket für die Statistiksoftware R ($\leq$ 3.4.4) und kann aus dem beigefügten bundle mit der Dateiendung \texttt[.tar.gz} heraus installiert werden. Zusätzlich zu der Basisinstallation der R-Software werden die Pakete *ggplot2* und *caret* benötigt. Sobald das **netr**-Paket installiert wurde, kann es mit Hilfe der folgenden Eingabe geladen werden:
+Die **nnetr** Software ist ein Zusatzpaket für die Statistiksoftware R ($\leq$ 3.4.4) und kann aus dem beigefügten bundle mit der Dateiendung \texttt{.tar.gz} heraus installiert werden. Zusätzlich zu der Basisinstallation der R-Software werden die Pakete *ggplot2* und *caret* benötigt. Sobald das **nnetr**-Paket installiert wurde, kann es mit Hilfe der folgenden Eingabe geladen werden:
 
 ```{r eval=FALSE}
 library(nnetr)
@@ -276,7 +279,7 @@ caret::confusionMatrix(holdOutY, prediction[,3])
 ```
 Die Konfusionsmatrix zeigt, dass von 30 klassifizierten Instanzen keine falsch-negativ oder falsch-positiv klassifiziert wurde. Die Genauigkeit des implementierten Klassifikationsverfahrens beträgt somit 100%. Aufgrund des oben angegebenen $p$-Werts wird die Nullhypothese auf einem Signifikanzniveau von 5% verworfen. Das Ergebnis wird daher als statistisch signifikant bewertet.
 
-# Konklusion
-Mit dem **nnetr**-Package wurde die Implementierung eines einfachen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach @1958rosenblatt in R demonstriert. Das implementierte Verfahren ist in der Lage numerische Merkmalsdaten mit einer binären Zielvariablen zu klassifizieren, sofern diese vollständig linear separierbar sind. Mit Hilfe eines Anwendungsbeispiel wurde die Klassifikationsleistung anhand einer Teilmenge des Iris-Datensatzes untersucht. Hierbei wurde festgestellt, dass das implementierte Verfahren die Instanzen des Testdatensatzes mit einer Genauigkeit von 100% klassifiziert. Die Generalisierbarkeit des Modell wird jedoch durch das unerwünschte Konvergenzverhalten bei nicht-linear separierbaren Datensätzen eingeschränkt. Für derartige Szenarien sind daher robuste Klassifikationsverfahren wie der Pocket- oder der Maxover-Algorithmus dem hier vorgestellten Verfahren vorzuziehen.
+# Zusammenfassung
+Mit dem **nnetr**-Package wurde die Implementierung eines einfachen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach @1958rosenblatt in R demonstriert. Das implementierte Verfahren ist in der Lage numerische Merkmalsdaten mit einer binären Zielvariablen zu klassifizieren, sofern diese vollständig linear separierbar sind. Mit Hilfe eines Anwendungsbeispiel wurde die Klassifikationsleistung anhand einer Teilmenge des Iris-Datensatzes untersucht. Hierbei wurde festgestellt, dass das implementierte Verfahren die Instanzen des Testdatensatzes mit einer Genauigkeit von 100% klassifiziert. Die Generalisierbarkeit des Modells wird jedoch durch das unerwünschte Konvergenzverhalten bei nicht-linear separierbaren Datensätzen eingeschränkt. Für derartige Szenarien sind daher robuste Klassifikationsverfahren wie der Pocket- oder der Maxover-Algorithmus dem hier vorgestellten Verfahren vorzuziehen.
 
 # Literaturverzeichnis

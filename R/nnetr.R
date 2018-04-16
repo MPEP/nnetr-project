@@ -28,7 +28,9 @@ signum <- function(data, weight) {
 #' 
 #' @param data matrix or vector of numeric values
 #' @param weight vector of numeric values
-#' @return If both arguments are vectors of same length, it will return the inner product. If one argument is a vector, it will be promoted to either a row or column matrix.
+#' @return If both arguments are vectors of same length, it will return the
+#' inner product. If one argument is a vector, it will be promoted to either a
+#' row or column matrix.
 #' @examples
 #' vec1 <- c(1, 2, 3)
 #' vec2 <- c(4, 5, 6)
@@ -42,12 +44,17 @@ distanceFromSeparator <- function(data, weight) {
 #' Generate perceptron model.
 #'
 #' @description Fit a single-layer perceptron model
-#' @param formula formula expression as for regression models, of the form response ~ predictors. 
-#' @param data data frame in which to interpret the variables occurring in formula
-#' @param learningRate integer value determining the magnitude of the weight updates (default 1)
+#' @param formula formula expression as for regression models, of the form
+#' response ~ predictors. 
+#' @param data data frame in which to interpret the variables occurring in
+#' formula
+#' @param learningRate integer value determining the magnitude of the weight
+#' updates (default 1)
 #' @param activation function to control neuron activation (default signum)
-#' @details This function implements a model for linear classification based on the perceptron model. The level of the response variable must be binary.
-#' @note The learning algorithm for the perceptron model is only guaranteed to converge for linearly separable input data!
+#' @details This function implements a model for linear classification based on
+#' the perceptron model. The level of the response variable must be binary.
+#' @note The learning algorithm for the perceptron model is only guaranteed to
+#' converge for linearly separable input data!
 #' @return
 #' \describe{
 #' \item{w}{vector of best weight values found}
@@ -59,7 +66,9 @@ distanceFromSeparator <- function(data, weight) {
 #' \item{y}{vector of response values}
 #' \item{options}{list of character representation of modelling options}
 #' }
-#' @references Cristianini, Nello und John Shawe-Taylor (2000): \emph{An Introduction to Support Vector Machines: And Other Kernel-Based Learning Methods}, Cambridge University Press: Cambridge, England.
+#' @references Cristianini, Nello und John Shawe-Taylor (2000): \emph{An
+#' Introduction to Support Vector Machines: And Other Kernel-Based Learning
+#' Methods}, Cambridge University Press: Cambridge, England.
 #' @examples
 #' data(iris)
 #' head(iris, n=20)
@@ -70,14 +79,17 @@ distanceFromSeparator <- function(data, weight) {
 #' p1 <- newPerceptronModel(formula, irisSub)
 #' @import stats
 #' @export
-newPerceptronModel <- function(formula, data, learningRate = 1, activation = signum) {
+newPerceptronModel <- function(formula, data, learningRate = 1,
+                               activation = signum) {
     if(!is.data.frame(data)) stop("Input data must be of type dataframe.")
 
     # model matrix
     mf <- model.frame(formula, data)
     x <- model.matrix(formula, mf)
     respondName <- as.character(attr(terms(mf), "variables"))[2]
-    if(nlevels(data[respondName] != 2)) stop("Invalid number of levels in response variable detected. Response variable must be binary!")
+    if(nlevels(data[respondName] != 2))
+        stop("Invalid number of levels inresponse variable detected.
+Response variable must be binary!")
 
     # response vector
     y <- get(respondName, mf)
@@ -125,7 +137,8 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = sig
     perceptronOut$x <- x
     perceptronOut$y <- y
     perceptronOut$yMapping <- unique(y)
-    perceptronOut$options <- list(learningRate, as.character(substitute(activation)))
+    perceptronOut$options <- list(learningRate,
+                                  as.character(substitute(activation)))
     names(perceptronOut$options) <- c("Learning rate", "Activation function")
     return(perceptronOut)
 }                
@@ -135,7 +148,8 @@ newPerceptronModel <- function(formula, data, learningRate = 1, activation = sig
 #'
 #' @param x an object of class \code{perceptron} as returned by perceptron. 
 #' @param ... arguments passed to or from other methods.
-#' @note the weight values are normalized by the euclidean distance and represented as a unit vector
+#' @note the weight values are normalized by the euclidean distance and
+#' represented as a unit vector
 #' @examples
 #' data(iris)
 #' head(iris, n=20)
@@ -224,7 +238,8 @@ summary.perceptron <- function(object, ...) {
 print.summary.perceptron <- function(x, ...) {
     networkDescription <- paste(x$input-1, x$hidden, x$output, sep = "-")
     cat("\nResult:\n")
-    cat("A", networkDescription, "network with", x$input, "weights\n", sep = " ")
+    cat("A", networkDescription, "network with", x$input, "weights\n",
+        sep = " ")
     cat("\n")
     print(coef(x))
     cat("\n\n")    
@@ -256,7 +271,8 @@ print.summary.perceptron <- function(x, ...) {
 #' @import ggplot2 
 #' @export
 plot.perceptron <- function(x, ...) {
-    if(ncol(x$x) != 3) stop("Plot functionality is only available for 2d input data")
+    if(ncol(x$x) != 3) stop("Plot functionality is only available for 2d input
+data")
     w <- x$weights
     respond <- data.frame(x$y[,2], stringsAsFactors = FALSE)
     respond <- respond[,1,drop = FALSE]
@@ -264,10 +280,12 @@ plot.perceptron <- function(x, ...) {
     respondName <- x$respondName
     intercept <- -w[1] / w[3]
     slope <- -w[2] / w[3]
-    df <- data.frame(x = x$x[,2], y = x$x[,3], respond = respond, stringsAsFactors = FALSE)
+    df <- data.frame(x = x$x[,2], y = x$x[,3], respond = respond,
+                     stringsAsFactors = FALSE)
 
     ggplot(df, aes(x = df$x, y = df$y)) +
-        geom_point(aes_(color = as.name(respondName), shape = as.name(respondName)), size = 3) +
+        geom_point(aes_(color = as.name(respondName),
+                        shape = as.name(respondName)), size = 3) +
         geom_abline(aes(intercept = intercept, slope = slope), col = "green")
 }
     
@@ -298,7 +316,8 @@ predict.perceptron <- function(object, newdata, ...) {
     rownames(input) <- c()
     colnames(input)[1] <- "bias"
     predictions <- signum(input, w)
-    predictions <- as.factor(ifelse(predictions == yMapping[1,1], yMapping[1,2], yMapping[2,2]))
+    predictions <- as.factor(ifelse(predictions == yMapping[1,1], yMapping[1,2],
+                                    yMapping[2,2]))
     outputFrame <- data.frame(input[,-1], prediction = predictions)
     outputFrame
 }
