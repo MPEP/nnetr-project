@@ -20,7 +20,7 @@ output:
   pdf_document:
     fig_caption: true
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Nnetr: Ein R Package für die Erstellung linearer Klassifikationsmodelle}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 abstract: >
@@ -37,53 +37,86 @@ knitr::opts_chunk$set(
  ```
 
 # Einführung
-Künstliche neuronale Netze bilden die modelltechnische Grundlage für einige der aktuell am stärksten wachsenden Forschungsfelder im Kontext der künstlichen Intelligenz allgemein und insbesondere auf dem Teilgebiet des maschinellen Lernens. Der seit 2006 zu beobachtende Popularitätszuwachs ist unteranderem auf die Entdeckung effizienterer Trainingsstrategien zurückzuführen, die seither unter dem Begriff Deep Learning eine eigene Klasse innerhalb der Disziplin des maschinellen Lernens bilden [vgl. @2016goodfellow]. Während das Ziel bei früheren Modellierungsansätzen noch darin bestand die biologische Funktionsweise des Gehirns möglichst naturgetreu nachzuempfinden, hat sich die moderne Interpretation des künstlichen neuronalen Netzes bereits stark von der neurowissenschaftlichen Perspektive zu Gunsten einer abstrakteren Sichtweise der vermuteten Zusammenhänge entfernt [vgl. @2016goodfellow].
+Künstliche neuronale Netze bilden die modelltechnische Grundlage für einige der
+aktuell am stärksten wachsenden Forschungsfelder auf dem Gebiet des maschinellen Lernens. Der seit 2006 zu beobachtende Popularitätszuwachs ist unteranderem auf die Entdeckung effizienterer Trainingsstrategien zurückzuführen, die seither unter dem Begriff Deep Learning eine eigene Klasse innerhalb der Disziplin des maschinellen Lernens bilden [vgl. @2016goodfellow]. Während das Ziel bei früheren Modellierungsansätzen noch darin bestand die biologische Funktionsweise des Gehirns möglichst naturgetreu nachzuempfinden, hat sich die moderne Interpretation des künstlichen neuronalen Netzes bereits stark von der neurowissenschaftlichen Perspektive zu Gunsten einer abstrakteren Sichtweise entfernt [vgl. @2016goodfellow].
 
-@1996rojas hebt bei seiner Beschreibung des Modells insbesondere die funktionalen Aspekte hervor, indem er ein künstliches neuronales Netz als Berechnungsmodell interpretieren, dessen minimaler Anweisungssatz zur Implementierung primitiver Funktionen in den Knoten des Netzwerks enthalten ist und dessen Kompositionsregeln implizit aus den Verbindungsstrukturen abgeleitet werden, die die Knoten untereinander besitzen. Jedes einzelne Netzwerkelement entspricht somit einer primitiven Funktion und die Gesamtheit aller Netzwerkelemente kann als Netzwerk primitiver Funktionen betrachtet werden. Konkrete Implementierungen künstlicher neuronaler Netze unterscheiden sich in dieser Modellinterpretation in der Regel nur bezüglich der verwendeten primitiven Funktionen, der Struktur der Verbindungen zwischen den Netzwerkelementen oder dem Zeitpunkt der Informationsübertragung zwischen den Netzwerkknoten [vgl. @1996rojas].
+@1996rojas hebt bei seiner Beschreibung des Modells insbesondere die funktionalen Aspekte hervor, indem er ein künstliches neuronales Netz als Berechnungsmodell interpretiert, dessen minimaler Anweisungssatz zur Implementierung primitiver Funktionen in den Knoten des Netzwerks enthalten ist und dessen Kompositionsregeln implizit aus den Verbindungsstrukturen abgeleitet werden, die die Knoten untereinander besitzen. Jedes einzelne Netzwerkelement entspricht dabei einer primitiven Funktion und die Gesamtheit aller Netzwerkelemente kann als Netzwerk primitiver Funktionen betrachtet werden. Konkrete Implementierungen künstlicher neuronaler Netze unterscheiden sich in dieser Modellinterpretation in der Regel nur bezüglich der verwendeten primitiven Funktionen, der Struktur der Verbindungen zwischen den Netzwerkelementen oder dem Zeitpunkt der Informationsübertragung zwischen den Netzwerkknoten [vgl. @1996rojas].
 
-Neuronale Netze werden aufgrund ihrer Funktionsweise der Klasse der sogenannten überwachten Lernverfahren zugerechnet. Kennzeichnend für Verfahren dieser Klasse ist einerseits, dass der Lernprozess unter dem Gesichtspunkt einer konkreten Zielsetzung vollzogen wird, welche im Vorfeld bereits bekannt ist, und andererseits, dass der Trainingsdatensatz Informationen über die Zielvariable enthält. Wenn ein entsprechender Trainingsdatensatz verfügbar ist, lassen sich auf Grundlage der darin enthalteten Informationen eine Reihe von Hypothesen bezüglich der vorliegende Problemstellung aufstellen, wobei der Typus des funktionalen, linearen Zusammenhangs die einfachste und am weitesten erforschte Hypothesenform darstellt [vgl. @2000christianini].
+Neuronale Netze werden aufgrund ihrer Funktionsweise der Klasse der sogenannten
+überwachten Lernverfahren zugerechnet. Kennzeichnend für Verfahren dieser Klasse
+ist einerseits, dass der Lernprozess unter dem Gesichtspunkt einer konkreten
+Zielsetzung vollzogen wird, welche im Vorfeld bereits bekannt ist und
+andererseits, dass der Trainingsdatensatz Informationen über die Zielvariable
+enthält. Wenn ein entsprechender Trainingsdatensatz verfügbar ist, lassen sich
+auf Grundlage der darin enthaltenen Informationen eine Reihe von Hypothesen bezüglich vermuteter Zusammenhänge aufstellen, wobei der Typus des funktionalen, linearen Zusammenhangs die einfachste und am weitesten erforschte Hypothesenform darstellt [vgl. @2000christianini].
 
-Mit dem \texttt{nnetr}-Package soll die Implementierung eines linearen Klassifikationsverfahrens auf Grundlage eines einlagigen, neuralen Netzes in R demonstriert werden. Das einlagige, neuronale Netz welches auch als einlagiges Perzeptron bezeichnet wird, besteht lediglich aus einer Reihe von Eingangsknoten und einem einzelnen Ausgangsknoten und stellt damit die einfachste Ausprägung eines neuronalen Netzes dar. Das Ziel des Klassifikationsverfahrens besteht darin, unter Verwendung eines vorgegebenen Trainigsdatensatzes iterativ eine lineare Funktion zu erlernen, die bei Eingabe eine Merkmalskombination die zugehörige Instanz einer von zwei bereits bekannten Klassen zuordnet.
+Mit dem \texttt{nnetr}-Package soll die Implementierung eines linearen
+Klassifikationsverfahrens auf Grundlage eines einlagigen neuralen Netzes in R
+demonstriert werden. Das einlagige neuronale Netz, welches auch als einlagiges
+Perzeptron bezeichnet wird, besteht lediglich aus einer Reihe von Eingangsknoten
+und einem einzelnen Ausgangsknoten und stellt damit die einfachste Ausprägung
+eines neuronalen Netzes dar. Ziel des vorgestellten Verfahrens ist es, unter Verwendung eines vorgegebenen Trainingsdatensatzes, iterativ eine lineare Funktion zu erlernen, die bei Eingabe einer Merkmalskombination die zugehörige Instanz einer von zwei bereits bekannten Klassen zuordnet.
 
 # Das klassische Perzeptron-Modell
-Das klassische Perzeptron-Modell nach @1958rosenblatt beschreibt ein hypothetisches System zur Verarbeitung sensorischer Reize. Das System besteht aus einer Menge hierarchisch organisierter Zellen, die in Schichten angeordnet sind und jeweils über eine oder mehrere eingehende und ausgehende Verbindung zu Zellen in vor- oder nachgelagerten Schichten verfügen. Die Intention hinter der Entwicklung dieses Modell bestand darin, die fundamentalen Eigenschaften intelligenter Systeme zu illustrieren, weshalb sich die Darstellung strukturell stark am Aufbau des Nervensystems biologischer Lebewesen orientiert.
+Das klassische Perzeptron-Modell nach @1958rosenblatt beschreibt ein hypothetisches System zur Verarbeitung sensorischer Reize. Das System besteht aus einer Menge hierarchisch organisierter Zellen, die in Schichten angeordnet sind und jeweils über eine oder mehrere eingehende und ausgehende Verbindungen zu Zellen in vor- oder nachgelagerten Schichten verfügen. Die Intention bei der Entwicklung dieses Modell bestand darin, die fundamentalen Eigenschaften intelligenter Systeme zu illustrieren, weshalb sich die Darstellung strukturell stark am Aufbau des Nervensystems biologischer Lebewesen orientiert.
 
-Im Kontext des klassischen Perzeptron-Modells wird ein betrachtetes Zellnetzwerk in drei hintereinander angeordnete Wirkungsräume beziehungsweise Schichten unterteilt [vgl. @1958rosenblatt]:
+Im klassischen Perzeptron-Modell wird ein Netzwerk aus benachbarten Zellen in drei hintereinander angeordnete Wirkungsräume, beziehungsweise Schichten unterteilt [vgl. @1958rosenblatt]:
 
-1. eine Projektionsoberfläche, welche in Anlehnung an das photosensorische System biologischer Organismen als Retina bezeichnet wird
-2. eine Assoziationsschicht, die ihrerseits wiederum in einen Projektions- und einen Assoziationsbereich unterteilt wird
-3. eine Reaktionsschicht, in der sich die Wirkung des Eingangssignals manifestiert
+1. eine Projektionsoberfläche welche in Anlehnung an das photosensorische System biologischer Organismen als Retina bezeichnet wird
+2. eine Assoziationsschicht die ihrerseits wiederum in einen Projektions- und einen Assoziationsbereich unterteilt wird
+3. eine Reaktionsschicht in der sich die Wirkung des Eingangssignals manifestiert
 
 \begin{figure}[h]
 \centering
 \scalebox{.7}{
 	\subimport{./figures/}{perceptron.pdf_tex}
 }
-\caption{Klassisches Perzeptron-Modell (eigene Darstellung in Anlehnung an Rojas (1996))}
+\caption{Klassisches Perzeptron-Modell (eigene Darstellung in Anlehnung an Rojas
+(1996))}
+\label{fig:perceptron_classic}
 \end{figure}
 
-Von einer Projektionsoberfläche werden, als Reaktion auf die Präsenz eines externen Stimulus, binäre Signale an die Zellen der nachgelagerte Projektionsschicht gesendet. Die Informationen, die dabei von der Singalquelle an das Netzwerk übertragen werden, können, je nach Funktion der Netzwerkelemente, sowohl eine inhibitorische als auch eine exzitatorische Wirkung entfalten. Die Zellen in der Projektionsschicht fungieren als deterministische, nicht-adaptive Rechnereinheiten, welche die eingehenden Signale interpretieren und, in Abhängigkeit von der Intensität der eingehenden Signale, ihrerseits wiederum einen Impuls an die Zellen der nachgelagerten Assoziationsschicht senden [vgl. @1958rosenblatt].
+Von einer Projektionsoberfläche werden, als Reaktion auf die Präsenz eines
+externen Stimulus, binäre Signale an die Zellen des nachgelagerten
+Projektionsbereichs gesendet. Die Informationen, die dabei von der Signalquelle
+an das Netzwerk übertragen werden, können, je nach Funktion der
+Netzwerkelemente, sowohl eine inhibitorische als auch eine exzitatorische
+Wirkung entfalten. Die Zellen im Projektionsbereich fungieren als deterministische, nicht-adaptive Rechnereinheiten, welche die eingehenden Signale interpretieren und, in Abhängigkeit von der Intensität der eingehenden Signale, ihrerseits wiederum einen Impuls an die Zellen des nachgelagerten Assoziationsbereichs senden [vgl. @1958rosenblatt].
 
-Die Auslösung der Signalübertragung von den Zellen in der Projektionsschicht an die Zellen in der Assoziationsschicht wird mittels einer zellindividuellen Reizschwelle gesteuert. Wenn die Summe aller eingehendenen inhibitorischen und exzitatorischen Signale gleich oder höher als die jeweilige Reizschwelle der betreffenden Zelle ist, wird eine Signalübertragung ausgelöst. Andernfalls bleibt die Signalübertragung aus und der Initialreiz entfaltet keine Wirkung in der Reaktionsschicht.
+Die Auslösung der Signalübertragung von den Zellen im Projektionsbereich an die
+Zellen im Assoziationsbereich wird mittels einer zellindividuellen Reizschwelle
+gesteuert. Wenn die Summe aller eingehendenen inhibitorischen und
+exzitatorischen Signale gleich oder höher ist als die jeweilige Reizschwelle der betreffenden Zelle, wird eine Signalübertragung ausgelöst. Andernfalls bleibt die Signalübertragung aus und der Initialreiz entfaltet keine Wirkung in der Reaktionsschicht.
 
-Der Informationsfluss innerhalb des Netzwerks verläuft zwischen der Projektionsoberfläche und der Assoziationsschicht unidirektional in Richtung der Assoziationsschicht. Zwischen Assoziations- und Reaktionsschicht besteht hingegen eine bidirektionale Verbindung, wodurch eine Rückmeldung der Zellen in der Reaktionsschicht an die Zellen der vorgelagerten Assoziationsschicht ermöglicht wird. Die Wirkung der Rückmeldung kann dabei prinzipiell entweder exzitatorisch auf die signalgebenden Zellen in der Assoziationsschicht wirken oder eine inhibitorische Wirkung auf alle Zellen in der vorgeschalteten Schicht entfalten, wobei [1958rosenblatt] letzterem Wirkungsmechanismus in seinem Modell aus pragmatischen Gründen den Vorzug gab. Dieser Rückwirkungsmechanismus, der auch als Rückpropagierung bezeichnet wird, bildet die Voraussetzung für die Lernfähigkeit des Netzwerks.
+Der Informationsfluss innerhalb des Netzwerks verläuft zwischen der
+Projektionsoberfläche und der Assoziationsschicht unidirektional in Richtung der
+Assoziationsschicht. Zwischen Assoziations- und Reaktionsschicht besteht
+hingegen eine bidirektionale Verbindung, wodurch eine Rückmeldung der Zellen in
+der Reaktionsschicht an die Zellen der vorgelagerten Assoziationsschicht
+ermöglicht wird. Die Wirkung der Rückmeldung kann dabei prinzipiell entweder
+exzitatorisch auf die signalgebenden Zellen in der Assoziationsschicht wirken
+oder eine inhibitorische Wirkung auf alle Zellen in der vorgeschalteten Schicht
+entfalten, wobei @1958rosenblatt in seinem Modell letzterem Wirkungsmechanismus
+aus pragmatischen Gründen den Vorzug gab. Dieser Rückwirkungsmechanismus, der auch als Rückpropagierung bezeichnet wird, bildet die Voraussetzung für die Lernfähigkeit des Netzwerks.
 
-Der eigentliche Lernvorgang vollzieht sich im Verbindungsbereich zwischen Assoziations- und Reaktionsschicht. Da sich die Zustände der Zellen in der Reaktionsschicht gegenseitig ausschließen, kann eine Reaktion im oben beschriebenen Zellsystem nur durch eine der verfügbaren Zellen in der Reaktionsschicht abgebildet werden. Tritt in einem System mit zwei Reaktionszellen $R_1$ und $R_2$ die Reaktion $R_1$ ein, wird durch dieses Ereignis das Eintreten der Reaktion $R_2$ inhibitiert und umgekehrt [vgl. @1958rosenblatt]. Wenn die Summe aller Impulse die in der Reaktionszelle $R_1$ eingehen größer ist als die Summe der Impulse die bei Zelle $R_2$ eingehen, wird $R_1$ das gesamte verfügbare Aktionspotential absorbieren und dadurch die Aktivierung von $R_2$ hemmen.
+Der eigentliche Lernvorgang vollzieht sich im Verbindungsbereich zwischen Assoziations- und Reaktionsschicht. Da sich die Zustände der Zellen in der Reaktionsschicht gegenseitig ausschließen, kann eine Reaktion im oben beschriebenen Zellsystem nur durch eine der verfügbaren Zellen in der Reaktionsschicht abgebildet werden. Tritt in einem System mit zwei Reaktionszellen $R_1$ und $R_2$ die Reaktion $R_1$ ein, wird durch dieses Ereignis das Eintreten der Reaktion $R_2$ inhibitiert und umgekehrt [vgl. @1958rosenblatt]. Wenn die Summe aller Impulse die bei der Reaktionszelle $R_1$ eingehen größer ist als die Summe der Impulse die bei Zelle $R_2$ eingehen, wird $R_1$ das gesamte verfügbare Aktionspotential absorbieren und dadurch die Aktivierung von $R_2$ hemmen.
 
 Nach dem Eintritt von $R_1$ wird anschließend mittels Rückpropagation sichergestellt, dass die Zellen der Assoziationsschicht, die an der Auslösung der Reaktion $R_1$ beteiligt waren, eine Leistungsverstärkung erfahren. Dies hat den Effekt, dass bei der nächsten Aktivierung der entsprechenden Zellen ein stärkeres Ausgangssignal erzeugt wird, was wiederum den erneuten Eintritt von $R_1$ wahrscheinlicher und den Eintritt von $R_2$ unwahrscheinlicher macht [vgl. @1958rosenblatt]. Ähnliche Signale auf der Projektionsoberfläche verursachen in der Folge ähnliche Aktivierungsmuster in der Assoziationsschicht und führen nach wiederholter Exposition des Netzwerks gegenüber wiederkehrenden, externen Reizen zu identischen Reaktionen. Das Netzwerk ist nun in der Lage auf Grundlage der erlernten Aktivierungsmuster selbstständig eine Klassifikation der Eingangssignale vorzunehmen.
 
 # Mathematische Interpretation
 ## Modell
-Ausgehend von dem oben beschriebenen Modellentwurf nach @1958rosenblatt, kann die Wirkungsweise eines neuronalen Netzes mathematisch auch als Zuordnungsfunktion interpretiert werden, die einer bestimmten Anzahl $n$ reeller Werte $(x_1, x_2, ..., x_n)$, welche die Eingangssignale repräsentieren, eine bestimmte Anzahl $m$ reeller Werte $(y_1, y_2, ..., y_m)$ zuordnet, welche die Ausgangssignale des Netzes darstellen. Die Aufgabe des künstlichen neuronalen Netzes besteht dabei in der Modellierung einer Abbildungsfunktion $F: \mathbb{R}^n \rightarrow \mathbb{R}^m$, welche letztlich das Ergebnis des Lernprozesses darstellt [vgl. @1996rojas].
+Ausgehend von dem oben beschriebenen Modellentwurf nach @1958rosenblatt, kann die Funktionsweise eines neuronalen Netzes mathematisch auch als Zuordnungsfunktion interpretiert werden, die einer bestimmten Anzahl $n$ reeller Werte $(x_1, x_2, ..., x_n)$, welche die Eingangssignale repräsentieren, eine bestimmte Anzahl $m$ reeller Werte $(y_1, y_2, ..., y_m)$ zuordnet, welche die Ausgangssignale des Netzes darstellen. Die Aufgabe des künstlichen neuronalen Netzes besteht dabei in der Modellierung einer Abbildungsfunktion $F: \mathbb{R}^n \rightarrow \mathbb{R}^m$, welche letztlich das Ergebnis des Lernprozesses darstellt [vgl. @1996rojas].
 
 \graphicspath{{./figures/}}
 \begin{figure}[h]
 \centering
 \subimport{./figures/}{comp.pdf_tex}
-\caption{Interpretation eines neuronalen Netzes als Zuordnungsfunktion für $n$ Argumente (eigene Darstellung in Anlehnung an Rojas (1996))}
+\caption{Interpretation eines neuronalen Netzes als Zuordnungsfunktion für $n$
+Argumente (eigene Darstellung in Anlehnung an Rojas (1996))}
+\label{fig:perceptron}
 \end{figure}
 
-Die Implementierung des Lernmechanismus erfolgt mittels der Einführung adaptiver, numerischer Gewichtungen der Eingangssignale, deren Summe, analog zu den Zellen der Assoziationsschicht im klassischen Perzeptron Modell, durch eine nachgelagerte Berechnungskomponente ermittelt und mit einem vordefinierten Schwellwert verglichen wird. Wenn die Summe der gewichteten Eingangssignale einen bestimmten Schwellwert übersteigt, wird eine Signalübertragung an die nächste Berechnungseinheit ausgelöst. Dieser Zusammenhang entspricht einer Summenrelation gegeben durch
+Die Implementierung des Lernmechanismus erfolgt mittels der Einführung adaptiver, numerischer Gewichtungen der Eingangssignale, deren Summe, analog zu den Zellen der Assoziationsschicht im klassischen Perzeptron-Modell, durch eine nachgelagerte Berechnungskomponente ermittelt und mit einem vordefinierten Schwellwert verglichen wird. Wenn die Summe der gewichteten Eingangssignale einen bestimmten Schwellwert übersteigt, wird eine Signalübertragung an die nächste Berechnungseinheit ausgelöst. Dieser Zusammenhang entspricht einer Summenrelation gegeben durch
 
 \[z = \sum_{i=1}^m w_{i}x_{i}\] 
 
@@ -100,7 +133,7 @@ ausgedrückt werden, wobei
 w_i = [w_{1} ... w_{n}]^T
 \] 
 
-der Spaltenform des Vektors der Gewichtungskoeffizienten entspricht, welcher im Folgenden als Gewichtungsvektor bezeichnet wird, und 
+der Spaltenform des Vektors der Gewichtungskoeffizienten entspricht, welcher im Folgenden als Gewichtungsvektor bezeichnet wird und 
 
 \[
 x_i = [x_{1} ... x_{n}]^T
@@ -113,7 +146,14 @@ Die Aufgabe der Aktivierungsfunktion besteht darin, die Stärke des Ausgangssign
 
 <!-- Als Aktivierungsfunktion kommen je nach Modellanforderungen verschiedene nicht-lineare Funktionen in Frage, wobei für die Verwendung im Zusammenhang mit modernen Interpretationen des neuronalen Netzes, die ReLU-Funktion laut @2016goodfellow als Standardempfehlung betrachtet werden kann. Ein Grund hierfür ist, dass die ReLU-Funktion einen Wertebereich von 0 bis $\infty$ besitzt und daher, anders als bei anderen Vertretern aus der Klasse der nicht-linearen Funktionen, wie der Sigmoid- oder der Hyperbelfunktion, nicht das Problem schwindender Gradienten auftritt, welches wiederum zu Konvergenzproblemen führen kann.  -->
 
-Da die vorliegende Implementierung des Perzeptron-Modells der Demonstration eines Ansatzes zur Lösung binärer Klassifikationsprobleme bei linear separierbaren Datensätzen dient und die Konvergenz des verwendeten Algorithmus für linear separierbare Datensätze belegt ist, erfolgt die Umsetzung unter Verwendung einer einfachen Signumfunktion. Die Signumfunktion ist eine reelle Funktion die auf ihrem Wertebereich stückweise konstant und linear ist. Sie ordnet jedem Element $x$, dessen Wert kleiner als $0$ ist, den Wert $-1$ und jedem $x$, dessen Wert größer oder gleich $0$ ist, den Wert $+1$ zu:
+Da die vorliegende Implementierung des Perzeptron-Modells der Demonstration
+eines Ansatzes zur Lösung binärer Klassifikationsprobleme bei linear
+separierbaren Datensätzen dient und die Konvergenz des verwendeten Algorithmus
+für linear separierbare Datensätze belegt ist, erfolgt die Umsetzung unter
+Verwendung einer einfachen Signumfunktion. Die Signumfunktion ist eine reelle
+Funktion die auf ihrem Wertebereich stückweise konstant und linear ist. Sie
+ordnet jedem Element $x$, dessen Wert kleiner als $0$ ist, den Wert $-1$ und
+jedem $x$, dessen Wert größer oder gleich $0$ ist, den Wert $+1$ zu:
 
 \[
 sgn(x) = 
@@ -128,17 +168,19 @@ Die Integration des Schwellwertes in das Modell erfolgt durch die Ergänzung der
 \begin{figure}[h]
 \centering
 \subimport{./figures/}{weightedPerceptron.pdf_tex}
-\caption{Integration der Schwellwertlogik durch das Hinzufügen eines künstlichen Eingangssignals $x_0$ (eigene Darstellung in Anlehnung an Rojas (1996))}
+\caption{Integration der Schwellwertlogik durch das Hinzufügen eines künstlichen
+Eingangssignals $x_0$ (eigene Darstellung in Anlehnung an Rojas (1996))}
+\label{fig:activation}
 \end{figure}
 
 ## Klassifikation und Trainingsprozess
-Im Anwendungskontext einer binären Klassifikation besteht die Aufgabe des Perzeptrons darin, für $n$ Eingabeinstanzen des Datensatzes $X$ $n+1$ freie Parameter zu finden, so dass die daraus resultierende lineare Funktion eine Hyperebene definiert, die eine vollständige räumliche Separation der in $X$ vertretenen Elemente nach ihrer jeweiligen Klasse bewirkt. Diese $n+1$ freien Parameter entsprechen dabei den Elementen des erweiterten Gewichtungsvektors $\vec{w}_{ext}$. Geometrisch betrachtet bildet jede Kombination von drei Gewichtungselementen $w_1, w_2, w_3$ einen Punkt in einem dreidimensionalen Dualraum. Dieser Punkt ist mit einer Hyperebenen im Ursprungsraum assoziert, welche durch die Ebenengleichung
+Im Anwendungskontext einer binären Klassifikation besteht die Aufgabe des Perzeptrons darin, für $n$ Eingabeinstanzen des Datensatzes $X$, $n+1$ freie Parameter zu finden, so dass die daraus resultierende lineare Funktion eine Hyperebene definiert, die eine vollständige räumliche Separation der in $X$ vertretenen Elemente nach ihrer jeweiligen Klasse bewirkt. Diese $n+1$ freien Parameter entsprechen dabei den Elementen des erweiterten Gewichtungsvektors $\vec{w}_{ext}$. Geometrisch betrachtet bildet jede Kombination von drei Gewichtungselementen $w_1, w_2, w_3$ einen Punkt in einem dreidimensionalen Dualraum. Dieser Punkt ist mit einer Hyperebenen im Ursprungsraum assoziert, welche durch die Ebenengleichung
 
 \[
 	w_1x_1 + w_2x_2 + w_3x_3 = 0
 \]
 
-definiert wird. Alle Punkte in der positiven Hälfte des durch die Hyperebene gebildeten Halbraumes, erfüllen die Bedingung
+definiert wird. Alle Punkte in der positiven Hälfte des durch die Hyperebene gebildeten Halbraumes erfüllen die Bedingung
 
 \[
 	w_1x_1 + w_2x_2 + w_3x_3 \geq 0
@@ -156,13 +198,15 @@ erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also einer Kombin
 \begin{figure}[h]
 \centering
 \subimport{./figures/}{coord.pdf_tex}
-\caption{Dualer Zusammenhang zwischen Merkmals- und Gewichtungsvektor (eigene Darstellung in Anlehnung an Rojas (1996))}
+\caption{Dualer Zusammenhang zwischen Merkmals- und Gewichtungsvektor (eigene
+Darstellung in Anlehnung an Rojas (1996))}
+\label{fig:dual}
 \end{figure}
 
 Während des Trainingsprozesses wird der Rückgabewert der Aktivierungsfunktion iterativ für alle Eingabeinstanzen ermittelt und mit der tatsächlichen Wertausprägung der Zielvariablen $y_i$ des Trainingsdatensatzes $y_{classified}$ abgeglichen. Falls das Ausgangssignal $y$ nicht mit dem Wert des Trainingsdatensatzes übereinstimmt, wird der Gewichtungsvektor $\vec{w}_c$ der $c$-ten Iteration durch den angepassten Vektor $\vec{w}_{c+1}$ ersetzt. Dieser Vorgang wird solange wiederholt, bis während der gesamten Epoche keine Anpassungen des Gewichtungsvektors mehr stattfinden. Die lineare Klassifikationsfunktion kann nun aus dem optimierten Gewichtungsvektor abgeleitet werden. Die konkrete Funktionsweise des Algorithmus ist im Einzelnen der Darstellung Algorithmus&nbsp;\ref{alg:perceptron} auf Seite&nbsp;\pageref{alg:perceptron} zu entnehmen.
 
 \begin{algorithm}
-\caption{Perzeptron Algorithmus}
+\caption{Perzeptron Algorithmus (vgl. Cristianini und Shawe-Taylor 2000)}
 \label{alg:perceptron}
 \begin{algorithmic}[1]
 \Procedure{Perzeptron}{$x, \eta$} \Comment{$\eta$ bestimmt den Wirkungsgrad der Anpassung von $w$}
@@ -189,14 +233,15 @@ Während des Trainingsprozesses wird der Rückgabewert der Aktivierungsfunktion 
 
 # nnetr
 ## Installation
-Die **nnetr** Software ist ein Zusatzpaket für die Statistiksoftware R ($\leq$ 3.4.4) und kann aus dem beigefügten bundle mit der Dateiendung \texttt{.tar.gz} heraus installiert werden. Zusätzlich zu der Basisinstallation der R-Software werden die Pakete *ggplot2* und *caret* benötigt. Sobald das **nnetr**-Paket installiert wurde, kann es mit Hilfe der folgenden Eingabe geladen werden:
+Die **nnetr** Software ist ein Zusatzpaket für die Statistiksoftware R ($\leq$ 3.4.4) und kann aus dem beigefügten Bundle mit der Dateiendung \texttt{.tar.gz} heraus installiert werden. Zusätzlich zu der Basisinstallation der R-Software werden die Pakete *ggplot2* und *caret* benötigt. Sobald das **nnetr**-Paket installiert wurde, kann es mit Hilfe der folgenden Eingabe geladen werden:
 
 ```{r eval=FALSE}
 library(nnetr)
 ```
 
 ## Funktionen
-Mit Hilfe des **nnetr** Softwarepakets lassen sich anhand von metrisch, beziehungsweise kategorial skalierten Merkmalsdaten einfache linearer Vorhersagemodelle estellen. Die Daten der unabhängigen Variablen müssen metrisch skaliert sein, wohingegen die Daten der abhängigen Variablen sowohl numerische als auch nichtnumerische Werte annehmen können aber in jedem Fall ein binäres Skalenniveau aufweisen müssen. Für die Verwendung der Plotfunktion muss zudem sichergestellt werden, dass das Modell über genau zwei unabhängige Variablen und eine abhängige Variable verfügt. Die Funktionen des Pakets werden im Folgenden kurz erläutert:
+Mit Hilfe des **nnetr** Softwarepakets lassen sich anhand von metrisch,
+beziehungsweise kategorial skalierten Merkmalsdaten einfache lineare Klassifikationsmodelle erstellen. Die Daten der unabhängigen Variablen müssen metrisch skaliert sein, wohingegen die Daten der abhängigen Variablen sowohl numerische als auch nichtnumerische Werte annehmen können aber in jedem Fall ein binäres Skalenniveau aufweisen müssen. Für die Verwendung der Plotfunktion muss zudem sichergestellt werden, dass das Modell über genau zwei unabhängige Variablen und eine abhängige Variable verfügt. Die Funktionen des Pakets werden im Folgenden kurz erläutert:
 
 1. \texttt{euclidNorm()} - berechnet die euklidische Norm eines numerischen Vektors
 2. \texttt{signum()} - berechnet anhand einer Matrix mit numerischen Merkmalswerten und eines numerischen Gewichtungsvektors das Vorzeichen des inneren Produktes, woraus sich die Ausrichtung des untersuchten Merkmalsvektors im euklidischen Raum ableiten lässt
@@ -207,16 +252,16 @@ Mit Hilfe des **nnetr** Softwarepakets lassen sich anhand von metrisch, beziehun
 Für das Perzeptron-Modell wurden, nach dem Vorbild der Funktionen zur Erstellung von Regressionsmodellen, die gängigsten generischen Funktionen implementiert. Hierzu zählen die Funktionen \texttt{print.perceptron()}, \texttt{summary.perceptron()} und \texttt{plot.perceptron()}. Details können den jeweiligen Hilfsseiten der Funktionen entnommen werden.
 
 # Lineare Klassifikation am Beispiel des Iris-Datensatzes
-In diesem Abschnitt wird die Anwendung des nnetr-Packages am Beispiel einer Klassifikation unter Verwendung des Iris-Datensatzes demonstriert. Der Iris-Datensatz enthält zu drei verschiedenen Gattungen der Schwertlilie jeweils 50 Beobachtungen, für die wiederum jeweils die Länge und Breite der Kelch- und der Kronenblätter sowie der Name der Spezies erfasst wurden. Der Datensatz besteht somit aus insgesamt 150 Beobachtungen mit jeweils fünf Attributen. Mit Hilfe des nnetr-Packages soll ein lineares Klassifikationsmodell erstellt werden. Hierzu wird die Hypothese aufgestellt, dass ein Zusammenhang zwischen der Länge der Kelch- und Kronenblattlänge und der Spezies besteht. Die Kelch- und Kronenblattlänge einer bestimmten Beobachtung werden als unabhängige Variablen deklariert. Die Spezies stellt die abhängige Variable dar.
+In diesem Abschnitt wird die Anwendung des **nnetr**-Packages am Beispiel einer Klassifikation unter Verwendung des Iris-Datensatzes demonstriert. Der Iris-Datensatz enthält zu drei verschiedenen Gattungen der Schwertlilie jeweils 50 Beobachtungen, für die wiederum jeweils die Länge und Breite der Kelch- und der Kronenblätter, sowie der Name der Spezies erfasst wurden. Der Datensatz besteht somit aus insgesamt 150 Beobachtungen mit jeweils fünf Attributen. Mit Hilfe des nnetr-Packages soll ein lineares Klassifikationsmodell erstellt werden. Hierzu wird die Hypothese aufgestellt, dass ein Zusammenhang zwischen der Länge der Kelch- und Kronenblattlänge und der Spezies besteht. Die Kelch- und Kronenblattlänge einer bestimmten Beobachtung werden als unabhängige Variablen deklariert. Die Spezies stellt die abhängige Variable dar.
 
-Die Implementierung ist nur für die Lösung binärer Klassifikationsprobleme konzipiert. Bevor ein Modell mit Hilfe der Implementierung erstellt werden kann, muss daher zunächst sichergestellt werden, dass der Datensatz für die Zielvariable das korrekte Skalennivau aufweist. Als Zielvariable dient in diesem Beispiel das Attribut **Species**:
+Die Implementierung ist nur für die Lösung binärer Klassifikationsprobleme konzipiert. Bevor ein Modell mit Hilfe der Implementierung erstellt werden kann, muss daher zunächst sichergestellt werden, dass der Datensatz für die Zielvariable das korrekte Skalenniveau aufweist. Als Zielvariable dient in diesem Beispiel das Attribut *Species*:
 
 ```{r}
 data(iris)
 str(iris)     
 ```
 
-Wie die Zusammenfassung des Datensatzes zeigt, besitzt das Attribut **Species** die drei verschiedenen Ausprägungen *setosa*, *versicolor* und *virginica*. Um eine binäre Zielvariable zu erhalten, wird eine entsprechende Teilmenge entnommen. Um die Visualisierung der Daten zu erleichtern, wird die Anzahl der Attribute auf zwei reduziert:
+Wie die Zusammenfassung des Datensatzes zeigt, besitzt das Attribut *Species* die drei verschiedenen Ausprägungen *setosa*, *versicolor* und *virginica*. Um eine binäre Zielvariable zu erhalten, wird eine entsprechende Teilmenge entnommen. Um die Visualisierung der Daten zu erleichtern, wird die Anzahl der Attribute auf zwei reduziert:
 
 ```{r}
 irisSub <- iris[(1:100), c(1, 3, 5)]
@@ -256,7 +301,7 @@ Ausführlichere Informationen zu dem Modellierungsergebnis können der Ausgabe d
 ```{r}
 summary(p1)
 ```
-Die Zusammenfassung zeigt, dass ein Netzwerk mit zwei Knoten im input-layer, null Knoten im hidden-layer und einem Knoten im output-layer erstellt wurde. Die piktografische Darstellung im unteren Teil der Konsolenausgabe beschreibt die Struktur des Netzes, wobei die numerischen Werte den Kantengewichten der gerichteten Graphen entsprechen und das Symbol *o* den Ausgangsknoten kennzeichnet.
+Die Zusammenfassung zeigt, dass ein Netzwerk mit zwei Knoten im input-layer, null Knoten im hidden-layer und einem Knoten im output-layer erstellt wurde. Die piktografische Darstellung im unteren Teil der Konsolenausgabe beschreibt die Struktur des Netzwerks, wobei die numerischen Werte den Kantengewichten der gerichteten Graphen entsprechen und das Symbol *o* den Ausgangsknoten kennzeichnet.
 
 Zur visuellen Überprüfung der Validität des Modellierungsergebnisses wird der Graph der linearen Klassifikationsfunktion mit Hilfe der \texttt{plot()}-Funktion geplottet:
 
@@ -268,7 +313,8 @@ plot(p1) +
 ```
 Der Graph der Funktion verläuft zwischen den beiden Merkmalsclustern und trennt diese vollständig voneinander. Daraus wird geschlossen, dass das Modell valide ist. 
 
-Für die Überprüfung der Klassifikationsleistung wird mit Hilfe der \texttt{predict()}-Funktion, auf Grundlage des Klassifikationsmodells, die Spezies zu jeder Instanz des Testdatensatzes inferiert. Anschließend wird die Klassifikationsleistung des Modells durch eine Konfusionsmatrix ermittelt:
+Für die Überprüfung der Klassifikationsleistung wird mit Hilfe der
+\texttt{predict()}-Funktion die Spezies zu jeder Instanz des Testdatensatzes inferiert. Anschließend wird die Klassifikationsleistung des Modells durch eine Konfusionsmatrix ermittelt:
 
 ```{r}
 holdOutX <- irisHoldout[, 1:2]
@@ -277,9 +323,21 @@ holdOutY <- factor(holdOutY)
 prediction <- predict(p1, holdOutX)
 caret::confusionMatrix(holdOutY, prediction[,3])
 ```
-Die Konfusionsmatrix zeigt, dass von 30 klassifizierten Instanzen keine falsch-negativ oder falsch-positiv klassifiziert wurde. Die Genauigkeit des implementierten Klassifikationsverfahrens beträgt somit 100%. Aufgrund des oben angegebenen $p$-Werts wird die Nullhypothese auf einem Signifikanzniveau von 5% verworfen. Das Ergebnis wird daher als statistisch signifikant bewertet.
+Die Konfusionsmatrix zeigt, dass von 30 klassifizierten Instanzen keine falsch-negativ oder falsch-positiv klassifiziert wurde. Die Genauigkeit des implementierten Klassifikationsverfahrens beträgt somit 100%. Aufgrund des oben angegebenen $p$-Werts, wird die Nullhypothese auf einem Signifikanzniveau von 5% verworfen. Das Ergebnis wird daher als statistisch signifikant bewertet.
 
 # Zusammenfassung
-Mit dem **nnetr**-Package wurde die Implementierung eines einfachen neuronalen Netzes auf Grundlage des Perzeptron-Modells nach @1958rosenblatt in R demonstriert. Das implementierte Verfahren ist in der Lage numerische Merkmalsdaten mit einer binären Zielvariablen zu klassifizieren, sofern diese vollständig linear separierbar sind. Mit Hilfe eines Anwendungsbeispiel wurde die Klassifikationsleistung anhand einer Teilmenge des Iris-Datensatzes untersucht. Hierbei wurde festgestellt, dass das implementierte Verfahren die Instanzen des Testdatensatzes mit einer Genauigkeit von 100% klassifiziert. Die Generalisierbarkeit des Modells wird jedoch durch das unerwünschte Konvergenzverhalten bei nicht-linear separierbaren Datensätzen eingeschränkt. Für derartige Szenarien sind daher robuste Klassifikationsverfahren wie der Pocket- oder der Maxover-Algorithmus dem hier vorgestellten Verfahren vorzuziehen.
+Mit dem **nnetr**-Package wurde die Implementierung eines einfachen neuronalen
+Netzes auf Grundlage des Perzeptron-Modells nach @1958rosenblatt in R
+demonstriert. Das implementierte Verfahren ist in der Lage numerische
+Merkmalsdaten mit einer binären Zielvariablen zu klassifizieren, sofern diese
+vollständig linear separierbar sind. Mit Hilfe eines Anwendungsbeispiel wurde
+die Klassifikationsleistung anhand einer Teilmenge des Iris-Datensatzes
+untersucht. Hierbei wurde festgestellt, dass das implementierte Verfahren die
+Instanzen des Testdatensatzes mit einer Genauigkeit von 100% klassifiziert. Die
+Generalisierbarkeit des Modells wird jedoch durch das unerwünschte
+Konvergenzverhalten bei nicht-linear separierbaren Datensätzen
+eingeschränkt. Für derartige Szenarien sind daher robuste
+Klassifikationsverfahren, wie der Pocket- oder der Maxover-Algorithmus, dem oben
+beschriebenen Verfahren vorzuziehen.
 
 # Literaturverzeichnis

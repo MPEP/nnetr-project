@@ -2,7 +2,7 @@
 % Please edit documentation in R/nnetr.R
 \name{predict.perceptron}
 \alias{predict.perceptron}
-\title{Predict function for a fitted perceptron model}
+\title{Predict function for a fitted perceptron model.}
 \usage{
 \method{predict}{perceptron}(object, newdata, ...)
 }
@@ -14,7 +14,7 @@
 \item{...}{arguments passed to or from other methods}
 }
 \description{
-Predict function for a fitted perceptron model
+Predict function for a fitted perceptron model.
 }
 \examples{
 data(iris)

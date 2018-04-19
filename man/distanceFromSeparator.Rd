@@ -2,7 +2,7 @@
 % Please edit documentation in R/nnetr.R
 \name{distanceFromSeparator}
 \alias{distanceFromSeparator}
-\title{Calculate signed distance of point from linear separator}
+\title{Calculate signed distance of point from linear separator.}
 \usage{
 distanceFromSeparator(data, weight)
 }
@@ -17,7 +17,7 @@ inner product. If one argument is a vector, it will be promoted to either a
 row or column matrix.
 }
 \description{
-Calculate signed distance of point from linear separator
+Calculate signed distance of point from linear separator.
 }
 \examples{
 vec1 <- c(1, 2, 3)

@@ -50,28 +50,28 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.30948395)%
+  \begin{picture}(1,0.3123918)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{weightedPerceptron.pdf}}%
-    \put(0.04639782,0.28453218){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$x_1$\end{tabular}}}}%
-    \put(0.04639782,0.10135116){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$x_n$\end{tabular}}}}%
+    \put(0.04639782,0.28744003){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$x_1$\end{tabular}}}}%
+    \put(0.04639782,0.10425901){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$x_n$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{weightedPerceptron.pdf}}%
-    \put(0.16552216,0.28462341){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$w_1$\end{tabular}}}}%
-    \put(0.16552216,0.18504811){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$w_n$\end{tabular}}}}%
+    \put(0.16552216,0.28753126){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$w_1$\end{tabular}}}}%
+    \put(0.16552216,0.18795597){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$w_n$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{weightedPerceptron.pdf}}%
-    \put(0.31106909,0.19148775){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$\theta$\end{tabular}}}}%
+    \put(0.31106909,0.1943956){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$\theta$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=4]{weightedPerceptron.pdf}}%
-    \put(0.87551254,0.19148775){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$0$\end{tabular}}}}%
+    \put(0.87551254,0.1943956){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$0$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=5]{weightedPerceptron.pdf}}%
-    \put(0.61084124,0.28453218){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$x_1$\end{tabular}}}}%
-    \put(0.61084124,0.10135116){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$x_n$\end{tabular}}}}%
+    \put(0.61084124,0.28744003){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$x_1$\end{tabular}}}}%
+    \put(0.61084124,0.10425901){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$x_n$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=6]{weightedPerceptron.pdf}}%
-    \put(0.72996561,0.28462341){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$w_1$\end{tabular}}}}%
-    \put(0.72996561,0.18504811){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$w_n$\end{tabular}}}}%
+    \put(0.72996561,0.28753126){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$w_1$\end{tabular}}}}%
+    \put(0.72996561,0.18795597){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$w_n$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=7]{weightedPerceptron.pdf}}%
-    \put(0.71262507,0.00480914){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$1$\end{tabular}}}}%
+    \put(0.71262507,0.00771699){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$x_0 = 1$\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=8]{weightedPerceptron.pdf}}%
-    \put(0.7615368,0.1075195){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$\theta$\end{tabular}}}}%
+    \put(0.7615368,0.11042735){\color[rgb]{0,0,0}\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}$\theta$\end{tabular}}}}%
   \end{picture}%
 \endgroup%

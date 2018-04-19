@@ -24,7 +24,7 @@ signum <- function(data, weight) {
     ifelse(distances < 0, -1, 1)
 }
 
-#' Calculate signed distance of point from linear separator
+#' Calculate signed distance of point from linear separator.
 #' 
 #' @param data matrix or vector of numeric values
 #' @param weight vector of numeric values
@@ -81,14 +81,14 @@ distanceFromSeparator <- function(data, weight) {
 #' @export
 newPerceptronModel <- function(formula, data, learningRate = 1,
                                activation = signum) {
-    if(!is.data.frame(data)) stop("Input data must be of type dataframe.")
+    if(!is.data.frame(data)) stop("Input data must be of type data frame.")
 
     # model matrix
     mf <- model.frame(formula, data)
     x <- model.matrix(formula, mf)
     respondName <- as.character(attr(terms(mf), "variables"))[2]
     if(nlevels(data[respondName] != 2))
-        stop("Invalid number of levels inresponse variable detected.
+        stop("Invalid number of levels in response variable detected.
 Response variable must be binary!")
 
     # response vector
@@ -289,7 +289,7 @@ data")
         geom_abline(aes(intercept = intercept, slope = slope), col = "green")
 }
     
-#' Predict function for a fitted perceptron model
+#' Predict function for a fitted perceptron model.
 #'
 #' @param object fitted \code{perceptron} model.
 #' @param newdata data frame from values for which to predict the class
