@@ -48,9 +48,9 @@ ist einerseits, dass der Lernprozess unter dem Gesichtspunkt einer konkreten
 Zielsetzung vollzogen wird, welche im Vorfeld bereits bekannt ist und
 andererseits, dass der Trainingsdatensatz Informationen über die Zielvariable
 enthält. Wenn ein entsprechender Trainingsdatensatz verfügbar ist, lassen sich
-auf Grundlage der darin enthaltenen Informationen eine Reihe von Hypothesen bezüglich vermuteter Zusammenhänge aufstellen, wobei der Typus des funktionalen, linearen Zusammenhangs die einfachste und am weitesten erforschte Hypothesenform darstellt [vgl. @2000christianini].
+auf Grundlage der darin enthaltenen Informationen eine Reihe von Hypothesen bezüglich vermuteter Zusammenhänge aufstellen, wobei der Typus des funktionalen linearen Zusammenhangs die einfachste und am weitesten erforschte Hypothesenform darstellt [vgl. @2000christianini].
 
-Mit dem \texttt{nnetr}-Package soll die Implementierung eines linearen
+Mit dem **nnetr**-Package soll die Implementierung eines linearen
 Klassifikationsverfahrens auf Grundlage eines einlagigen neuralen Netzes in R
 demonstriert werden. Das einlagige neuronale Netz, welches auch als einlagiges
 Perzeptron bezeichnet wird, besteht lediglich aus einer Reihe von Eingangsknoten
@@ -99,9 +99,9 @@ oder eine inhibitorische Wirkung auf alle Zellen in der vorgeschalteten Schicht
 entfalten, wobei @1958rosenblatt in seinem Modell letzterem Wirkungsmechanismus
 aus pragmatischen Gründen den Vorzug gab. Dieser Rückwirkungsmechanismus, der auch als Rückpropagierung bezeichnet wird, bildet die Voraussetzung für die Lernfähigkeit des Netzwerks.
 
-Der eigentliche Lernvorgang vollzieht sich im Verbindungsbereich zwischen Assoziations- und Reaktionsschicht. Da sich die Zustände der Zellen in der Reaktionsschicht gegenseitig ausschließen, kann eine Reaktion im oben beschriebenen Zellsystem nur durch eine der verfügbaren Zellen in der Reaktionsschicht abgebildet werden. Tritt in einem System mit zwei Reaktionszellen $R_1$ und $R_2$ die Reaktion $R_1$ ein, wird durch dieses Ereignis das Eintreten der Reaktion $R_2$ inhibitiert und umgekehrt [vgl. @1958rosenblatt]. Wenn die Summe aller Impulse die bei der Reaktionszelle $R_1$ eingehen größer ist als die Summe der Impulse die bei Zelle $R_2$ eingehen, wird $R_1$ das gesamte verfügbare Aktionspotential absorbieren und dadurch die Aktivierung von $R_2$ hemmen.
+Der eigentliche Lernvorgang vollzieht sich im Verbindungsbereich zwischen Assoziations- und Reaktionsschicht. Da sich die Zustände der Zellen in der Reaktionsschicht gegenseitig ausschließen, kann eine Reaktion im oben beschriebenen Zellsystem nur durch eine der verfügbaren Zellen in der Reaktionsschicht abgebildet werden. Tritt in einem System mit zwei Reaktionszellen $R_1$ und $R_2$ die Reaktion $R_1$ ein, wird durch dieses Ereignis das Eintreten der Reaktion $R_2$ inhibitiert und umgekehrt [vgl. @1958rosenblatt]. Wenn die Summe aller Impulse, die bei der Reaktionszelle $R_1$ eingehen, größer ist als die Summe der Impulse die bei Zelle $R_2$ eingehen, wird $R_1$ das gesamte verfügbare Aktionspotential absorbieren und dadurch die Aktivierung von $R_2$ hemmen.
 
-Nach dem Eintritt von $R_1$ wird anschließend mittels Rückpropagation sichergestellt, dass die Zellen der Assoziationsschicht, die an der Auslösung der Reaktion $R_1$ beteiligt waren, eine Leistungsverstärkung erfahren. Dies hat den Effekt, dass bei der nächsten Aktivierung der entsprechenden Zellen ein stärkeres Ausgangssignal erzeugt wird, was wiederum den erneuten Eintritt von $R_1$ wahrscheinlicher und den Eintritt von $R_2$ unwahrscheinlicher macht [vgl. @1958rosenblatt]. Ähnliche Signale auf der Projektionsoberfläche verursachen in der Folge ähnliche Aktivierungsmuster in der Assoziationsschicht und führen nach wiederholter Exposition des Netzwerks gegenüber wiederkehrenden, externen Reizen zu identischen Reaktionen. Das Netzwerk ist nun in der Lage auf Grundlage der erlernten Aktivierungsmuster selbstständig eine Klassifikation der Eingangssignale vorzunehmen.
+Nach dem Eintritt von $R_1$ wird anschließend mittels Rückpropagation sichergestellt, dass die Zellen der Assoziationsschicht, die an der Auslösung der Reaktion $R_1$ beteiligt waren, eine Leistungsverstärkung erfahren. Dies hat den Effekt, dass bei der nächsten Aktivierung der entsprechenden Zellen ein stärkeres Ausgangssignal erzeugt wird, was wiederum den erneuten Eintritt von $R_1$ wahrscheinlicher und den Eintritt von $R_2$ unwahrscheinlicher macht [vgl. @1958rosenblatt]. Ähnliche Signale auf der Projektionsoberfläche verursachen in der Folge ähnliche Aktivierungsmuster in der Assoziationsschicht und führen nach wiederholter Exposition des Netzwerks gegenüber wiederkehrenden externen Reizen zu identischen Reaktionen. Das Netzwerk ist nun in der Lage auf Grundlage der erlernten Aktivierungsmuster selbstständig eine Klassifikation der Eingangssignale vorzunehmen.
 
 # Mathematische Interpretation
 ## Modell
@@ -142,16 +142,20 @@ x_i = [x_{1} ... x_{n}]^T
 die Spaltenform des Vektors der Eingabewerte darstellt, die nachfolgend als Eingabevektor bezeichnet wird. Für die Umsetzung der Schwellwertlogik wird schließlich eine Aktivierungsfunktion definiert, die auf Basis des zuvor bestimmten inneren Produktes der Vektoren $\vec{w}$ und $\vec{x}$ den Aktivierungszustand des Perzeptrons ermittelt und bei Überschreitung eines Schwellwertes $\theta$ ein Ausgangssignal generiert.
 
 ## Aktivierungsfunktion
-Die Aufgabe der Aktivierungsfunktion besteht darin, die Stärke des Ausgangssignals auf einen Wert innerhalb eines fest definierten Intervalls abzubilden. Geometrisch lässt sich dieser Sachverhalt auch als Teilung eines Vektorraumes in zwei Teilräume interpretieren, wobei jedes Eingangssignal, welches den Schwellwert überschreitet oder gleich dem Schwellwert ist, der einen Teilraumhälfte zugeordnet wird und jedes Eingangssignal, das den Schwellwert unterschreitet, der anderen Teilraumhälfte [vgl. @2013graupe; @1996rojas].
-
-<!-- Als Aktivierungsfunktion kommen je nach Modellanforderungen verschiedene nicht-lineare Funktionen in Frage, wobei für die Verwendung im Zusammenhang mit modernen Interpretationen des neuronalen Netzes, die ReLU-Funktion laut @2016goodfellow als Standardempfehlung betrachtet werden kann. Ein Grund hierfür ist, dass die ReLU-Funktion einen Wertebereich von 0 bis $\infty$ besitzt und daher, anders als bei anderen Vertretern aus der Klasse der nicht-linearen Funktionen, wie der Sigmoid- oder der Hyperbelfunktion, nicht das Problem schwindender Gradienten auftritt, welches wiederum zu Konvergenzproblemen führen kann.  -->
+Die Aufgabe der Aktivierungsfunktion besteht darin, die Stärke des
+Ausgangssignals auf einen Wert innerhalb eines fest definierten Intervalls
+abzubilden. Geometrisch lässt sich dieser Sachverhalt auch als Teilung eines
+Vektorraumes in zwei Teilräume interpretieren, wobei jedes Eingangssignal,
+welches den Schwellwert überschreitet oder gleich dem Schwellwert ist, der einen
+Teilraumhälfte zugeordnet wird und jedes Eingangssignal, das den Schwellwert
+unterschreitet, der anderen Teilraumhälfte [vgl. @2013graupe; @1996rojas].
 
 Da die vorliegende Implementierung des Perzeptron-Modells der Demonstration
 eines Ansatzes zur Lösung binärer Klassifikationsprobleme bei linear
 separierbaren Datensätzen dient und die Konvergenz des verwendeten Algorithmus
 für linear separierbare Datensätze belegt ist, erfolgt die Umsetzung unter
 Verwendung einer einfachen Signumfunktion. Die Signumfunktion ist eine reelle
-Funktion die auf ihrem Wertebereich stückweise konstant und linear ist. Sie
+Funktion, die auf ihrem Wertebereich stückweise konstant und linear ist. Sie
 ordnet jedem Element $x$, dessen Wert kleiner als $0$ ist, den Wert $-1$ und
 jedem $x$, dessen Wert größer oder gleich $0$ ist, den Wert $+1$ zu:
 
@@ -192,7 +196,9 @@ während alle Punkte in der negativen Hälfte die Bedingung
 	w_1x_1 + w_2x_2 + w_3x_3 = 0
 \]
 
-erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also einer Kombination der Gewichtungselemente, deren Funktionswert nach Bildung des inneren Produktes mit den Elementen des Vektors $\vec{x}_{ext}$ und $\vec{w}_{ext}$ gleich null ist [vgl. @1996rojas].
+erfüllen. Der Schwellwert der Aktivierungsfunktion entspricht also jener
+Kombination der Gewichtungselemente, deren inneres Produkt
+mit den Elementen des Vektor $\vec{x}_{ext}$ gleich null ist [vgl. @1996rojas].
 
 \def\svgwidth{\columnwidth}
 \begin{figure}[h]
@@ -233,7 +239,7 @@ Während des Trainingsprozesses wird der Rückgabewert der Aktivierungsfunktion 
 
 # nnetr
 ## Installation
-Die **nnetr** Software ist ein Zusatzpaket für die Statistiksoftware R ($\leq$ 3.4.4) und kann aus dem beigefügten Bundle mit der Dateiendung \texttt{.tar.gz} heraus installiert werden. Zusätzlich zu der Basisinstallation der R-Software werden die Pakete *ggplot2* und *caret* benötigt. Sobald das **nnetr**-Paket installiert wurde, kann es mit Hilfe der folgenden Eingabe geladen werden:
+Die **nnetr** Software ist ein Zusatzpaket für die Statistiksoftware R ($\leq$ 3.4.4) und kann aus dem beigefügten Bundle mit der Dateiendung \texttt{.tar.gz} heraus installiert werden. Zusätzlich zu der Basisinstallation der R-Software, werden die Pakete **ggplot2** und **caret** benötigt. Sobald das **nnetr**-Paket installiert wurde, kann es mit Hilfe der folgenden Eingabe geladen werden:
 
 ```{r eval=FALSE}
 library(nnetr)
@@ -252,7 +258,7 @@ beziehungsweise kategorial skalierten Merkmalsdaten einfache lineare Klassifikat
 Für das Perzeptron-Modell wurden, nach dem Vorbild der Funktionen zur Erstellung von Regressionsmodellen, die gängigsten generischen Funktionen implementiert. Hierzu zählen die Funktionen \texttt{print.perceptron()}, \texttt{summary.perceptron()} und \texttt{plot.perceptron()}. Details können den jeweiligen Hilfsseiten der Funktionen entnommen werden.
 
 # Lineare Klassifikation am Beispiel des Iris-Datensatzes
-In diesem Abschnitt wird die Anwendung des **nnetr**-Packages am Beispiel einer Klassifikation unter Verwendung des Iris-Datensatzes demonstriert. Der Iris-Datensatz enthält zu drei verschiedenen Gattungen der Schwertlilie jeweils 50 Beobachtungen, für die wiederum jeweils die Länge und Breite der Kelch- und der Kronenblätter, sowie der Name der Spezies erfasst wurden. Der Datensatz besteht somit aus insgesamt 150 Beobachtungen mit jeweils fünf Attributen. Mit Hilfe des nnetr-Packages soll ein lineares Klassifikationsmodell erstellt werden. Hierzu wird die Hypothese aufgestellt, dass ein Zusammenhang zwischen der Länge der Kelch- und Kronenblattlänge und der Spezies besteht. Die Kelch- und Kronenblattlänge einer bestimmten Beobachtung werden als unabhängige Variablen deklariert. Die Spezies stellt die abhängige Variable dar.
+In diesem Abschnitt wird die Anwendung des **nnetr**-Packages am Beispiel einer Klassifikation unter Verwendung des Iris-Datensatzes demonstriert. Der Iris-Datensatz enthält zu drei verschiedenen Gattungen der Schwertlilie jeweils 50 Beobachtungen, für die wiederum jeweils die Länge und Breite der Kelch- und der Kronenblätter, sowie der Name der Spezies erfasst wurden. Der Datensatz besteht somit aus insgesamt 150 Beobachtungen mit jeweils fünf Attributen. Mit Hilfe des **nnetr**-Packages soll ein lineares Klassifikationsmodell erstellt werden. Hierzu wird die Hypothese aufgestellt, dass ein Zusammenhang zwischen Kelch- und Kronenblattlänge und der Spezies besteht. Die Kelch- und Kronenblattlänge einer bestimmten Beobachtung werden als unabhängige Variablen bestimmt. Die Spezies stellt die abhängige Variable dar.
 
 Die Implementierung ist nur für die Lösung binärer Klassifikationsprobleme konzipiert. Bevor ein Modell mit Hilfe der Implementierung erstellt werden kann, muss daher zunächst sichergestellt werden, dass der Datensatz für die Zielvariable das korrekte Skalenniveau aufweist. Als Zielvariable dient in diesem Beispiel das Attribut *Species*:
 
@@ -330,7 +336,7 @@ Mit dem **nnetr**-Package wurde die Implementierung eines einfachen neuronalen
 Netzes auf Grundlage des Perzeptron-Modells nach @1958rosenblatt in R
 demonstriert. Das implementierte Verfahren ist in der Lage numerische
 Merkmalsdaten mit einer binären Zielvariablen zu klassifizieren, sofern diese
-vollständig linear separierbar sind. Mit Hilfe eines Anwendungsbeispiel wurde
+vollständig linear separierbar sind. Mit Hilfe eines Anwendungsbeispiels wurde
 die Klassifikationsleistung anhand einer Teilmenge des Iris-Datensatzes
 untersucht. Hierbei wurde festgestellt, dass das implementierte Verfahren die
 Instanzen des Testdatensatzes mit einer Genauigkeit von 100% klassifiziert. Die
